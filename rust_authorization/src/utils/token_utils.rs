@@ -1,7 +1,7 @@
 use crate::{
     entity::{
         user::UserAuth,
-        user_token::{UserToken,Key},
+        user_token::{UserToken,KEY},
     },
 };
 
@@ -10,7 +10,7 @@ use jsonwebtoken::{TokenData,Validation};
 
 
 pub fn decode_token(token:String)->jsonwebtoken::errors::Result<TokenData<UserToken>>{
-    jsonwebtoken::decode::<UserToken>(&token,Key,&Validation::default())
+    jsonwebtoken::decode::<UserToken>(&token,&KEY,&Validation::default())
 }
 
 // pub fn verify_token(token:&TokenData<UserToken>,)

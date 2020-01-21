@@ -1,11 +1,15 @@
-use super::schema::*;
-use actix_web::{Error, HttpRequest, HttpResponse, Responder};
-
-use futures::future::{ready, Ready};
-use serde::Serialize;
+use crate::{
+    config::db::Connection,
+    constants,
+    entity::{
+        login_history::LoginHistory,
+        user_token::UserToken,
+    },
+    schema::user_auth::{self, dsl::*},
+};
+use bcrypt::{hash, verify, DEFAULT_COST};
+use diesel::prelude::*;
 use uuid::Uuid;
-use crate::config::db::Connection;
-use diesel::QueryResult;
 
 //登陆
 #[derive(Serialize,Deserialize)]
@@ -18,7 +22,7 @@ pub struct LoginDTO {
 #[derive(Insertable)]
 #[table_name = "user_auth"]
 pub struct LoginInfoDTO {
-    pub identity_type: identity_type,
+    pub identity_type: i32,
     pub identifier: String,
     pub login_session: String,
 }
@@ -27,7 +31,7 @@ pub struct LoginInfoDTO {
 #[table_name = "user_auth"]
 pub struct UserAuth {
     pub id: i32,
-    pub uid: uuid::Uuid,
+    pub uid: String,
     pub identity_type: i32,
     pub identifier: String,
     pub certificate: String,
@@ -52,7 +56,7 @@ impl Responder for UserAuth {
 
 impl UserAuth {
     pub fn find_user_by_identifier(ty: i32, id:&str, conn:&Connection)->QueryResult<UserAuth>{
-//        user_auth.filter(identity_type.eq(ty) && identifier.eq(id))
+       user_auth.filter(identity_type.eq(ty) && identifier.eq(id))
 
     }
 }

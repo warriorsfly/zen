@@ -28,15 +28,45 @@ mod api;
 mod config;
 mod constants;
 mod error;
-//mod middleware;
+mod middleware;
 mod entity;
 mod schema;
 mod services;
 mod utils;
-// #[actix_rt::main]
 
-fn main()
-// fn main() -> io::Result<()>
+use actix_web::{HttpServer, App};
+use actix_service::Service;
+use futures::FutureExt;
+use std::{io, env};
+
+
+#[actix_rt::main]
+async fn main() -> io::Result<()>
 {
-    println!("Hello, world!");
+    dotenv::dotenv().expect("Failed to read .env file");
+    env::set_var("RUST_LOG", "actix_web=debug");
+
+    env_logger::init();
+
+    let app_host = env::var("APP_HOST").expect("APP_HOST not found.");
+    let app_port = env::var("APP_PORT").expect("APP_PORT not found.");
+    let app_url = format!("{}:{}", &app_host, &app_port);
+    let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
+
+    let pool = config::db::migrate_and_config_db(&db_url);
+
+    HttpServer::new(move || {
+        App::new()
+            .data(pool.clone())
+            .wrap(actix_web::middleware::Logger::default())
+            .wrap(crate::middleware::auth_middleware::Authentication)
+            .wrap_fn(|req, srv| {
+                srv.call(req).map(|res| res)
+            })
+            .configure(config::app::config_services)
+        })
+    .bind(&app_url)?
+    .run()
+    .await
+
 }

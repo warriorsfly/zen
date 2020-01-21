@@ -26,6 +26,6 @@ impl UserToken {
             login_session:login.login_session,
         };
 
-        jsonwebtoken::encode((&Header::default()), &payload, KEY).unwrap()
+        jsonwebtoken::encode(&Header::default(), &payload, &KEY).unwrap()
     }
 }

@@ -5,6 +5,7 @@ table! {
         identity_type -> Int4,
         identifier -> Varchar,
         certificate -> Varchar,
+        login_session -> Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
