@@ -1,4 +1,4 @@
-use crate::entity::user::LoginInfoDTO;
+use crate::entity::user::LoginResultDTO;
 use jsonwebtoken::Header;
 use time::PrimitiveDateTime;
 
@@ -16,7 +16,7 @@ pub struct UserToken {
 }
 
 impl UserToken {
-    pub fn generate_token(login:LoginInfoDTO)->String{
+    pub fn generate_token(login:LoginResultDTO)->String{
         let now:i64 = PrimitiveDateTime::now().timestamp();
         let payload:UserToken = UserToken{
             iat:now,

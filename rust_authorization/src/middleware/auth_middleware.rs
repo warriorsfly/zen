@@ -1,4 +1,4 @@
-use crate::{config::db::Pool, constants, entity::response::ResponseBody, utils::token_utils};
+use crate::{config::db::Pool, constants, entity::response::Response, utils::token_utils};
 use actix_service::{Service, Transform};
 use actix_web::{
     dev::{ServiceRequest, ServiceResponse},
@@ -94,7 +94,7 @@ where
             Box::pin(async move {
                 Ok(req.into_response(
                     HttpResponse::Unauthorized()
-                        .json(ResponseBody::new(
+                        .json(Response::new(
                             constants::MESSAGE_INVALID_TOKEN,
                             constants::EMPTY,
                         ))

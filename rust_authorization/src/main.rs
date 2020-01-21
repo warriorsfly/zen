@@ -13,23 +13,23 @@ extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 extern crate actix_rt;
-extern crate env_logger;
-extern crate serde;
-extern crate dotenv;
-extern crate futures;
-extern crate failure;
-extern crate derive_more;
-extern crate jsonwebtoken;
-extern crate uuid;
 extern crate bcrypt;
+extern crate derive_more;
+extern crate dotenv;
+extern crate env_logger;
+extern crate failure;
+extern crate futures;
+extern crate jsonwebtoken;
+extern crate serde;
 extern crate time;
+extern crate uuid;
 
 mod api;
 mod config;
 mod constants;
+mod entity;
 mod error;
 mod middleware;
-mod entity;
 mod schema;
 mod services;
 mod utils;
@@ -38,7 +38,6 @@ use actix_web::{HttpServer, App};
 use actix_service::Service;
 use futures::FutureExt;
 use std::{io, env};
-
 
 #[actix_rt::main]
 async fn main() -> io::Result<()>
@@ -68,5 +67,4 @@ async fn main() -> io::Result<()>
     .bind(&app_url)?
     .run()
     .await
-
 }
