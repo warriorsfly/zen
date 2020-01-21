@@ -6,7 +6,7 @@ use diesel::{
 embed_migrations!();
 
 pub type Connection = PgConnection;
-pub type Pool = r2d2::Pool<ConnectionManager<Connection>;
+pub type Pool = r2d2::Pool<ConnectionManager<Connection>>;
 
 pub fn migrate_and_config_db(url: &str) -> Pool {
     info!("Migrating and configurating database...");

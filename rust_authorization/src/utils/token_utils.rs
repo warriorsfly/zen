@@ -13,4 +13,4 @@ pub fn decode_token(token:String)->jsonwebtoken::errors::Result<TokenData<UserTo
     jsonwebtoken::decode::<UserToken>(&token,Key,&Validation::default())
 }
 
-pub fn verify_token(token:&TokenData<UserToken>,)
+// pub fn verify_token(token:&TokenData<UserToken>,)

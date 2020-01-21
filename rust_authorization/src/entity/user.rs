@@ -1,17 +1,20 @@
+use super::schema::*;
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 
 use futures::future::{ready, Ready};
 use serde::Serialize;
-use super::schema::*;
 use uuid::Uuid;
+use crate::config::db::Connection;
+use diesel::QueryResult;
 
+//登陆
 #[derive(Serialize,Deserialize)]
 pub struct LoginDTO {
     pub identity_type:i32,
     pub identifier:String,
     pub certificate:String,
 }
-
+//session登陆
 #[derive(Insertable)]
 #[table_name = "user_auth"]
 pub struct LoginInfoDTO {
@@ -19,7 +22,7 @@ pub struct LoginInfoDTO {
     pub identifier: String,
     pub login_session: String,
 }
-
+//表实体
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 #[table_name = "user_auth"]
 pub struct UserAuth {
@@ -44,5 +47,12 @@ impl Responder for UserAuth {
         ready(Ok(HttpResponse::Ok()
             .content_type("application/json")
             .body(body)))
+    }
+}
+
+impl UserAuth {
+    pub fn find_user_by_identifier(ty: i32, id:&str, conn:&Connection)->QueryResult<UserAuth>{
+//        user_auth.filter(identity_type.eq(ty) && identifier.eq(id))
+
     }
 }

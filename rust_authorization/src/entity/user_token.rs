@@ -1,4 +1,4 @@
-use crate:entity::user::LoginInfoDTO;
+use crate::entity::user::LoginInfoDTO;
 use jsonwebtoken::Header;
 use time::PrimitiveDateTime;
 
@@ -8,8 +8,8 @@ pub static KEY: [u8; 16] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7;
 #[derive(Serialize,Deserialize)]
 pub struct UserToken {
-    pub iat: i64;
-    pub exp: i64;
+    pub iat: i64,
+    pub exp: i64,
     pub identity_type: i32,
     pub identifier: String,
     pub login_session: String,
@@ -26,6 +26,6 @@ impl UserToken {
             login_session:login.login_session,
         };
 
-        jsonwebtoken::encode((&Header::default()), &payload, KEY)
+        jsonwebtoken::encode((&Header::default()), &payload, KEY).unwrap()
     }
 }
