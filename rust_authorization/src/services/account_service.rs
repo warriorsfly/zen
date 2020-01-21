@@ -2,7 +2,7 @@ use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    entity::user::{UserAuth, LoginDTO,UserDTO},
+    entity::user::{UserAuth, LoginDTO,RegDTO},
     entity::user_token::UserToken,
     utils::token_utils,
 };
@@ -21,7 +21,7 @@ pub struct TokenResponse {
 }
 
 
-pub fn signup(user: UserDTO, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
+pub fn signup(user: RegDTO, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
     match UserAuth::signup(user, &pool.get().unwrap()) {
         Ok(message) => Ok(message),
         Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))

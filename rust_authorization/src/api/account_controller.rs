@@ -2,7 +2,7 @@ use crate::{
     config::db::Pool,
     constants,
     entity::{
-        user::{LoginDTO, UserDTO},
+        user::{LoginDTO, RegDTO},
         response::Response,
     },
     services::account_service,
@@ -10,8 +10,8 @@ use crate::{
 use actix_web::{web, HttpRequest, HttpResponse, Result};
 
 // POST api/auth/signup
-pub async fn signup(user_dto: web::Json<UserDTO>, pool: web::Data<Pool>) -> Result<HttpResponse>{
-    match account_service::signup(user_dto.0, &pool) {
+pub async fn signup(dto: web::Json<RegDTO>, pool: web::Data<Pool>) -> Result<HttpResponse>{
+    match account_service::signup(dto.0, &pool) {
         Ok(message) => Ok(HttpResponse::Ok().json(Response::new(&message, constants::EMPTY))),
         Err(err) => Ok(err.response()),
     }

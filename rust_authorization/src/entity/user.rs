@@ -15,10 +15,19 @@ use crate::{
     },
     schema::user_auth::{self, dsl::*},
 };
+
+//注册
+#[derive(Serialize,Deserialize)]
+pub struct RegDTO {
+    pub identity_type:i32,
+    pub identifier:String,
+    pub certificate:String,
+}
 //注册
 #[derive(Insertable,Serialize,Deserialize)]
 #[table_name = "user_auth"]
 pub struct UserDTO {
+    pub uid:Uuid,
     pub identity_type:i32,
     pub identifier:String,
     pub certificate:String,
@@ -26,7 +35,6 @@ pub struct UserDTO {
 //登陆
 #[derive(Serialize,Deserialize)]
 pub struct LoginDTO {
-    // pub identity_type:i32,
     pub identifier:String,
     pub certificate:String,
 }
@@ -39,7 +47,8 @@ pub struct LoginResultDTO {
     pub login_session: String,
 }
 //表实体
-#[derive(Debug, Serialize, Deserialize, Queryable)]
+#[derive(Debug, Insertable,Serialize, Deserialize, Queryable)]
+#[table_name = "user_auth"]
 pub struct UserAuth {
     pub id: i32,
     pub uid: Uuid,
@@ -67,14 +76,16 @@ impl Responder for UserAuth {
 
 impl UserAuth {
     // 注册
-    pub fn signup(dto: UserDTO, conn:&Connection)->Result<String,String>{
+    pub fn signup(dto: RegDTO, conn:&Connection)->Result<String,String>{
         if Self::find_user_by_identifier(&dto.identifier, conn).is_err() {
             let hashed_pwd = hash(&dto.certificate, DEFAULT_COST).unwrap();
             let dto = UserDTO{
+                uid:Uuid::new_v4(),
+                identity_type:dto.identity_type,
+                identifier:dto.identifier,
                 certificate:hashed_pwd,
-                ..dto
             };
-            diesel::insert_into(user_auth).values(&dto).execute(conn);
+            diesel::insert_into(user_auth).values(&dto).execute(conn).unwrap();
             Ok(constants::MESSAGE_SIGNUP_SUCCESS.to_string())
         }else{
             Err(format!("User '{}' is already registered", &dto.identifier))
@@ -95,10 +106,11 @@ impl UserAuth {
                     identifier: user_to_verify.identifier,
                     login_session: login_session_str,
                 });
-            }          
+            }        
         }    
         None
     }
+
     // 退出
     pub fn logout(user_id: i32, conn: &Connection) {
         if let Ok(user) = user_auth.find(user_id).get_result::<UserAuth>(conn) {

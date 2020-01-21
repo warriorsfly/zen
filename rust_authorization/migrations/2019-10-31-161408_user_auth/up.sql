@@ -7,7 +7,7 @@ CREATE TABLE user_auth
     identity_type INT DEFAULT 1 NOT NULL CHECK(identity_type IN (1,2,3,4,5,6)),
     --
     identifier VARCHAR(50) NOT NULL DEFAULT '',
-    certificate VARCHAR(20) NOT NULL DEFAULT '',
+    certificate VARCHAR(64) NOT NULL DEFAULT '',
     login_session VARCHAR(256) NOT NULL DEFAULT '',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
