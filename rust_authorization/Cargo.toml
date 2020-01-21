@@ -1,0 +1,38 @@
+[package]
+name = "rust_authorization"
+version = "0.1.0"
+authors = ["walker <warriorsfly@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[dependencies]
+actix-web = "2.0.0"
+actix-rt = "1.0.0"
+actix-service = "1.0.5"
+log = "0.4.8"
+env_logger = "0.7.1"
+diesel_migrations = "1.4.0"
+serde = "1.0.104"
+serde_derive = "1.0.104"
+serde_json = "1.0.44"
+dotenv = "0.15.0"
+futures = "0.3.1"
+failure = "0.1.6"
+derive_more = "0.99.2"
+jsonwebtoken = "6.0.1"
+bcrypt = "0.6.1"
+time = "0.2.3"
+
+[dependencies.diesel]
+version = "1.4.3"
+features = ["postgres", "r2d2", "chrono"]
+
+[dependencies.chrono]
+version = "0.4.10"
+features = ["serde"]
+
+[dependencies.uuid]
+version = "0.8.1"
+features = ["v4"]
