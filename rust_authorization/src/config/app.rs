@@ -11,18 +11,9 @@ pub fn config_services(
             // .service(ping_controller::ping)
             .service(
                 web::scope("/auth")
-                    .service(
-                        web::resource("/signup")
-                            .route(web::post().to(account_controller::signup))
-                    )
-                    .service(
-                        web::resource("/login")
-                            .route(web::post().to(account_controller::login))
-                    )
-                    .service(
-                        web::resource("/logout")
-                            .route(web::post().to(account_controller::logout))
-                    )
+                    .service(account_controller::signup)
+                    .service(account_controller::login)
+                    .service(account_controller::logout)
             )
     );
 }
