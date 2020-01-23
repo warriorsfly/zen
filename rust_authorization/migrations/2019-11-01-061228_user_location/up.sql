@@ -5,7 +5,7 @@ CREATE TABLE user_location (
   curr_city VARCHAR(10) NOT NULL DEFAULT '' , -- '所在地市',
   curr_district VARCHAR(20) NOT NULL DEFAULT '' , -- '所在地地区',
   location VARCHAR(255) NOT NULL DEFAULT '' , -- '具体地址',
-  longitude decimal(10,6), -- '经度',
-  latitude decimal(10,6), -- '纬度',
+  longitude float NOT NULL DEFAULT 0, -- '经度',
+  latitude float NOT NULL DEFAULT 0, -- '纬度',
   updated_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP  -- '修改时间',
 )

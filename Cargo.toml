@@ -1,4 +1,6 @@
 [workspace]
 members = [
     "rust_authorization",
+    "rust_audio",
+    "rust_video",
 ]

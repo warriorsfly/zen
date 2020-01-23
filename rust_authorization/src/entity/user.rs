@@ -13,7 +13,12 @@ use crate::{
         // login_history::LoginHistory,
         user_token::UserToken,
     },
-    schema::user_auth::{self, dsl::*},
+    schema::{
+        user_auth::{self, dsl::*},
+        user_base::{self, dsl::*},
+        user_extra::{self, dsl::*},
+        user_location::{self, dsl::*},
+    }
 };
 
 //注册
@@ -26,11 +31,11 @@ pub struct RegDTO {
 //注册
 #[derive(Insertable,Serialize,Deserialize)]
 #[table_name = "user_auth"]
-pub struct UserDTO {
-    pub uid:Uuid,
+pub struct UserDTO<'a> {
+    pub uid: Uuid,
     pub identity_type:i32,
-    pub identifier:String,
-    pub certificate:String,
+    pub identifier:&'a str,
+    pub certificate:&'a str,
 }
 //登陆
 #[derive(Serialize,Deserialize)]
@@ -82,8 +87,8 @@ impl UserAuth {
             let dto = UserDTO{
                 uid:Uuid::new_v4(),
                 identity_type:dto.identity_type,
-                identifier:dto.identifier,
-                certificate:hashed_pwd,
+                identifier:&dto.identifier,
+                certificate:&hashed_pwd,
             };
             diesel::insert_into(user_auth).values(&dto).execute(conn).unwrap();
             Ok(constants::MESSAGE_SIGNUP_SUCCESS.to_string())
@@ -146,4 +151,63 @@ impl UserAuth {
     pub fn generate_login_session() -> String {
         Uuid::new_v4().to_string()
     }
+}
+
+
+#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
+#[table_name = "user_base"]
+pub struct UserBase {
+    pub uid: uuid::Uuid,
+    pub user_role: i32,
+    pub register_source: i32,
+    pub user_name: String,
+    pub nick_name: String,
+    pub gender: i32,
+    pub birthday: chrono::NaiveDateTime,
+    pub signature: String,
+    pub mobile: String,
+    pub mobile_bind_time: chrono::NaiveDateTime,
+    pub email: String,
+    pub email_bind_time: chrono::NaiveDateTime,
+    pub avatar: String,
+    pub avatar200: String,
+    pub avatar_source: String,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
+    pub push_token: String,
+}
+
+#[derive(Debug,Insertable, Serialize, Deserialize, Queryable)]
+#[table_name = "user_extra"]
+pub struct UserExtra {
+    pub uid: uuid::Uuid,
+    pub vendor: String,
+    pub client_name: String,
+    pub client_version: String,
+    pub os_name: String,
+    pub os_version: String,
+    pub device_id: String,
+    pub device_name: String,
+    pub idfa: String,
+    pub idfv: String,
+    pub market: String,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
+    pub extend1: String,
+    pub extend2: String,
+    pub extend3: String
+}
+
+#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
+#[table_name = "user_location"]
+pub struct UserLocation {
+    pub uid: uuid::Uuid,
+    pub curr_nation: String,
+    pub curr_province: String,
+    pub curr_city: String,
+    pub curr_district: String,
+    pub location: String,
+    pub longitude: f64,
+    pub latitude: f64,
+    pub updated_at: chrono::NaiveDateTime
 }

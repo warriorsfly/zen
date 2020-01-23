@@ -7,7 +7,7 @@ use crate::{
     },
     services::account_service,
 };
-use actix_web::{get,post,web, HttpRequest, HttpResponse, Result};
+use actix_web::{post,web, HttpRequest, HttpResponse, Result};
 
 // POST api/auth/signup
 #[post("/signup")]

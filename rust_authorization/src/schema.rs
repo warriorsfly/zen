@@ -63,8 +63,8 @@ table! {
         curr_city -> Varchar,
         curr_district -> Varchar,
         location -> Varchar,
-        longitude -> Nullable<Numeric>,
-        latitude -> Nullable<Numeric>,
+        longitude -> Float8,
+        latitude -> Float8,
         updated_at -> Nullable<Timestamp>,
     }
 }
