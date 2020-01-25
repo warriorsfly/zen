@@ -1,5 +1,5 @@
 [package]
-name = "rust_authorization"
+name = "mimosa_auth"
 version = "0.1.0"
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"

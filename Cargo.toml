@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "rust_authorization",
+    "mimosa_auth",
     "rust_audio",
     "rust_video",
 ]
