@@ -2,8 +2,8 @@ use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    entity::user::{UserAuth, LoginDTO,RegDTO},
-    entity::user_token::UserToken,
+    entity::user::auth::{UserAuth, LoginDTO,RegDTO},
+    entity::user::token::UserToken,
     utils::token_utils,
 };
 use actix_web::{

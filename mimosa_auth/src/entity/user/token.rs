@@ -1,10 +1,9 @@
-use crate::entity::user::LoginResultDTO;
+use crate::entity::user::auth::LoginResultDTO;
 use jsonwebtoken::{encode, Header, EncodingKey};
 use time::PrimitiveDateTime;
 
-use std::{env};
-
 // static KEY: [u8; 16] = *include_bytes!("../secret.key");
+pub static KEY:[u8; 16] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7;
 #[derive(Serialize,Deserialize)]
@@ -26,8 +25,7 @@ impl UserToken {
             identifier:login.identifier,
             login_session:login.login_session,
         };
-        let secret = env::var("SECRET").unwrap_or("iloveyou".to_string());
-       encode(&Header::default(), &payload, &EncodingKey::from_secret(secret.as_ref())).unwrap().to_string()
+       encode(&Header::default(), &payload, &EncodingKey::from_secret(&KEY)).unwrap().to_string()
         
     }
 }

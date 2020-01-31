@@ -2,7 +2,7 @@ use crate::{
     config::db::Pool,
     constants,
     entity::{
-        user::{LoginDTO, RegDTO},
+        user::auth::{LoginDTO, RegDTO},
         response::Response,
     },
     services::account_service,

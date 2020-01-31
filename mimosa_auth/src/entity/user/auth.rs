@@ -11,13 +11,10 @@ use crate::{
     constants,
     entity::{
         // login_history::LoginHistory,
-        user_token::UserToken,
+        user::token::UserToken,
     },
     schema::{
         user_auth::{self, dsl::*},
-        user_base::{self, dsl::*},
-        user_extra::{self, dsl::*},
-        user_location::{self, dsl::*},
     }
 };
 
@@ -153,61 +150,3 @@ impl UserAuth {
     }
 }
 
-
-#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_base"]
-pub struct UserBase {
-    pub uid: uuid::Uuid,
-    pub user_role: i32,
-    pub register_source: i32,
-    pub user_name: String,
-    pub nick_name: String,
-    pub gender: i32,
-    pub birthday: chrono::NaiveDateTime,
-    pub signature: String,
-    pub mobile: String,
-    pub mobile_bind_time: chrono::NaiveDateTime,
-    pub email: String,
-    pub email_bind_time: chrono::NaiveDateTime,
-    pub avatar: String,
-    pub avatar200: String,
-    pub avatar_source: String,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: chrono::NaiveDateTime,
-    pub push_token: String,
-}
-
-#[derive(Debug,Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_extra"]
-pub struct UserExtra {
-    pub uid: uuid::Uuid,
-    pub vendor: String,
-    pub client_name: String,
-    pub client_version: String,
-    pub os_name: String,
-    pub os_version: String,
-    pub device_id: String,
-    pub device_name: String,
-    pub idfa: String,
-    pub idfv: String,
-    pub market: String,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: chrono::NaiveDateTime,
-    pub extend1: String,
-    pub extend2: String,
-    pub extend3: String
-}
-
-#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_location"]
-pub struct UserLocation {
-    pub uid: uuid::Uuid,
-    pub curr_nation: String,
-    pub curr_province: String,
-    pub curr_city: String,
-    pub curr_district: String,
-    pub location: String,
-    pub longitude: f64,
-    pub latitude: f64,
-    pub updated_at: chrono::NaiveDateTime
-}
