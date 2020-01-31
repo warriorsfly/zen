@@ -12,11 +12,11 @@ spec:
         app: backend
     spec:
       containers:
-      - name: myapp
-        image: <Image>
+      - name: mimosa_auth
+        image: warriorsfly/mimosa_auth:latest
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: <Port>
+        - containerPort: 8000

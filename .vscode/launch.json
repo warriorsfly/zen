@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'rust_authorization'",
+            "name": "Debug executable 'mimosa_auth'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=rust_authorization",
-                    "--package=rust_authorization"
+                    "--bin=mimosa_auth",
+                    "--package=mimosa_auth"
                 ],
                 "filter": {
-                    "name": "rust_authorization",
+                    "name": "mimosa_auth",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'rust_authorization'",
+            "name": "Debug unit tests in executable 'mimosa_auth'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=rust_authorization",
-                    "--package=rust_authorization"
+                    "--bin=mimosa_auth",
+                    "--package=mimosa_auth"
                 ],
                 "filter": {
-                    "name": "rust_authorization",
+                    "name": "mimosa_auth",
                     "kind": "bin"
                 }
             },

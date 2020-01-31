@@ -34,8 +34,8 @@ RUN cargo build --release
 FROM debian:stretch-slim
 
 # create app directory
-RUN mkdir app
-WORKDIR /app
+RUN mkdir mimosa_auth
+WORKDIR /mimosa_auth
 
 # install libpq
 RUN apt-get update
@@ -43,12 +43,12 @@ RUN apt-get install -y libpq-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # copy binary and configuration files
-COPY --from=build /app/target/release/mimosa_auth .
-COPY --from=build /app/.env .
-COPY --from=build /app/diesel.toml .
+COPY --from=build /mimosa_auth/target/release/mimosa_auth .
+COPY --from=build /mimosa_auth/.env .
+COPY --from=build /mimosa_auth/diesel.toml .
 
 # expose port
 EXPOSE 8000
 
 # run the binary
-ENTRYPOINT ["/app/mimosa_auth"]
+ENTRYPOINT ["/mimosa_auth/mimosa_auth"]
