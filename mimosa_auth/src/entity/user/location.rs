@@ -13,9 +13,6 @@ use crate::{
         user::token::UserToken,
     },
     schema::{
-        user_auth::{self, dsl::*},
-        user_base::{self, dsl::*},
-        user_extra::{self, dsl::*},
         user_location::{self, dsl::*},
     }
 };

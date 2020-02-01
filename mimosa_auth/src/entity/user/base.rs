@@ -1,5 +1,3 @@
-use bcrypt::{hash, verify, DEFAULT_COST};
-use diesel::prelude::*;
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 use futures::future::{ready, Ready};
 use serde::Serialize;
