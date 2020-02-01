@@ -1,9 +1,14 @@
+use bcrypt::{hash, DEFAULT_COST};
+
 use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    entity::user::auth::{UserAuth, LoginDTO,RegDTO},
-    entity::user::token::UserToken,
+    entity::user:: {
+        auth::{UserAuth, LoginDTO,UserDTO},
+        base::{UserBase,UserBaseDto},
+        token::UserToken,
+    },
     utils::token_utils,
 };
 use actix_web::{
@@ -14,21 +19,48 @@ use actix_web::{
     web,
 };
 
+use uuid::Uuid;
+
+//注册
+#[derive(Serialize,Deserialize)]
+pub struct ReqRegist {
+    pub identity_type:i32,
+    pub identifier:String,
+    pub certificate:String,
+}
+
 #[derive(Serialize, Deserialize)]
-pub struct TokenResponse {
+pub struct RespToken {
     pub token:String,
     pub token_type:String,
 }
 
+pub fn signup(dto: ReqRegist, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
+    let conn = &pool.get().unwrap();
+    if UserAuth::find_user_by_identifier(&dto.identifier,conn).is_err(){
+        // 创建用户信息表
+        // let baseDto = UserBaseDto{
 
-pub fn signup(user: RegDTO, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
-    match UserAuth::signup(user, &pool.get().unwrap()) {
-        Ok(message) => Ok(message),
-        Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))
+        // };
+        let hashed_pwd = hash(&dto.certificate, DEFAULT_COST).unwrap();
+        let dto = UserDTO{
+            uid:1,
+            identity_type:dto.identity_type,
+            identifier:&dto.identifier,
+            certificate:&hashed_pwd,
+        };
+        match UserAuth::insert(dto, &pool.get().unwrap()) {
+                Ok(message) => {
+                    Ok(message)
+                },
+                Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))
+            }
+    }else{
+        Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, format!("User '{}' is already registered", &dto.identifier)))
     }
 }
 
-pub fn login(login: LoginDTO, pool: &web::Data<Pool>) -> Result<TokenResponse, ServiceError>{
+pub fn login(login: LoginDTO, pool: &web::Data<Pool>) -> Result<RespToken, ServiceError>{
     match UserAuth::login(login, &pool.get().unwrap()) {
         Some(logged_user) => {
             match serde_json::from_value(json!({ "token": UserToken::generate_token(logged_user), "token_type": "bearer" })) {

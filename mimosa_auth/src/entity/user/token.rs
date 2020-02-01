@@ -16,9 +16,9 @@ pub struct UserToken {
 }
 
 impl UserToken {
-    pub fn generate_token(login:LoginResultDTO)->String{
+    pub fn generate_token(login:LoginResultDTO)->String {
         let now = PrimitiveDateTime::now().timestamp();
-        let payload = UserToken{
+        let payload = UserToken {
             iat:now,
             exp:now+ONE_WEEK,
             identity_type:login.identity_type,
@@ -26,6 +26,5 @@ impl UserToken {
             login_session:login.login_session,
         };
        encode(&Header::default(), &payload, &EncodingKey::from_secret(&KEY)).unwrap().to_string()
-        
     }
 }

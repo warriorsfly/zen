@@ -1,7 +1,7 @@
 table! {
     user_auth (id) {
         id -> Int4,
-        uid -> Uuid,
+        uid -> Int4,
         identity_type -> Int4,
         identifier -> Varchar,
         certificate -> Varchar,
@@ -12,8 +12,8 @@ table! {
 }
 
 table! {
-    user_base (uid) {
-        uid -> Uuid,
+    user_base (id) {
+        id -> Int4,
         user_role -> Int4,
         register_source -> Int4,
         user_name -> Varchar,
@@ -36,7 +36,7 @@ table! {
 
 table! {
     user_extra (uid) {
-        uid -> Uuid,
+        uid -> Int4,
         vendor -> Varchar,
         client_name -> Varchar,
         client_version -> Varchar,
@@ -57,7 +57,7 @@ table! {
 
 table! {
     user_location (uid) {
-        uid -> Uuid,
+        uid -> Int4,
         curr_nation -> Varchar,
         curr_province -> Varchar,
         curr_city -> Varchar,

@@ -1,4 +1,4 @@
-use bcrypt::{hash, verify, DEFAULT_COST};
+use bcrypt::verify;
 use diesel::prelude::*;
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 use futures::future::{ready, Ready};
@@ -13,23 +13,14 @@ use crate::{
         // login_history::LoginHistory,
         user::token::UserToken,
     },
-    schema::{
-        user_auth::{self, dsl::*},
-    }
+    schema::user_auth::{self, dsl::*},
 };
 
-//注册
-#[derive(Serialize,Deserialize)]
-pub struct RegDTO {
-    pub identity_type:i32,
-    pub identifier:String,
-    pub certificate:String,
-}
 //注册
 #[derive(Insertable,Serialize,Deserialize)]
 #[table_name = "user_auth"]
 pub struct UserDTO<'a> {
-    pub uid: Uuid,
+    pub uid: i32,
     pub identity_type:i32,
     pub identifier:&'a str,
     pub certificate:&'a str,
@@ -53,7 +44,7 @@ pub struct LoginResultDTO {
 #[table_name = "user_auth"]
 pub struct UserAuth {
     pub id: i32,
-    pub uid: Uuid,
+    pub uid: i32,
     pub identity_type: i32,
     pub identifier: String,
     pub certificate: String,
@@ -78,15 +69,8 @@ impl Responder for UserAuth {
 
 impl UserAuth {
     // 注册
-    pub fn signup(dto: RegDTO, conn:&Connection)->Result<String,String>{
+    pub fn insert(dto: UserDTO, conn:&Connection)->Result<String,String>{
         if Self::find_user_by_identifier(&dto.identifier, conn).is_err() {
-            let hashed_pwd = hash(&dto.certificate, DEFAULT_COST).unwrap();
-            let dto = UserDTO{
-                uid:Uuid::new_v4(),
-                identity_type:dto.identity_type,
-                identifier:&dto.identifier,
-                certificate:&hashed_pwd,
-            };
             diesel::insert_into(user_auth).values(&dto).execute(conn).unwrap();
             Ok(constants::MESSAGE_SIGNUP_SUCCESS.to_string())
         }else{
@@ -94,7 +78,7 @@ impl UserAuth {
         }
     }
 
-    pub fn login(login:LoginDTO,conn:&Connection)->Option<LoginResultDTO> {
+    pub fn login(login:LoginDTO,conn:&Connection) -> Option<LoginResultDTO> {
         let user_to_verify = user_auth
         .filter(identifier.eq(&login.identifier))
         .get_result::<UserAuth>(conn)
@@ -108,8 +92,8 @@ impl UserAuth {
                     identifier: user_to_verify.identifier,
                     login_session: login_session_str,
                 });
-            }        
-        }    
+            }
+        }
         None
     }
 
@@ -149,4 +133,3 @@ impl UserAuth {
         Uuid::new_v4().to_string()
     }
 }
-

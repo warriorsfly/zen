@@ -1,6 +1,6 @@
 -- 用户扩展信息
 CREATE TABLE user_extra (
-  uid UUID NOT NULL PRIMARY KEY,--'用户 ID',
+  uid int NOT NULL PRIMARY KEY,--'用户 ID',
   vendor VARCHAR(64) NOT NULL DEFAULT '',-- COMMENT '手机厂商：apple|htc|samsung，很少用',
   client_name VARCHAR(50) NOT NULL DEFAULT '',-- COMMENT '客户端名称，如hjskang',
   client_version VARCHAR(50) NOT NULL DEFAULT '',-- COMMENT '客户端版本号，如7.0.1',

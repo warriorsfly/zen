@@ -1,6 +1,6 @@
 -- 用户基本信息
 CREATE TABLE user_base (
-    uid UUID NOT NULL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     -- 2.正常用户 3.禁言用户 4.虚拟用户 5.运营
     user_role INT NOT NULL DEFAULT 2 CHECK(user_role IN(2,3,4,5)),
     -- 注册来源：1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博

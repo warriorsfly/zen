@@ -20,7 +20,7 @@ use crate::{
 #[derive(Debug,Insertable, Serialize, Deserialize, Queryable)]
 #[table_name = "user_extra"]
 pub struct UserExtra {
-    pub uid: uuid::Uuid,
+    pub uid: i32,
     pub vendor: String,
     pub client_name: String,
     pub client_version: String,

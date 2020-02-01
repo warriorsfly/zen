@@ -1,5 +1,5 @@
 CREATE TABLE user_location (
-  uid UUID NOT NULL PRIMARY KEY , -- '用户ID',
+  uid int NOT NULL PRIMARY KEY , -- '用户ID',
   curr_nation VARCHAR(10) NOT NULL DEFAULT '' , -- '所在地国',
   curr_province VARCHAR(10) NOT NULL DEFAULT '' , -- '所在地省',
   curr_city VARCHAR(10) NOT NULL DEFAULT '' , -- '所在地市',
