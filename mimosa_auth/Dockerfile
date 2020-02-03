@@ -29,7 +29,6 @@ RUN touch .env
 # rebuild app with project source
 RUN rm ./target/release/deps/mimosa_auth*
 RUN cargo build --release
-
 # deploy stage
 FROM debian:stretch-slim
 

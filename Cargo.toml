@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "mimosa_auth",
-    "rust_audio",
-    "rust_video",
+    "mimosa_audio",
+    "mimosa_video",
 ]

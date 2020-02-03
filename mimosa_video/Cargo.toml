@@ -1,5 +1,5 @@
 [package]
-name = "rust_video"
+name = "mimosa_video"
 version = "0.1.0"
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"

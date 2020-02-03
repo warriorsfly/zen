@@ -1,8 +1,9 @@
 use bcrypt::{hash, DEFAULT_COST};
 
 use crate::{
-    config::db::Pool,
+    config::db::{Connection,Pool},
     constants,
+    
     error::ServiceError,
     entity::user:: {
         auth::{UserAuth, LoginDTO,UserDTO},
@@ -12,6 +13,7 @@ use crate::{
     utils::token_utils,
 };
 use actix_web::{
+    // client::Client,
     http::{
         StatusCode,
         header::HeaderValue,
@@ -35,6 +37,8 @@ pub struct RespToken {
     pub token_type:String,
 }
 
+
+// pub fn check_phone_exist(phone:String,)
 pub fn signup(dto: ReqRegist, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
     let conn = &pool.get().unwrap();
     if UserAuth::find_user_by_identifier(&dto.identifier,conn).is_err(){
@@ -49,7 +53,7 @@ pub fn signup(dto: ReqRegist, pool: &web::Data<Pool>) -> Result<String, ServiceE
             identifier:&dto.identifier,
             certificate:&hashed_pwd,
         };
-        match UserAuth::insert(dto, &pool.get().unwrap()) {
+        match UserAuth::insert(dto, conn) {
                 Ok(message) => {
                     Ok(message)
                 },

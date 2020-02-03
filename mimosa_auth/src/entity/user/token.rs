@@ -2,8 +2,8 @@ use crate::entity::user::auth::LoginResultDTO;
 use jsonwebtoken::{encode, Header, EncodingKey};
 use time::PrimitiveDateTime;
 
-// static KEY: [u8; 16] = *include_bytes!("../secret.key");
-pub static KEY:[u8; 16] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+pub static KEY: [u8; 1675] = *include_bytes!("mimosa.key");
+// pub static KEY:[u8; 16] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
 
 static ONE_WEEK: i64 = 60 * 60 * 24 * 7;
 #[derive(Serialize,Deserialize)]
