@@ -1,5 +1,5 @@
 [package]
-name = "mimosa_auth"
+name = "mimosa_iot"
 version = "0.1.0"
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"

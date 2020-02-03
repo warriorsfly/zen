@@ -3,7 +3,6 @@ use bcrypt::{hash, DEFAULT_COST};
 use crate::{
     config::db::{Connection,Pool},
     constants,
-    
     error::ServiceError,
     entity::user:: {
         auth::{UserAuth, LoginDTO,UserDTO},
@@ -36,7 +35,6 @@ pub struct RespToken {
     pub token:String,
     pub token_type:String,
 }
-
 
 // pub fn check_phone_exist(phone:String,)
 pub fn signup(dto: ReqRegist, pool: &web::Data<Pool>) -> Result<String, ServiceError>{

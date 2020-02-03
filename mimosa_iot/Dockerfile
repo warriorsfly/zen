@@ -7,8 +7,8 @@ RUN apt-get install -y libpq-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # create new empty binary project
-RUN USER=root cargo new --bin mimosa_auth
-WORKDIR /mimosa_auth
+RUN USER=root cargo new --bin mimosa_iot
+WORKDIR /mimosa_iot
 
 # copy manifests
 COPY ./Cargo.toml ./Cargo.toml
@@ -27,14 +27,14 @@ RUN touch .env
 # RUN mv src/secret.key.sample src/secret.key
 
 # rebuild app with project source
-RUN rm ./target/release/deps/mimosa_auth*
+RUN rm ./target/release/deps/mimosa_iot*
 RUN cargo build --release
 # deploy stage
 FROM debian:stretch-slim
 
 # create app directory
-RUN mkdir mimosa_auth
-WORKDIR /mimosa_auth
+RUN mkdir mimosa_iot
+WORKDIR /mimosa_iot
 
 # install libpq
 RUN apt-get update
@@ -42,12 +42,12 @@ RUN apt-get install -y libpq-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # copy binary and configuration files
-COPY --from=build /mimosa_auth/target/release/mimosa_auth .
-COPY --from=build /mimosa_auth/.env .
-COPY --from=build /mimosa_auth/diesel.toml .
+COPY --from=build /mimosa_iot/target/release/mimosa_iot .
+COPY --from=build /mimosa_iot/.env .
+COPY --from=build /mimosa_iot/diesel.toml .
 
 # expose port
 EXPOSE 8000
 
 # run the binary
-ENTRYPOINT ["/mimosa_auth/mimosa_auth"]
+ENTRYPOINT ["/mimosa_iot/mimosa_iot"]

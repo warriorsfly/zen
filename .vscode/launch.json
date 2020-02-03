@@ -1,45 +1,41 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable 'mimosa_auth'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=mimosa_auth",
-                    "--package=mimosa_auth"
-                ],
-                "filter": {
-                    "name": "mimosa_auth",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'mimosa_auth'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=mimosa_auth",
-                    "--package=mimosa_auth"
-                ],
-                "filter": {
-                    "name": "mimosa_auth",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'mimosa_iot'",
+      "cargo": {
+        "args": ["build", "--bin=mimosa_iot", "--package=mimosa_iot"],
+        "filter": {
+          "name": "mimosa_iot",
+          "kind": "bin"
         }
-    ]
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'mimosa_iot'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=mimosa_iot",
+          "--package=mimosa_iot"
+        ],
+        "filter": {
+          "name": "mimosa_iot",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
 }
