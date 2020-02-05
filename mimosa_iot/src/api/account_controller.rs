@@ -7,11 +7,14 @@ use crate::{
     },
     services::account_service,
 };
+
+use actix::prelude::*;
+use actix_redis::{Command, RedisActor};
 use actix_web::{post,web, HttpRequest, HttpResponse, Result};
 
 // POST api/auth/signup
 #[post("/signup")]
-pub async fn signup(dto: web::Json<account_service::ReqRegist>, pool: web::Data<Pool>) -> Result<HttpResponse>{
+pub async fn signup(dto: web::Json<account_service::ReqRegist>, pool: web::Data<Pool>,redis: web::Data<Addr<RedisActor>>,) -> Result<HttpResponse>{
     match account_service::signup(dto.0, &pool) {
         Ok(message) => Ok(HttpResponse::Ok().json(Response::new(&message, constants::EMPTY))),
         Err(err) => Ok(err.response()),

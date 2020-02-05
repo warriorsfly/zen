@@ -11,6 +11,7 @@ use crate::{
     },
     utils::token_utils,
 };
+
 use actix_web::{
     // client::Client,
     http::{
@@ -37,7 +38,7 @@ pub struct RespToken {
 }
 
 // pub fn check_phone_exist(phone:String,)
-pub fn signup(dto: ReqRegist, pool: &web::Data<Pool>) -> Result<String, ServiceError>{
+pub fn signup(dto: ReqRegist,pool: &web::Data<Pool>) -> Result<String, ServiceError>{
     let conn = &pool.get().unwrap();
     if UserAuth::find_user_by_identifier(&dto.identifier,conn).is_err(){
         // 创建用户信息表

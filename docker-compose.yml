@@ -1,15 +1,15 @@
-version: '3.7'
+version: "3.7"
 
-services: 
+services:
   db:
     image: postgres
     restart: always
-    environment: 
+    environment:
       POSTGRES_USER: warriorsfly
       POSTGRES_PASSWORD: dragonfly
       POSTGRES_DB: db_mimosa
-    ports: 
+    ports:
       - 5432:5432
-  
-  # redis:
-  #   image: redis
+
+  redis:
+    image: redis
