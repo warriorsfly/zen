@@ -10,7 +10,7 @@ CREATE TABLE user_base (
     -- 昵称
     nick_name varchar(32) NOT NULL DEFAULT '',
     gender INT NOT NULL DEFAULT 1 CHECK (gender BETWEEN 0 AND 1),
-    birthday TIMESTAMP NOT NULL,
+    birthday TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     signature VARCHAR(255) NOT NULL DEFAULT '',
     -- 手机号，唯一
     mobile VARCHAR(16) NOT NULL DEFAULT '',
@@ -27,5 +27,5 @@ CREATE TABLE user_base (
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
-    push_token VARCHAR(50) NOT NULL
+    push_token VARCHAR(50) NOT NULL DEFAULT ''
 )
