@@ -41,27 +41,37 @@ pub struct RespToken {
 pub fn signup(dto: ReqRegist,pool: &web::Data<Pool>) -> Result<String, ServiceError>{
     let conn = &pool.get().unwrap();
     if UserAuth::find_user_by_identifier(&dto.identifier,conn).is_err(){
-        // 创建用户信息表
-        // let baseDto = UserBaseDto{
-
-        // };
+    
         let hashed_pwd = hash(&dto.certificate, DEFAULT_COST).unwrap();
-        let dto = UserDTO{
-            uid:1,
-            identity_type:dto.identity_type,
-            identifier:&dto.identifier,
-            certificate:&hashed_pwd,
+        let base = UserBaseDto{
+            register_source:1,
+            user_role:2,
+            user_name:&dto.identifier,
+            mobile:&dto.identifier,
+            mobile_bind_time:Some(chrono::Utc::now().naive_utc()),
+
         };
-        match UserAuth::insert(dto, conn) {
-                Ok(message) => {
-                    Ok(message)
-                },
-                Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))
-            }
+        match UserBase::insert(base,conn){
+            Ok(result)=>{
+                let dto = UserDTO{
+                    uid:result.id,
+                    identity_type:dto.identity_type,
+                    identifier:&dto.identifier,
+                    certificate:&hashed_pwd,
+                };
+                match UserAuth::insert(dto, conn) {
+                        Ok(message) => Ok(message),
+                        Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))
+                    }
+            },
+            Err(message) => Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, message))
+        }
+        
     }else{
         Err(ServiceError::new(StatusCode::INTERNAL_SERVER_ERROR, format!("User '{}' is already registered", &dto.identifier)))
     }
 }
+
 
 pub fn login(login: LoginDTO, pool: &web::Data<Pool>) -> Result<RespToken, ServiceError>{
     match UserAuth::login(login, &pool.get().unwrap()) {

@@ -34,7 +34,7 @@ mod schema;
 mod services;
 mod utils;
 
-use actix_redis::{Command, RedisActor};
+// use actix_redis::{Command, RedisActor};
 use actix_service::Service;
 use actix_web::{HttpServer, App};
 use futures::FutureExt;
@@ -52,15 +52,15 @@ async fn main() -> io::Result<()>
     let app_port = env::var("APP_PORT").expect("APP_PORT not found.");
     let app_url = format!("{}:{}", &app_host, &app_port);
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
-    let redis_url = env::var("REDIS_URL").expect("REDIS_URL not found.");
-    let redis_serv = RedisActor::start(redis_url);
+    // let redis_url = env::var("REDIS_URL").expect("REDIS_URL not found.");
+    // let redis_serv = RedisActor::start(redis_url);
 
     let pool = config::db::migrate_and_config_db(&db_url);
 
     HttpServer::new(move || {
         App::new()
             .data(pool.clone())
-            .data(redis_serv.clone())
+            // .data(redis_serv.clone())
             .wrap(actix_web::middleware::Logger::default())
             .wrap(crate::middleware::auth_middleware::Authentication)
             .wrap_fn(|req, srv| {
