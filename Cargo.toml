@@ -1,4 +1,4 @@
 [workspace]
 members = [
-    "mimosa_iot",
+    "mimosa_pics",
 ]

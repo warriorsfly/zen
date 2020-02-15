@@ -21,7 +21,6 @@ extern crate failure;
 extern crate futures;
 extern crate jsonwebtoken;
 extern crate serde;
-extern crate time;
 extern crate uuid;
 
 mod api;

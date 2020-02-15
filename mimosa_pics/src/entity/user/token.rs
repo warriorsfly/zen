@@ -1,6 +1,6 @@
 use crate::entity::user::auth::LoginResultDTO;
 use jsonwebtoken::{encode, Header, EncodingKey};
-use time::PrimitiveDateTime;
+use chrono;
 
 pub static KEY: [u8; 1675] = *include_bytes!("mimosa.key");
 // pub static KEY:[u8; 16] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
@@ -17,7 +17,7 @@ pub struct UserToken {
 
 impl UserToken {
     pub fn generate_token(login:LoginResultDTO)->String {
-        let now = PrimitiveDateTime::now().timestamp();
+        let now = chrono::now();
         let payload = UserToken {
             iat:now,
             exp:now+ONE_WEEK,
