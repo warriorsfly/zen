@@ -17,7 +17,7 @@ pub struct UserToken {
 
 impl UserToken {
     pub fn generate_token(login:LoginResultDTO)->String {
-        let now = chrono::now();
+        let now = chrono::Local::now().timestamp();
         let payload = UserToken {
             iat:now,
             exp:now+ONE_WEEK,
