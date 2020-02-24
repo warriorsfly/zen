@@ -1,4 +1,4 @@
 [workspace]
 members = [
-    "mimosa_pics",
+    "mimosa_account",
 ]

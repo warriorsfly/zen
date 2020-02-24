@@ -7,8 +7,8 @@ RUN apt-get install -y libpq-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # create new empty binary project
-RUN USER=root cargo new --bin mimosa_pics
-WORKDIR /mimosa_pics
+RUN USER=root cargo new --bin mimosa_account
+WORKDIR /mimosa_account
 
 # copy manifests
 COPY ./Cargo.toml ./Cargo.toml
@@ -27,14 +27,14 @@ RUN touch .env
 # RUN mv src/secret.key.sample src/secret.key
 
 # rebuild app with project source
-RUN rm ./target/release/deps/mimosa_pics*
+RUN rm ./target/release/deps/mimosa_account*
 RUN cargo build --release
 # deploy stage
 FROM debian:stretch-slim
 
 # create app directory
-RUN mkdir mimosa_pics
-WORKDIR /mimosa_pics
+RUN mkdir mimosa_account
+WORKDIR /mimosa_account
 
 # install libpq
 RUN apt-get update
@@ -42,12 +42,12 @@ RUN apt-get install -y libpq-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # copy binary and configuration files
-COPY --from=build /mimosa_pics/target/release/mimosa_pics .
-COPY --from=build /mimosa_pics/.env .
-COPY --from=build /mimosa_pics/diesel.toml .
+COPY --from=build /mimosa_account/target/release/mimosa_account .
+COPY --from=build /mimosa_account/.env .
+COPY --from=build /mimosa_account/diesel.toml .
 
 # expose port
 EXPOSE 8000
 
 # run the binary
-ENTRYPOINT ["/mimosa_pics/mimosa_pics"]
+ENTRYPOINT ["/mimosa_account/mimosa_account"]

@@ -981,7 +981,7 @@ version = "0.3.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "mimosa_pics"
+name = "mimosa_account"
 version = "0.1.0"
 dependencies = [
  "actix-cors 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
