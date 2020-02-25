@@ -7,11 +7,11 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug executable 'mimosa_account'",
+      "name": "Debug executable 'account'",
       "cargo": {
-        "args": ["build", "--bin=mimosa_account", "--package=mimosa_account"],
+        "args": ["build", "--bin=account", "--package=account"],
         "filter": {
-          "name": "mimosa_account",
+          "name": "account",
           "kind": "bin"
         }
       },
@@ -21,16 +21,11 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug unit tests in executable 'mimosa_account'",
+      "name": "Debug unit tests in executable 'account'",
       "cargo": {
-        "args": [
-          "test",
-          "--no-run",
-          "--bin=mimosa_account",
-          "--package=mimosa_account"
-        ],
+        "args": ["test", "--no-run", "--bin=account", "--package=account"],
         "filter": {
-          "name": "mimosa_account",
+          "name": "account",
           "kind": "bin"
         }
       },

@@ -1,5 +1,5 @@
 [package]
-name = "mimosa_account"
+name = "account"
 version = "0.1.0"
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
