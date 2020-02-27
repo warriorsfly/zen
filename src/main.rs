@@ -13,8 +13,8 @@ extern crate validator_derive;
 
 // mod auth;
 // mod cache;
-// mod config;
-// mod database;
+mod config;
+mod database;
 mod errors;
 // mod extractors;
 // pub mod handlers;
