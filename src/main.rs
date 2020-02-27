@@ -15,7 +15,7 @@ extern crate validator_derive;
 // mod cache;
 // mod config;
 // mod database;
-// mod errors;
+mod errors;
 // mod extractors;
 // pub mod handlers;
 // mod helpers;
