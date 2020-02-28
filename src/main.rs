@@ -12,7 +12,7 @@ extern crate validator_derive;
 // use crate::server::server;
 
 // mod auth;
-// mod cache;
+mod cache;
 mod config;
 mod database;
 mod errors;
