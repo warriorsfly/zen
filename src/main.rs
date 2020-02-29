@@ -18,14 +18,14 @@ mod database;
 mod errors;
 // mod extractors;
 // pub mod handlers;
-// mod helpers;
+mod helpers;
 // mod middleware;
 // mod models;
 // mod routes;
 // mod schema;
 // mod server;
-// mod state;
-// mod tests;
+mod state;
+mod tests;
 // mod validate;
 
 fn main() {
