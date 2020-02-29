@@ -26,7 +26,7 @@ mod helpers;
 // mod server;
 mod state;
 mod tests;
-// mod validate;
+mod validate;
 
 fn main() {
     println!("Hello world!");
