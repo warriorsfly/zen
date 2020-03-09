@@ -1,9 +1,7 @@
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 use chrono;
 use diesel::prelude::*;
-use futures::future::{ready, Ready};
 use serde::Serialize;
-use uuid::Uuid;
 
 // use crate::{
 //     config::db::Connection,
@@ -16,8 +14,8 @@ use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 // #[table_name = "user_auth"]
 pub struct UserAuth {
-    pub id: i32,
-    pub uid: i32,
+    pub id: String,
+    pub uid: String,
     pub identity_type: i32,
     pub identifier: String,
     pub certificate: String,
@@ -28,22 +26,23 @@ pub struct UserAuth {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AuthAccount {
-    pub id: String,
+    /// user id, the user-base id
+    pub uid: String,
     pub phone: String,
 }
 
-impl Responder for UserAuth {
-    type Error = Error;
-    type Future = Ready<Result<HttpResponse, Error>>;
+// impl Responder for UserAuth {
+//     type Error = Error;
+//     type Future = Ready<Result<HttpResponse, Error>>;
 
-    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
-        let body = serde_json::to_string(&self).unwrap();
+//     fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+//         let body = serde_json::to_string(&self).unwrap();
 
-        // Create response and set content type
-        ready(Ok(HttpResponse::Ok()
-            .content_type("application/json")
-            .body(body)))
-    }
-}
+//         // Create response and set content type
+//         ready(Ok(HttpResponse::Ok()
+//             .content_type("application/json")
+//             .body(body)))
+//     }
+// }
 
 impl UserAuth {}
