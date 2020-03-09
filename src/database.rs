@@ -8,8 +8,7 @@ use diesel::{
     sqlite::SqliteConnection,
     Connection,
 };
-// 电脑未安装mysql,需移除mysql的依赖,否则报错
-// #[serde(untagged)]
+#[serde(untagged)]
 #[derive(Clone, Deserialize, Debug, PartialEq)]
 #[serde(field_identifier, rename_all = "lowercase")]
 pub enum DatabaseConnection {
