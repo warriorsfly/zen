@@ -22,7 +22,7 @@ pub struct UserBaseDto<'a> {
 
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct UserBase {
-    pub id: i32,
+    pub id: String,
     pub user_role: i32,
     pub register_source: i32,
     pub user_name: String,
@@ -40,20 +40,6 @@ pub struct UserBase {
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: Option<chrono::NaiveDateTime>,
     pub push_token: String,
-}
-
-impl Responder for UserBase {
-    type Error = Error;
-    type Future = Ready<Result<HttpResponse, Error>>;
-
-    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
-        let body = serde_json::to_string(&self).unwrap();
-
-        // Create response and set content type
-        ready(Ok(HttpResponse::Ok()
-            .content_type("application/json")
-            .body(body)))
-    }
 }
 
 impl UserBase {}

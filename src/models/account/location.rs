@@ -13,7 +13,7 @@ use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 // #[table_name = "user_location"]
 pub struct UserLocation {
-    pub uid: i32,
+    pub uid: String,
     pub curr_nation: String,
     pub curr_province: String,
     pub curr_city: String,

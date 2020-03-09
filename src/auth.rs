@@ -7,15 +7,15 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
 use uuid::Uuid;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
-    pub user_id: Uuid,
+    pub uid: Uuid,
     pub phone: String,
     exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(user_id: Uuid, phone: String) -> Self {
+    pub fn new(uid: Uuid, phone: String) -> Self {
         Self {
-            user_id,
+            uid,
             phone,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
         }

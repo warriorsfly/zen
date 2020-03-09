@@ -23,7 +23,7 @@ impl FromRequest for AuthAccount {
         if let Some(identity) = identity {
             let private_claim = decode_jwt(&identity).unwrap();
             return ok(AuthAccount {
-                uid: private_claim.user_id.to_string(),
+                uid: private_claim.uid.to_string(),
                 phone: private_claim.phone,
             });
         }

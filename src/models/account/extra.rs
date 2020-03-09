@@ -19,7 +19,7 @@ use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct UserExtra {
-    pub uid: i32,
+    pub uid: String,
     pub vendor: String,
     pub client_name: String,
     pub client_version: String,
