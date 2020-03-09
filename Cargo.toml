@@ -30,7 +30,7 @@ r2d2-diesel = "1.0.0"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 serde_json = "1.0.48"
-uuid = { version = "0.7", features = ["serde", "v4"] }
+uuid = { version = "0.8.1", features = ["serde", "v4"] }
 validator = "0.10.0"
 validator_derive = "0.10.0"
 

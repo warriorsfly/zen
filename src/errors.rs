@@ -8,7 +8,7 @@ use diesel::{
     r2d2::PoolError,
     result::{DatabaseErrorKind, Error as DBError},
 };
-use uuid::parser::ParseError;
+use uuid::Error as UuidError;
 
 #[derive(Debug, Display, PartialEq)]
 pub enum ServiceError {
@@ -19,7 +19,7 @@ pub enum ServiceError {
     EncodeTokenError(String),
     InternalServerError(String),
     NotFound(String),
-    ParseError(String),
+    UuidError(String),
     PoolError(String),
     #[display(fmt = "")]
     ValidationError(Vec<String>),
@@ -95,9 +95,9 @@ impl From<PoolError> for ServiceError {
 }
 
 /// Convert ParseErrors to ServiceErrors
-impl From<ParseError> for ServiceError {
-    fn from(error: ParseError) -> ServiceError {
-        ServiceError::ParseError(error.to_string())
+impl From<UuidError> for ServiceError {
+    fn from(error: UuidError) -> ServiceError {
+        ServiceError::UuidError(error.to_string())
     }
 }
 
