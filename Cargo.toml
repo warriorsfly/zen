@@ -36,7 +36,7 @@ validator_derive = "0.10.0"
 
 [dependencies.diesel]
 version = "1.4.3"
-features = ["chrono", "postgres", "sqlite", "r2d2", "uuidv07"]
+features = ["chrono","mysql", "postgres", "sqlite", "r2d2", "uuidv07"]
 
 [dependencies.chrono]
 version = "0.4.11"
@@ -50,4 +50,4 @@ cockroach = []
 mysql = []
 postgres = []
 sqlite = []
-default = ["postgres"]
+default = ["sqlite"]
