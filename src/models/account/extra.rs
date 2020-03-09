@@ -1,24 +1,23 @@
-use diesel::prelude::*;
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
+use chrono;
+use diesel::prelude::*;
 use futures::future::{ready, Ready};
 use serde::Serialize;
-use chrono;
-use uuid::Uuid;
+// use uuid::Uuid;
 
-use crate::{
-    config::db::Connection,
-    constants,
-    entity::{
-        // login_history::LoginHistory,
-        user::token::UserToken,
-    },
-    schema::{
-        user_extra::{self, dsl::*},
-    }
-};
+// use crate::{
+//     config::db::Connection,
+//     constants,
+//     entity::{
+//         // login_history::LoginHistory,
+//         user::token::UserToken,
+//     },
+//     schema::{
+//         user_extra::{self, dsl::*},
+//     }
+// };
 
-#[derive(Debug,Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_extra"]
+#[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct UserExtra {
     pub uid: i32,
     pub vendor: String,
@@ -35,7 +34,7 @@ pub struct UserExtra {
     pub updated_at: chrono::NaiveDateTime,
     pub extend1: String,
     pub extend2: String,
-    pub extend3: String
+    pub extend3: String,
 }
 
 impl Responder for UserExtra {

@@ -1,23 +1,17 @@
-use diesel::prelude::*;
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
+use chrono;
+use diesel::prelude::*;
 use futures::future::{ready, Ready};
 use serde::Serialize;
-use chrono;
 use uuid::Uuid;
 
-use crate::{
-    config::db::Connection,
-    constants,
-    entity::{
-        // login_history::LoginHistory,
-        user::token::UserToken,
-    },
-    schema::{
-        user_location::{self, dsl::*},
-    }
-};
-#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_location"]
+// use crate::{
+//     config::db::Connection,
+//     constants,
+//     schema::user_location::{self, dsl::*},
+// };
+#[derive(Debug, Serialize, Deserialize, Queryable)]
+// #[table_name = "user_location"]
 pub struct UserLocation {
     pub uid: i32,
     pub curr_nation: String,
@@ -27,7 +21,7 @@ pub struct UserLocation {
     pub location: String,
     pub longitude: f64,
     pub latitude: f64,
-    pub updated_at: chrono::NaiveDateTime
+    pub updated_at: chrono::NaiveDateTime,
 }
 
 impl Responder for UserLocation {

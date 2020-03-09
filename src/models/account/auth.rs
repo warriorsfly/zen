@@ -5,16 +5,16 @@ use futures::future::{ready, Ready};
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::{
-    config::db::Connection,
-    constants,
-    entity::user::token::UserToken,
-    schema::user_auth::{self, dsl::*},
-};
+// use crate::{
+//     config::db::Connection,
+//     constants,
+//     entity::user::token::UserToken,
+//     schema::user_auth::{self, dsl::*},
+// };
 
 //表实体
-#[derive(Debug, Insertable, Serialize, Deserialize, Queryable)]
-#[table_name = "user_auth"]
+#[derive(Debug, Serialize, Deserialize, Queryable)]
+// #[table_name = "user_auth"]
 pub struct UserAuth {
     pub id: i32,
     pub uid: i32,
@@ -24,6 +24,12 @@ pub struct UserAuth {
     pub login_session: String,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: chrono::NaiveDateTime,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct AuthAccount {
+    pub id: String,
+    pub phone: String,
 }
 
 impl Responder for UserAuth {
