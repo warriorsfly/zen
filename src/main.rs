@@ -20,7 +20,7 @@ mod errors;
 // mod extractors;
 // pub mod handlers;
 mod helpers;
-// mod middleware;
+mod middleware;
 // mod models;
 // mod routes;
 mod schema;
