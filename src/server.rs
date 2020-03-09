@@ -1,3 +1,4 @@
+use crate::auth::get_identity_service;
 use crate::cache::add_cache;
 use crate::config::CONFIG;
 use crate::database::add_pool;
@@ -18,7 +19,7 @@ pub async fn server() -> std::io::Result<()> {
             .configure(add_cache)
             .wrap(Cors::new().supports_credentials().finish())
             .wrap(Logger::default())
-            // .wrap(get_identity_service())
+            .wrap(get_identity_service())
             .configure(add_pool)
             .app_data(data.clone())
         // .configure(routes)
