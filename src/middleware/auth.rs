@@ -1,5 +1,5 @@
-use crate::auth::{decode_jwt, PrivateClaim};
-use crate::errors::ServiceError;
+use crate::auth::decode_jwt;
+
 use actix_identity::RequestIdentity;
 use actix_service::{Service, Transform};
 use actix_web::{

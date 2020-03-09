@@ -1,6 +1,7 @@
 -- 用户扩展信息
-CREATE TABLE user_extra (
-  uid int NOT NULL PRIMARY KEY,--'用户 ID',
+CREATE TABLE user_extra
+(
+  uid VARCHAR(36) NOT NULL PRIMARY KEY,
   vendor VARCHAR(64) NOT NULL DEFAULT '',-- COMMENT '手机厂商：apple|htc|samsung，很少用',
   client_name VARCHAR(50) NOT NULL DEFAULT '',-- COMMENT '客户端名称，如hjskang',
   client_version VARCHAR(50) NOT NULL DEFAULT '',-- COMMENT '客户端版本号，如7.0.1',
@@ -15,5 +16,6 @@ CREATE TABLE user_extra (
   updated_at TIMESTAMP ,-- COMMENT '更新时间',
   extend1 VARCHAR(100) NOT NULL DEFAULT '',-- COMMENT '扩展字段1',
   extend2 VARCHAR(100) NOT NULL DEFAULT '',-- COMMENT '扩展字段2',
-  extend3 VARCHAR(100) NOT NULL DEFAULT '' -- COMMENT '扩展字段3'
+  extend3 VARCHAR(100) NOT NULL DEFAULT ''
+  -- COMMENT '扩展字段3'
 )

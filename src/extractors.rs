@@ -9,6 +9,9 @@ use actix_web::{
 use actix_identity::RequestIdentity;
 use futures::future::{err, ok, Ready};
 
+/// Extractor for pulling the identity out of a request.
+///
+/// Simply add "user: AuthAccount" to a handler to invoke this.
 impl FromRequest for AuthAccount {
     type Error = Error;
     type Future = Ready<Result<Self, Self::Error>>;
