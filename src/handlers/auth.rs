@@ -5,7 +5,10 @@ use crate::handlers::user::UserBaseResponse;
 use crate::validate::validate;
 
 use actix_identity::Identity;
-use actix_web::web::{block, Data, HttpResponse, Json};
+use actix_web::{
+    client::Client,
+    web::{block, Data, HttpResponse, Json},
+};
 use serde::Serialize;
 use validator::Validate;
 

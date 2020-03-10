@@ -26,6 +26,8 @@ pub struct Config {
     pub session_name: String,
     pub session_secure: bool,
     pub session_timeout: i64,
+    pub wechat_appid: String,
+    pub wechat_secret: String,
 }
 
 lazy_static! {
