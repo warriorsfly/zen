@@ -46,7 +46,6 @@ features = ["serde"]
 actix-http-test = "1.0.0"
 
 [features]
-cockroach = []
 mysql = []
 postgres = []
 sqlite = []
