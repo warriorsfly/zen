@@ -3,14 +3,13 @@ use crate::{config::CONFIG, errors::ServiceError};
 use actix_web::{
     self,
     client::Client,
-    web::{BytesMut, Data, Json, Path},
-    Error,
+    web::{Data, Json, Path},
 };
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WxLoginResponse {
-    pub openid: String,
-    pub session_key: String,
-    pub unionid: String,
+    pub openid: Option<String>,
+    pub session_key: Option<String>,
+    pub unionid: Option<String>,
     pub errcode: i32,
     pub errmsg: String,
 }
@@ -31,7 +30,8 @@ pub async fn wx_login(
         .await
         .map_err(|err| ServiceError::BadRequest(err.to_string()))?;
 
-    let json: WxLoginResponse = serde_json::from_slice(&body).unwrap();
+    let json: WxLoginResponse =
+        serde_json::from_slice(&body).map_err(|err| ServiceError::BadRequest(err.to_string()))?;
 
     respond_json(json)
 }
