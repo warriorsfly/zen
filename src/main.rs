@@ -22,7 +22,7 @@ pub mod handlers;
 mod helpers;
 mod middleware;
 mod models;
-// mod routes;
+mod routes;
 mod schema;
 mod server;
 mod state;
