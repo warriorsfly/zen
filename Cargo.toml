@@ -5,7 +5,7 @@ authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix = "0.9.0"
+actix = "0.10.0-alpha.2"
 actix-cors = "0.2.0"
 actix-files = "0.2.1"
 actix-identity = "0.2.1"
@@ -34,7 +34,7 @@ validator = "0.10.0"
 validator_derive = "0.10.0"
 
 [dependencies.actix-web]
-version = "2"
+version = "3.0.0-alpha.1"
 features = ["rustls"]
 
 [dependencies.diesel]
