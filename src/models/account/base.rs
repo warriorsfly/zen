@@ -1,6 +1,10 @@
+
+use crate::schema::user_base::{self, dsl::*};
+
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 use chrono;
 use diesel::prelude::*;
+
 use futures::future::{ready, Ready};
 use serde::Serialize;
 
@@ -10,14 +14,13 @@ use serde::Serialize;
 //     schema::user_base::{self, dsl::*},
 // };
 
-#[derive(Debug, Serialize, Deserialize)]
-// #[table_name = "user_base"]
+#[derive(Debug, Serialize, Deserialize, Insertable)]
+#[table_name = "user_base"]
 pub struct UserBaseDto<'a> {
+    pub id: &'a str,
     pub user_role: i32,
     pub register_source: i32,
-    pub user_name: &'a str,
-    pub mobile: &'a str,
-    pub mobile_bind_time: Option<chrono::NaiveDateTime>,
+    pub nick_name: &'a str,
 }
 
 #[derive(Debug, Serialize, Deserialize, Queryable)]
@@ -25,7 +28,6 @@ pub struct UserBase {
     pub id: String,
     pub user_role: i32,
     pub register_source: i32,
-    pub user_name: String,
     pub nick_name: String,
     pub gender: i32,
     pub birthday: chrono::NaiveDateTime,

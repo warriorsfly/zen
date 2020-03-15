@@ -1,8 +1,8 @@
 use crate::database::PoolType;
 use crate::errors::ServiceError;
 
-use chrono;
-use diesel::prelude::*;
+use chrono::{self, Utc};
+use diesel::{insert_into, prelude::*};
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -22,7 +22,7 @@ pub struct UserAuth {
     pub updated_at: chrono::NaiveDateTime,
 }
 
-/// remove password,remove created_at,updated_at
+/// 返回的[user_auth]实体,排除密码
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
 pub struct AuthResponse {
     pub id: Uuid,
@@ -45,11 +45,21 @@ impl From<UserAuth> for AuthResponse {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct AuthAccount {
+pub struct AuthClaim {
     /// user id, the user-base id
     pub uid: String,
     pub identifier: String,
-    pub identity_type: u8,
+    pub identity_type: i32,
+}
+
+impl From<UserAuth> for AuthClaim {
+    fn from(user: UserAuth) -> Self {
+        AuthClaim {
+            uid: user.uid,
+            identity_type: user.identity_type,
+            identifier: user.identifier,
+        }
+    }
 }
 
 /// find a userauth by the user's id or error out
@@ -87,7 +97,7 @@ pub fn find_by_cert(
         }
     }
 }
-/// 3rd orgnization account login,just get the account,no need password
+/// 根据第三方信息获取人员信息
 pub fn find_by_3rd_account(
     pool: &PoolType,
     ident: &str,
@@ -96,17 +106,53 @@ pub fn find_by_3rd_account(
     let conn = pool.get()?;
 
     match account_type {
-        4 | 5 => {
+        3 | 4 => {
             let auth = user_auth
                 .filter(identifier.eq(ident.to_string()))
                 .filter(identity_type.eq(account_type))
                 .first::<UserAuth>(&conn)
-                .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
+                .map_err(|_| ServiceError::Unauthorized("Invalid login".into()));
 
-            Ok(auth.into())
+            match auth {
+                Ok(dto) => Ok(dto.into()),
+                Err(_) => {
+                    use crate::models::account::base::UserBaseDto;
+                    use crate::schema::user_base::{self, dsl::*};
+                    let user_id = Uuid::new_v4().to_string();
+                    let dto = UserBaseDto {
+                        id: &user_id,
+                        user_role: 2,
+                        register_source: 3,
+                        nick_name: "WechatAccount", // diesel::insert_into(use_base)
+                    };
+
+                    insert_into(user_base)
+                        .values(&dto)
+                        .execute(&conn)
+                        .map_err(|err| ServiceError::PoolError(err.to_string()));
+
+                    let dto = UserAuth {
+                        id: Uuid::new_v4().to_string(),
+                        uid: user_id,
+                        identity_type: 3,
+                        identifier: ident.into(),
+                        certificate: "".into(),
+                        login_session: "".into(),
+                        created_at: Utc::now().naive_utc(),
+                        updated_at: Utc::now().naive_utc(),
+                    };
+
+                    insert_into(user_auth)
+                        .values(&dto)
+                        .execute(&conn)
+                        .map_err(|err| ServiceError::PoolError(err.to_string()));
+
+                    Ok(dto.into())
+                }
+            }
         }
         _ => Err(ServiceError::BadRequest(
-            "Invalid login,illegal 3rd account id".into(),
+            "Invalid login,illegal 3rd account".into(),
         )),
     }
 }

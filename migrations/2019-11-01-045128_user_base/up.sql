@@ -4,13 +4,11 @@ CREATE TABLE user_base
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     -- 2.正常用户 3.禁言用户 4.虚拟用户 5.运营
     user_role INT NOT NULL DEFAULT 2 CHECK(user_role IN(2,3,4,5)),
-    -- 注册来源：1手机号 2邮箱 3用户名 4qq 5微信 6腾讯微博 7新浪微博
+    -- 注册来源：1.手机号 2.邮箱 3.微信 4.头条
     register_source INT NOT NULL DEFAULT 0 CHECK(register_source BETWEEN 1 AND 6),
-    -- 唯一用户名
-    user_name varchar(32) NOT NULL DEFAULT '',
     -- 昵称
     nick_name varchar(32) NOT NULL DEFAULT '',
-    gender INT NOT NULL DEFAULT 1 CHECK (gender BETWEEN 0 AND 1),
+    gender INT NOT NULL DEFAULT 0 CHECK (gender BETWEEN 0 AND 2),
     birthday TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     signature VARCHAR(255) NOT NULL DEFAULT '',
     -- 手机号，唯一

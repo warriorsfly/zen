@@ -1,3 +1,4 @@
+use crate::models::account::auth::{find_by_3rd_account, AuthResponse};
 use crate::{config::CONFIG, database::PoolType, errors::ServiceError, helpers::respond_json};
 use actix_identity::Identity;
 use actix_web::{
@@ -14,13 +15,26 @@ pub struct WxSessionResponse {
     pub errmsg: Option<String>,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct WxUserInfoResponse {
+    /// 昵称
+    pub nickName: String,
+    /// 头像地址
+    pub avatarUrl: String,
+    /// 性别
+    pub gender: i32,
+    pub country: String,
+    pub province: String,
+    pub city: String,
+}
+
 /// 微信小程序登录接口
 pub async fn wx_login(
     id: Identity,
     pool: Data<PoolType>,
     jscode: Path<String>,
     client: Data<Client>,
-) -> Result<Json<WxSessionResponse>, ServiceError> {
+) -> Result<Json<AuthResponse>, ServiceError> {
     let url =format!("https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code",appid=&CONFIG.wechat_appid,secret=&CONFIG.wechat_secret,code=jscode);
     let body = client
         .get(url)
@@ -40,8 +54,10 @@ pub async fn wx_login(
     // if no result,insert one,identity_type=5 and identifier=res.openid,login_session=res.session_key,
     //   insert one in user_base
     //return user_auth entity,create jwt,create redis session
-    if res.errcode == None {
-        // find_by_auth(&pool,res.openid,"".)
+    if let Some(ident) = res.openid {
+        let res = find_by_3rd_account(&pool, &ident, 3)?;
+        respond_json(res)
+    } else {
+        Err(ServiceError::BadRequest(res.errmsg.unwrap()))
     }
-    respond_json(res)
 }

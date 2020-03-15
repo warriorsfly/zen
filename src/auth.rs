@@ -29,12 +29,12 @@ pub enum Claim {
 pub struct PrivateClaim {
     pub uid: Uuid,
     pub identifier: String,
-    pub identity_type: u8,
+    pub identity_type: i32,
     exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(uid: Uuid, identifier: String, identity_type: u8) -> Self {
+    pub fn new(uid: Uuid, identifier: String, identity_type: i32) -> Self {
         Self {
             uid,
             identifier,

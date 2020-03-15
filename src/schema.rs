@@ -16,7 +16,6 @@ table! {
         id -> Text,
         user_role -> Integer,
         register_source -> Integer,
-        user_name -> Text,
         nick_name -> Text,
         gender -> Integer,
         birthday -> Timestamp,
