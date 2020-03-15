@@ -24,7 +24,8 @@ impl FromRequest for AuthAccount {
             let private_claim = decode_jwt(&identity).unwrap();
             return ok(AuthAccount {
                 uid: private_claim.uid.to_string(),
-                phone: private_claim.phone,
+                identifier: private_claim.identifier,
+                identity_type: private_claim.identity_type,
             });
         }
         err(HttpResponse::Unauthorized().into())

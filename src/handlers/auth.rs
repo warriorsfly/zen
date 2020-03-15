@@ -13,7 +13,7 @@ use serde::Serialize;
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct LoginRequest {
+pub struct CertRequest {
     pub username: String,
 
     #[validate(length(

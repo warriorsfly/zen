@@ -48,7 +48,8 @@ impl From<UserAuth> for AuthResponse {
 pub struct AuthAccount {
     /// user id, the user-base id
     pub uid: String,
-    pub phone: String,
+    pub identifier: String,
+    pub identity_type: u8,
 }
 
 /// find a userauth by the user's id or error out
@@ -63,20 +64,61 @@ pub fn find_by_id(pool: &PoolType, user_id: Uuid) -> Result<AuthResponse, Servic
     Ok(auth.into())
 }
 
-/// Find a user-auth by the user's authentication information
-pub fn find_by_auth(
+///find by account and password
+pub fn find_by_cert(
     pool: &PoolType,
-    phone: &str,
-    password: &str,
+    ident: &str,
+    cert: &str,
     account_type: i32,
 ) -> Result<AuthResponse, ServiceError> {
     let conn = pool.get()?;
-    let auth = user_auth
-        .filter(identifier.eq(phone.to_string()))
-        .filter(certificate.eq(password.to_string()))
-        .filter(identity_type.eq(account_type))
-        .first::<UserAuth>(&conn)
-        .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
 
-    Ok(auth.into())
+    match account_type {
+        4 | 5 => Err(ServiceError::BadRequest("Invalid login".into())),
+        _ => {
+            let auth = user_auth
+                .filter(identifier.eq(ident.to_string()))
+                .filter(certificate.eq(cert.to_string()))
+                .filter(identity_type.eq(account_type))
+                .first::<UserAuth>(&conn)
+                .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
+
+            Ok(auth.into())
+        }
+    }
+}
+/// 3rd orgnization account login,just get the account,no need password
+pub fn find_by_3rd_account(
+    pool: &PoolType,
+    ident: &str,
+    account_type: i32,
+) -> Result<AuthResponse, ServiceError> {
+    let conn = pool.get()?;
+
+    match account_type {
+        4 | 5 => {
+            let auth = user_auth
+                .filter(identifier.eq(ident.to_string()))
+                .filter(identity_type.eq(account_type))
+                .first::<UserAuth>(&conn)
+                .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
+
+            Ok(auth.into())
+        }
+        _ => Err(ServiceError::BadRequest(
+            "Invalid login,illegal 3rd account id".into(),
+        )),
+    }
+}
+
+#[cfg(test)]
+pub mod tests {
+
+    use super::*;
+    use crate::tests::helpers::tests::get_pool;
+
+    fn get_user_by_id(user_id: Uuid) -> Result<AuthResponse, ServiceError> {
+        let pool = get_pool();
+        find_by_id(&pool, user_id)
+    }
 }

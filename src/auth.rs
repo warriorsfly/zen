@@ -3,20 +3,42 @@ use crate::errors::ServiceError;
 use actix_identity::{CookieIdentityPolicy, IdentityService};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
+use derive_more::Display;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use uuid::Uuid;
+
+#[derive(Clone, Debug, Display, Serialize, Deserialize, PartialEq)]
+pub enum Claim {
+    /// 手机登录
+    #[display(fmt = "")]
+    Phone { uid: Uuid, phone: String },
+    /// 邮箱登录
+    #[display(fmt = "")]
+    Email { uid: Uuid, email: String },
+    /// 邮箱登录
+    #[display(fmt = "")]
+    Name { uid: Uuid, name: String },
+    /// QQ登录
+    #[display(fmt = "")]
+    QQ { uid: Uuid, qq: String },
+    /// 邮箱登录
+    #[display(fmt = "")]
+    Wechat { uid: Uuid, openid: String },
+}
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
     pub uid: Uuid,
-    pub phone: String,
+    pub identifier: String,
+    pub identity_type: u8,
     exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(uid: Uuid, phone: String) -> Self {
+    pub fn new(uid: Uuid, identifier: String, identity_type: u8) -> Self {
         Self {
             uid,
-            phone,
+            identifier,
+            identity_type,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
         }
     }
@@ -87,14 +109,14 @@ pub mod tests {
 
     #[test]
     fn it_creates_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into());
+        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
 
     #[test]
     fn it_decodes_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into());
+        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);
