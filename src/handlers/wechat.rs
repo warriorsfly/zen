@@ -1,11 +1,20 @@
 use crate::models::account::auth::{find_by_3rd_account, AuthResponse};
-use crate::{config::CONFIG, database::PoolType, errors::ServiceError, helpers::respond_json};
+use crate::{
+    config::CONFIG,
+    database::PoolType,
+    errors::ServiceError,
+    helpers::respond_json,
+    state::{self, AppState},
+};
 use actix_identity::Identity;
+use actix_rt::{time::interval, System};
 use actix_web::{
     self,
     client::Client,
     web::{Data, Json, Path},
 };
+use std::time::Duration;
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WxSessionResponse {
     pub openid: Option<String>,
@@ -56,6 +65,7 @@ pub async fn wx_login(
     //return user_auth entity,create jwt,create redis session
     if let Some(ident) = res.openid {
         let res = find_by_3rd_account(&pool, &ident, 3)?;
+        id.remember(res.identifier.clone());
         respond_json(res)
     } else {
         Err(ServiceError::BadRequest(res.errmsg.unwrap()))

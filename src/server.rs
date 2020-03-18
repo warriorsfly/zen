@@ -1,10 +1,7 @@
-use crate::auth::get_identity_service;
-use crate::awc::add_awc;
-use crate::cache::add_cache;
-use crate::config::CONFIG;
-use crate::database::add_pool;
-use crate::routes::routes;
-use crate::state::new_state;
+use crate::{
+    auth::get_identity_service, awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool,
+    routes::routes, state::new_state,
+};
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 use listenfd::ListenFd;
@@ -33,6 +30,5 @@ pub async fn server() -> std::io::Result<()> {
     } else {
         server.bind(&CONFIG.server)?
     };
-
     server.run().await
 }
