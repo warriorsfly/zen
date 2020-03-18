@@ -52,8 +52,8 @@ pub struct AuthClaim {
     pub identity_type: i32,
 }
 
-impl From<UserAuth> for AuthClaim {
-    fn from(user: UserAuth) -> Self {
+impl From<AuthResponse> for AuthClaim {
+    fn from(user: AuthResponse) -> Self {
         AuthClaim {
             uid: user.uid,
             identity_type: user.identity_type,

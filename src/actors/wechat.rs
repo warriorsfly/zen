@@ -8,14 +8,10 @@ use std::time::Duration;
 
 #[derive(Message)]
 #[rtype(result = "()")]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccessToken {
-    pub access_token: Option<String>,
-    pub expires_in: u64,
-}
+pub struct WxMessage(Option<String>, u64);
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct WxTokenResponse {
+pub struct WxAccessToken {
     pub access_token: Option<String>,
     pub expires_in: Option<u64>,
 
@@ -26,7 +22,6 @@ pub struct WxTokenResponse {
 // Actor definition
 pub struct Wechat {
     access_token: Option<String>,
-    client: Data<Client>,
 }
 
 impl Actor for Wechat {
@@ -39,28 +34,12 @@ impl Actor for Wechat {
 //     }
 // }
 
-impl Hand ler<AccessToken> for Wechat {
-    type Result = ();
-    fn handle(&mut self, msg: AccessToken, ctx: &mut Self::Context)  {
-        let res = request_wx_token(self.client);
-        match res {
-            Ok(access){
-                if let Some(token)=access. {}
-            }
-        }
-        // match res.access_token {
-        //     None => {
-        //         ctx.run_later(Duration::new(300, 0), move |act, _| {});
-        //     }
-        //     Some(access_token) => {
-        //         self.access_token = access_token;
-        //         ctx.run_later(Duration::new(msg.expires_in - 300, 0), move |act, _| {
-        //             act.addr.do_send(msg.clone());
-        //         });
-        //     }
-        // }
-    }
-}
+// impl Handler<WxMessage> for Wechat {
+//     type Result = ();
+//     fn handle(&mut self, msg: WxMessage, ctx: &mut Self::Context)->Self.Result {
+
+//     }
+// }
 
 // pub fn add_wechat(cfg: &mut ServiceConfig) {
 //     if !!&CONFIG.wechat_appid.is_empty() && !&CONFIG.wechat_secret.is_empty() {
@@ -76,7 +55,7 @@ impl Hand ler<AccessToken> for Wechat {
 // }
 
 /// 更新微信小程序token
-pub async fn request_wx_token(client: Data<Client>) -> Result<AccessToken, ServiceError> {
+pub async fn request_wx_token(client: Data<Client>) -> Result<WxAccessToken, ServiceError> {
     let url =format!("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}",appid=&CONFIG.wechat_appid,secret=&CONFIG.wechat_secret);
     let body = client
         .get(url)
@@ -87,18 +66,8 @@ pub async fn request_wx_token(client: Data<Client>) -> Result<AccessToken, Servi
         .await
         .map_err(|err| ServiceError::BadRequest(err.to_string()))?;
 
-    let res: WxTokenResponse =
+    let res: WxAccessToken =
         serde_json::from_slice(&body).map_err(|err| ServiceError::BadRequest(err.to_string()))?;
 
-    if let Some(token) = res.access_token {
-        let expires_in = res.expires_in.unwrap();
-        Ok(AccessToken {
-            access_token: Some(token),
-            expires_in: expires_in,
-        })
-    } else {
-        Err(ServiceError::InternalServerError(
-            "wechat connection error".into(),
-        ))
-    }
+    Ok(res)
 }
