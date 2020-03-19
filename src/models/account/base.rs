@@ -30,7 +30,7 @@ pub struct UserBase {
     pub register_source: i32,
     pub nick_name: String,
     pub gender: i32,
-    pub birthday: chrono::NaiveDateTime,
+    pub birthday: Option<chrono::NaiveDateTime》,
     pub signature: String,
     pub mobile: String,
     pub mobile_bind_time: Option<chrono::NaiveDateTime>,

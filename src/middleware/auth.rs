@@ -16,9 +16,9 @@ use futures::{
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-pub struct Auth;
+pub struct Authentication;
 
-impl<S, B> Transform<S> for Auth
+impl<S, B> Transform<S> for Authentication
 where
     S: Service<Request = ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,

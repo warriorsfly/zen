@@ -4,7 +4,10 @@ use crate::{
     database::PoolType,
     errors::ServiceError,
     helpers::{respond_json, respond_ok},
-    models::account::auth::{find_by_3rd_account, AuthResponse},
+    models::account::{
+        auth::{find_by_3rd_account, AuthResponse},
+        base::UserBase,
+    },
     state::{self, AppState},
 };
 use actix_web::{
@@ -32,22 +35,12 @@ pub struct CertRequest {
     pub identity_type: i32,
 }
 
-// pub async fn login(
-//     id: Identity,
-//     pool: Data<PoolType>,
-//     params: Json<LoginRequest>,
-// ) -> Result<Json<UserBaseResponse>, ServiceError> {
-//     validate(&params)?;
-//     let hashed = hash(&params.password);
-//     let auth = block(move || )
-// }
-
-/// Logout a user
-/// Forget their user_id
-// pub async fn logout(id: Identity) -> Result<HttpResponse, ServiceError> {
-//     id.forget();
-//     respond_ok()
-// }
+/// 登录返回数据
+#[derive(Debug, Deserialize, Serialize)]
+pub struct LoginResponse {
+    pub access_token: String,
+    pub user: UserBase,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WxSessionResponse {
@@ -77,7 +70,7 @@ pub async fn wx_login(
     pool: Data<PoolType>,
     jscode: Path<String>,
     client: Data<Client>,
-) -> Result<Json<AuthResponse>, ServiceError> {
+) -> Result<Json<LoginResponse>, ServiceError> {
     let url =format!("https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code",appid=&CONFIG.wechat_appid,secret=&CONFIG.wechat_secret,code=jscode);
     let body = client
         .get(url)
@@ -100,11 +93,14 @@ pub async fn wx_login(
     if let Some(ident) = res.openid {
         let res = find_by_3rd_account(&pool, &ident, 3)?;
         let uid =
-            Uuid::parse_str(&res.uid).map_err(|err| ServiceError::UuidError(err.to_string()))?;
-        let identifier = res.identifier.clone();
+            Uuid::parse_str(&res.0.uid).map_err(|err| ServiceError::UuidError(err.to_string()))?;
+        let identifier = res.0.identifier.clone();
         let jwt = create_jwt(PrivateClaim::new(uid, identifier, 3))?;
         // id.remember(jwt);
-        respond_json(res)
+        respond_json(LoginResponse {
+            access_token: jwt,
+            user: res.1,
+        })
     } else {
         Err(ServiceError::BadRequest(res.errmsg.unwrap()))
     }

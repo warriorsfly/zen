@@ -18,7 +18,7 @@ table! {
         register_source -> Integer,
         nick_name -> Text,
         gender -> Integer,
-        birthday -> Timestamp,
+        birthday -> Nullable<Timestamp>,
         signature -> Text,
         mobile -> Text,
         mobile_bind_time -> Nullable<Timestamp>,
