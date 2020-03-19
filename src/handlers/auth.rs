@@ -7,7 +7,6 @@ use crate::{
     models::account::auth::{find_by_3rd_account, AuthResponse},
     state::{self, AppState},
 };
-use actix_identity::Identity;
 use actix_web::{
     self,
     client::Client,
@@ -45,10 +44,10 @@ pub struct CertRequest {
 
 /// Logout a user
 /// Forget their user_id
-pub async fn logout(id: Identity) -> Result<HttpResponse, ServiceError> {
-    id.forget();
-    respond_ok()
-}
+// pub async fn logout(id: Identity) -> Result<HttpResponse, ServiceError> {
+//     id.forget();
+//     respond_ok()
+// }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WxSessionResponse {
@@ -74,7 +73,7 @@ pub struct WxUserInfoResponse {
 
 /// 微信小程序登录接口
 pub async fn wx_login(
-    id: Identity,
+    // id: Identity,
     pool: Data<PoolType>,
     jscode: Path<String>,
     client: Data<Client>,
@@ -104,7 +103,7 @@ pub async fn wx_login(
             Uuid::parse_str(&res.uid).map_err(|err| ServiceError::UuidError(err.to_string()))?;
         let identifier = res.identifier.clone();
         let jwt = create_jwt(PrivateClaim::new(uid, identifier, 3))?;
-        id.remember(jwt);
+        // id.remember(jwt);
         respond_json(res)
     } else {
         Err(ServiceError::BadRequest(res.errmsg.unwrap()))

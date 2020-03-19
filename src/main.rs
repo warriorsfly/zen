@@ -17,6 +17,7 @@ mod auth;
 mod awc;
 mod cache;
 mod config;
+mod constants;
 mod database;
 mod errors;
 mod extractors;

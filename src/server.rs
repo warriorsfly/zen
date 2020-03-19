@@ -1,6 +1,6 @@
 use crate::{
-    auth::get_identity_service, awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool,
-    routes::routes, state::new_state,
+    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes,
+    state::new_state,
 };
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
@@ -20,7 +20,6 @@ pub async fn server() -> std::io::Result<()> {
             .configure(add_awc)
             .wrap(Cors::new().supports_credentials().finish())
             .wrap(Logger::default())
-            .wrap(get_identity_service())
             .app_data(data.clone())
             .configure(routes)
     });
