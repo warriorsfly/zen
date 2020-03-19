@@ -5,9 +5,9 @@ use actix_web::{dev::Payload, web::HttpRequest, FromRequest};
 // use actix_identity::RequestIdentity;
 use futures::future::{err, ok, Ready};
 
-/// Extractor for pulling the identity out of a request.
+/// Extractor for pulling the user out of a request.
 ///
-/// Simply add "user: AuthAccount" to a handler to invoke this.
+/// Simply add "user: AuthClaim" to a handler to invoke this.
 impl FromRequest for AuthClaim {
     type Error = ServiceError;
     type Future = Ready<Result<Self, Self::Error>>;
