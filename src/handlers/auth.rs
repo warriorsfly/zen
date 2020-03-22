@@ -1,4 +1,5 @@
 use crate::{
+    actors::wechat::Broadcaster,
     auth::{create_jwt, hash, PrivateClaim},
     config::CONFIG,
     database::PoolType,
@@ -17,8 +18,8 @@ use actix_web::{
 };
 
 use serde::Serialize;
+use std::sync::Mutex;
 use uuid::Uuid;
-
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
@@ -103,5 +104,13 @@ pub async fn wx_login(
         })
     } else {
         Err(ServiceError::BadRequest(res.errmsg.unwrap()))
+    }
+}
+
+pub async fn wx_access(broadcaster: Data<Mutex<Broadcaster>>) -> Result<String, ServiceError> {
+    if let Some(t) = broadcaster.lock().unwrap().wx_client.clone() {
+        Ok(t)
+    } else {
+        Err(ServiceError::BadRequest("".into()))
     }
 }
