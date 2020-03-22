@@ -1,20 +1,16 @@
 use crate::{
     actors::wechat::Broadcaster,
-    auth::{create_jwt, hash, PrivateClaim},
+    auth::{create_jwt, PrivateClaim},
     config::CONFIG,
     database::PoolType,
     errors::ServiceError,
-    helpers::{respond_json, respond_ok},
-    models::account::{
-        auth::{find_by_3rd_account, AuthResponse},
-        base::UserBase,
-    },
-    state::{self, AppState},
+    helpers::respond_json,
+    models::account::{auth::find_by_3rd_account, base::UserBase},
 };
 use actix_web::{
     self,
     client::Client,
-    web::{block, Data, HttpResponse, Json, Path},
+    web::{Data, Json, Path},
 };
 
 use serde::Serialize;
