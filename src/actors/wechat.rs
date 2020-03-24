@@ -33,11 +33,11 @@ impl Broadcaster {
 
     fn spawn_ping_wx(me: Data<Mutex<Self>>) {
         actix_rt::spawn(async move {
+            me.lock().unwrap().ping_wx().await;
             let mut task = interval_at(Instant::now(), Duration::from_secs(7140));
-            // let mut task = interval_at(Instant::now(), Duration::from_secs(7000));
             loop {
-                me.lock().unwrap().ping_wx().await;
                 task.tick().await;
+                me.lock().unwrap().ping_wx().await;
             }
         })
     }
