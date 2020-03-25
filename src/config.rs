@@ -13,7 +13,7 @@ use dotenv::dotenv;
 use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Config {
-    pub salt: String,
+    pub auth_salt: String,
     pub database: DatabaseConnection,
     pub database_url: String,
     pub jwt_expiration: i64,
