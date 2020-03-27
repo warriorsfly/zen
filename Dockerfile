@@ -1,15 +1,8 @@
-ARG BASE_IMAGE=ekidd/rust-musl-builder:latest
-
+ARG base=rust:latest
 # Our first FROM statement declares the build environment.
-FROM ${BASE_IMAGE} AS builder
-
-# Add our source code.
-ADD . ./
-
-# Fix permissions on source code.
-RUN sudo chown -R rust:rust /home/rust
-
+FROM ${base} AS builder
 # Build our application.
+ADD . ./
 RUN cargo build --release
 
 # Now, we need to build our _real_ Docker container, copying in `mimosa`.
