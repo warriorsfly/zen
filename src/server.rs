@@ -1,10 +1,7 @@
-use crate::auth::get_identity_service;
-use crate::awc::add_awc;
-use crate::cache::add_cache;
-use crate::config::CONFIG;
-use crate::database::add_pool;
-use crate::routes::routes;
-use crate::state::new_state;
+use crate::{
+    actors::wechat::Broadcaster, awc::add_awc, cache::add_cache, config::CONFIG,
+    database::add_pool, routes::routes, state::new_state,
+};
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 use listenfd::ListenFd;
@@ -14,17 +11,19 @@ pub async fn server() -> std::io::Result<()> {
     env_logger::init();
 
     let data = new_state::<String>();
+
+    let broadcaster = Broadcaster::create();
     let mut listenfd = ListenFd::from_env();
 
     let mut server = HttpServer::new(move || {
         App::new()
             .configure(add_pool)
-            .configure(add_cache)
+            // .configure(add_cache)
             .configure(add_awc)
             .wrap(Cors::new().supports_credentials().finish())
             .wrap(Logger::default())
-            .wrap(get_identity_service())
             .app_data(data.clone())
+            .app_data(broadcaster.clone())
             .configure(routes)
     });
 
@@ -33,6 +32,5 @@ pub async fn server() -> std::io::Result<()> {
     } else {
         server.bind(&CONFIG.server)?
     };
-
     server.run().await
 }

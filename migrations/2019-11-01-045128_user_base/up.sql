@@ -9,7 +9,7 @@ CREATE TABLE user_base
     -- 昵称
     nick_name varchar(32) NOT NULL DEFAULT '',
     gender INT NOT NULL DEFAULT 0 CHECK (gender BETWEEN 0 AND 2),
-    birthday TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    birthday TIMESTAMP,
     signature VARCHAR(255) NOT NULL DEFAULT '',
     -- 手机号，唯一
     mobile VARCHAR(16) NOT NULL DEFAULT '',

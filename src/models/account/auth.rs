@@ -6,6 +6,7 @@ use diesel::{insert_into, prelude::*};
 use serde::Serialize;
 use uuid::Uuid;
 
+use super::base::UserBase;
 use crate::schema::user_auth::{self, dsl::*};
 
 /// 登录信息表
@@ -52,8 +53,8 @@ pub struct AuthClaim {
     pub identity_type: i32,
 }
 
-impl From<UserAuth> for AuthClaim {
-    fn from(user: UserAuth) -> Self {
+impl From<AuthResponse> for AuthClaim {
+    fn from(user: AuthResponse) -> Self {
         AuthClaim {
             uid: user.uid,
             identity_type: user.identity_type,
@@ -97,12 +98,14 @@ pub fn find_by_cert(
         }
     }
 }
-/// 根据第三方信息获取人员信息
+/// 根据第三方信息获取人员信息(微信)
 pub fn find_by_3rd_account(
     pool: &PoolType,
     ident: &str,
     account_type: i32,
-) -> Result<AuthResponse, ServiceError> {
+) -> Result<(AuthResponse, UserBase), ServiceError> {
+    use crate::models::account::base::UserBaseDto;
+    use crate::schema::user_base::{self, dsl::*};
     let conn = pool.get()?;
 
     match account_type {
@@ -114,10 +117,14 @@ pub fn find_by_3rd_account(
                 .map_err(|_| ServiceError::Unauthorized("Invalid login".into()));
 
             match auth {
-                Ok(dto) => Ok(dto.into()),
+                Ok(dto) => {
+                    let base = user_base
+                        .filter(id.eq(dto.uid.clone()))
+                        .first::<UserBase>(&conn)
+                        .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
+                    Ok((dto.into(), base))
+                }
                 Err(_) => {
-                    use crate::models::account::base::UserBaseDto;
-                    use crate::schema::user_base::{self, dsl::*};
                     let user_id = Uuid::new_v4().to_string();
                     let dto = UserBaseDto {
                         id: &user_id,
@@ -147,7 +154,11 @@ pub fn find_by_3rd_account(
                         .execute(&conn)
                         .map_err(|err| ServiceError::PoolError(err.to_string()));
 
-                    Ok(dto.into())
+                    let base = user_base
+                        .filter(id.eq(dto.uid.clone()))
+                        .first::<UserBase>(&conn)
+                        .map_err(|_| ServiceError::Unauthorized("Invalid login".into()))?;
+                    Ok((dto.into(), base))
                 }
             }
         }
