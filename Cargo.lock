@@ -472,15 +472,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d2e7343e7fc9de883d1b0341e0b13970f764c14101234857d2ddafa1cb1cac2"
 
 [[package]]
-name = "ahash"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0989268a37e128d4d7a8028f1c60099430113fdbc70419010601ce51a228e4fe"
-dependencies = [
- "const-random",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -697,15 +688,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bstr"
-version = "0.2.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2889e6d50f394968c8bf4240dc3f2a7eb4680844d27308f798229ac9d4725f41"
-dependencies = [
- "memchr",
-]
-
-[[package]]
 name = "bumpalo"
 version = "3.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -739,25 +721,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "casbin"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21366b858244ce5c48d0502702ff9b300f65cf2b59ff75515e2237ac5f761c32"
-dependencies = [
- "async-trait",
- "emitbrown",
- "globset",
- "indexmap",
- "ip_network",
- "lazy_static",
- "log",
- "regex",
- "rhai",
- "tokio",
- "ttl_cache",
-]
-
-[[package]]
 name = "cc"
 version = "1.0.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -788,26 +751,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ddfc5b9aa5d4507acaf872de71051dfd0e309860e88966e1051e462a077aac4f"
 dependencies = [
  "bitflags",
-]
-
-[[package]]
-name = "const-random"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f1af9ac737b2dd2d577701e59fd09ba34822f6f2ebdb30a7647405d9e55e16a"
-dependencies = [
- "const-random-macro",
- "proc-macro-hack",
-]
-
-[[package]]
-name = "const-random-macro"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25e4c606eb459dd29f7c57b2e0879f2b6f14ee130918c2b78ccb58a9624e6c7a"
-dependencies = [
- "getrandom",
- "proc-macro-hack",
 ]
 
 [[package]]
@@ -961,15 +904,6 @@ name = "either"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
-
-[[package]]
-name = "emitbrown"
-version = "0.1.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d0b62259bbde02f38d4779e235b788c43a496a75c1a7c360b2d00f23fd99530"
-dependencies = [
- "hashbrown",
-]
 
 [[package]]
 name = "encoding_rs"
@@ -1216,19 +1150,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "globset"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ad1da430bd7281dde2576f44c84cc3f0f7b475e7202cd503042dff01a8c8120"
-dependencies = [
- "aho-corasick",
- "bstr",
- "fnv",
- "log",
- "regex",
-]
-
-[[package]]
 name = "h2"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1245,16 +1166,6 @@ dependencies = [
  "slab",
  "tokio",
  "tokio-util 0.3.1",
-]
-
-[[package]]
-name = "hashbrown"
-version = "0.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "479e9d9a1a3f8c489868a935b557ab5710e3e223836da2ecd52901d88935cb56"
-dependencies = [
- "ahash",
- "autocfg 1.0.0",
 ]
 
 [[package]]
@@ -1352,12 +1263,6 @@ checksum = "b2b3ea6ff95e175473f8ffe6a7eb7c00d054240321b84c57051175fe3c1e075e"
 dependencies = [
  "libc",
 ]
-
-[[package]]
-name = "ip_network"
-version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ee15951c035f79eddbef745611ec962f63f4558f1dadf98ab723cc603487c6f"
 
 [[package]]
 name = "ipconfig"
@@ -1534,7 +1439,6 @@ dependencies = [
  "actix-service",
  "actix-web",
  "argon2rs",
- "casbin",
  "chrono",
  "derive_more",
  "diesel",
@@ -2063,12 +1967,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rhai"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1cadbefcdb49a5ea2ea53699ce6b60f28c8a711247ce449ca99e687b0a5d6de"
-
-[[package]]
 name = "ring"
 version = "0.16.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2474,7 +2372,6 @@ dependencies = [
  "memchr",
  "mio",
  "mio-uds",
- "num_cpus",
  "pin-project-lite",
  "signal-hook-registry",
  "slab",
@@ -2598,15 +2495,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "trust-dns-proto 0.19.3",
-]
-
-[[package]]
-name = "ttl_cache"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4189890526f0168710b6ee65ceaedf1460c48a14318ceec933cb26baa492096a"
-dependencies = [
- "linked-hash-map",
 ]
 
 [[package]]
