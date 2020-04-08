@@ -1,7 +1,4 @@
-use crate::{
-    actors::wechat::Broadcaster, awc::add_awc, cache::add_cache, config::CONFIG,
-    database::add_pool, routes::routes, state::new_state,
-};
+use crate::{awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes};
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 use listenfd::ListenFd;
@@ -10,9 +7,8 @@ pub async fn server() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    let data = new_state::<String>();
+    // let data = new_state::<String>();
 
-    let broadcaster = Broadcaster::create();
     let mut listenfd = ListenFd::from_env();
 
     let mut server = HttpServer::new(move || {
@@ -22,8 +18,8 @@ pub async fn server() -> std::io::Result<()> {
             .configure(add_awc)
             .wrap(Cors::new().supports_credentials().finish())
             .wrap(Logger::default())
-            .app_data(data.clone())
-            .app_data(broadcaster.clone())
+            // .app_data(data.clone())
+            // .app_data(broadcaster.clone())
             .configure(routes)
     });
 

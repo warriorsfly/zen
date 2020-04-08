@@ -1,11 +1,11 @@
 use crate::{
-    actors::wechat::Broadcaster,
     auth::{create_jwt, PrivateClaim},
     config::CONFIG,
     database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
     models::account::{auth::find_by_3rd_account, base::UserBase},
+    state::{get, AppState, WECHAT_T},
 };
 use actix_web::{
     self,
@@ -103,8 +103,8 @@ pub async fn wx_login(
     }
 }
 
-pub async fn wx_access(broadcaster: Data<Mutex<Broadcaster>>) -> Result<String, ServiceError> {
-    if let Some(t) = broadcaster.lock().unwrap().wx_client.clone() {
+pub async fn wx_access(state: AppState<'static, String>) -> Result<String, ServiceError> {
+    if let Some(t) = get(state.clone(), WECHAT_T) {
         Ok(t)
     } else {
         Err(ServiceError::BadRequest("".into()))

@@ -2,6 +2,9 @@ use actix_web::web::Data;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
+pub const WECHAT_T: &str = "wechat_token";
+pub const BYTE_T: &str = "byte_token";
+
 // State is just a hashmap
 pub type State<'a, T> = HashMap<&'a str, T>;
 pub type AppState<'a, T> = Data<Mutex<State<'a, T>>>;
