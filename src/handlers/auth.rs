@@ -63,7 +63,6 @@ pub struct WxUserInfoResponse {
 
 /// 微信小程序登录接口
 pub async fn wx_login(
-    // id: Identity,
     pool: Data<PoolType>,
     jscode: Path<String>,
     client: Data<Client>,

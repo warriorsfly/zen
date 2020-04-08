@@ -1,4 +1,10 @@
-use crate::{awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes};
+use crate::{
+    awc::{add_awc, add_state},
+    cache::add_cache,
+    config::CONFIG,
+    database::add_pool,
+    routes::routes,
+};
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 use listenfd::ListenFd;
@@ -18,8 +24,7 @@ pub async fn server() -> std::io::Result<()> {
             .configure(add_awc)
             .wrap(Cors::new().supports_credentials().finish())
             .wrap(Logger::default())
-            // .app_data(data.clone())
-            // .app_data(broadcaster.clone())
+            .app_data(add_state)
             .configure(routes)
     });
 
