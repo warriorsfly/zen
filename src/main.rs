@@ -12,7 +12,6 @@ extern crate validator_derive;
 // mod auth;
 use crate::server::server;
 
-mod actors;
 mod auth;
 mod awc;
 mod cache;
@@ -25,6 +24,7 @@ pub mod handlers;
 mod helpers;
 mod middleware;
 mod models;
+mod poll_state;
 mod routes;
 mod schema;
 mod server;
