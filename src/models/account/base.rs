@@ -1,10 +1,10 @@
-use crate::schema::user_base::{self, dsl::*};
+use crate::schema::user_base::{self};
 
-use actix_web::{Error, HttpRequest, HttpResponse, Responder};
+
 use chrono;
 use diesel::prelude::*;
 
-use futures::future::{ready, Ready};
+
 use serde::Serialize;
 
 // use crate::{

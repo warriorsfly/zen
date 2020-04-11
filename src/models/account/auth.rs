@@ -105,7 +105,7 @@ pub fn find_by_3rd_account(
     account_type: i32,
 ) -> Result<(AuthResponse, UserBase), ServiceError> {
     use crate::models::account::base::UserBaseDto;
-    use crate::schema::user_base::{self, dsl::*};
+    use crate::schema::user_base::{dsl::*};
     let conn = pool.get()?;
 
     match account_type {

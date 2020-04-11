@@ -1,9 +1,9 @@
 use actix_web::{Error, HttpRequest, HttpResponse, Responder};
 use chrono;
-use diesel::prelude::*;
+
 use futures::future::{ready, Ready};
 use serde::Serialize;
-use uuid::Uuid;
+
 
 // use crate::{
 //     config::db::Connection,
