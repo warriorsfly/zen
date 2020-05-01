@@ -1,0 +1,7 @@
+-- Your SQL goes here
+CREATE TABLE product_option(
+
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL DEFAULT '',
+  value VARCHAR(512) NOT NULL DEFAULT ''
+)

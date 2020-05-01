@@ -1,3 +1,3 @@
 -- This file should undo anything in `up.sql`
 
-DROP TABLE shop
+DROP TABLE shop_policy
