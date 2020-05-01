@@ -40,6 +40,7 @@ async fn send<'a>(redis: Cache, command: RespValue) -> Result<String, ServiceErr
 }
 
 /// Add the redis actor to actix data if the URL is set
+#[allow(dead_code)]
 pub fn add_cache(cfg: &mut ServiceConfig) {
     if !&CONFIG.redis_url.is_empty() {
         // Start a new supervisor with redis actor

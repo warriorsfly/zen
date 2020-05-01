@@ -1,6 +1,6 @@
 use crate::{
-    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, poll_state::PollState,
-    routes::routes, state::new_state,
+    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes,
+    state::new_state,
 };
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
@@ -10,9 +10,7 @@ pub async fn server() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    // let data = new_state::<String>();
-
-    let data = PollState::create();
+    let data = new_state::<String>();
     let mut listenfd = ListenFd::from_env();
 
     let mut server = HttpServer::new(move || {

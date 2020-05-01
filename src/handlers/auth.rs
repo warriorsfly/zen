@@ -5,7 +5,6 @@ use crate::{
     errors::ServiceError,
     helpers::respond_json,
     models::account::{auth::find_by_3rd_account, base::UserBase},
-    poll_state::{PollState, WECHAT_T},
 };
 use actix_web::{
     self,
@@ -103,10 +102,10 @@ pub async fn wx_login(
     }
 }
 
-pub async fn wx_access(broadcaster: Data<Mutex<PollState>>) -> Result<String, ServiceError> {
-    if let Some(t) = broadcaster.lock().unwrap().state.get(WECHAT_T) {
-        Ok(t.to_owned())
-    } else {
-        Err(ServiceError::BadRequest("".into()))
-    }
-}
+// pub async fn wx_access(broadcaster: Data<Mutex<PollState>>) -> Result<String, ServiceError> {
+//     if let Some(t) = broadcaster.lock().unwrap().state.get(WECHAT_T) {
+//         Ok(t.to_owned())
+//     } else {
+//         Err(ServiceError::BadRequest("".into()))
+//     }
+// }

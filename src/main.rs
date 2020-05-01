@@ -24,7 +24,6 @@ pub mod handlers;
 mod helpers;
 mod middleware;
 mod models;
-mod poll_state;
 mod routes;
 mod schema;
 mod server;
