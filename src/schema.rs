@@ -1,4 +1,70 @@
 table! {
+    sys_dept (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_time -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_time -> Nullable<Timestamp>,
+        full_name -> Nullable<Text>,
+        num -> Nullable<Integer>,
+        pid -> Nullable<BigInt>,
+        pids -> Nullable<Text>,
+        simple_name -> Nullable<Text>,
+        tips -> Nullable<Text>,
+        version -> Nullable<Integer>,
+    }
+}
+
+table! {
+    sys_express (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_time -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        code -> Nullable<Text>,
+        disabled -> Nullable<Bool>,
+        name -> Nullable<Text>,
+        sort -> Nullable<Integer>,
+    }
+}
+
+table! {
+    sys_file_info (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_at -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        original_file_name -> Nullable<Text>,
+        real_file_name -> Nullable<Text>,
+    }
+}
+
+table! {
+    sys_user (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_time -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        account -> Nullable<Text>,
+        avatar -> Nullable<Text>,
+        birthday -> Nullable<Timestamp>,
+        deptid -> Nullable<Text>,
+        email -> Nullable<Text>,
+        name -> Nullable<Text>,
+        password -> Nullable<Text>,
+        phone -> Nullable<Text>,
+        roleid -> Nullable<Text>,
+        salt -> Nullable<Text>,
+        sex -> Nullable<Integer>,
+        status -> Nullable<Integer>,
+        version -> Nullable<Integer>,
+    }
+}
+
+table! {
     user_auth (id) {
         id -> Text,
         uid -> Text,
@@ -69,6 +135,10 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
+    sys_dept,
+    sys_express,
+    sys_file_info,
+    sys_user,
     user_auth,
     user_base,
     user_extra,
