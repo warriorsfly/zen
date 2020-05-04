@@ -1,4 +1,62 @@
 table! {
+    cms_article (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_at -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        author -> Nullable<Text>,
+        content -> Nullable<Text>,
+        channel_id -> BigInt,
+        img -> Nullable<Text>,
+        title -> Nullable<Text>,
+    }
+}
+
+table! {
+    cms_banner (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_at -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        id_file -> Nullable<Text>,
+        page -> Nullable<Text>,
+        param -> Nullable<Text>,
+        title -> Nullable<Text>,
+        #[sql_name = "type"]
+        type_ -> Nullable<Text>,
+        url -> Nullable<Text>,
+    }
+}
+
+table! {
+    cms_channel (id) {
+        id -> Text,
+        create_by -> Nullable<BigInt>,
+        create_at -> Nullable<Timestamp>,
+        modify_by -> Nullable<BigInt>,
+        modify_at -> Nullable<Timestamp>,
+        code -> Nullable<Text>,
+        name -> Nullable<Text>,
+    }
+}
+
+table! {
+    shop_user (id) {
+        id -> Text,
+        avatar -> Nullable<Text>,
+        create_time -> Nullable<Timestamp>,
+        gender -> Nullable<Text>,
+        last_login_time -> Nullable<Timestamp>,
+        mobile -> Nullable<Text>,
+        nick_name -> Nullable<Text>,
+        password -> Nullable<Text>,
+        salt -> Nullable<Text>,
+    }
+}
+
+table! {
     sys_dept (id) {
         id -> Text,
         create_by -> Nullable<BigInt>,
@@ -135,6 +193,10 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
+    cms_article,
+    cms_banner,
+    cms_channel,
+    shop_user,
     sys_dept,
     sys_express,
     sys_file_info,

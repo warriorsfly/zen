@@ -13,8 +13,6 @@ use actix_web::{
 };
 
 use serde::Serialize;
-use std::sync::Mutex;
-use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]

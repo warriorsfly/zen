@@ -185,7 +185,7 @@ dependencies = [
  "serde_urlencoded",
  "sha-1",
  "slab",
- "time 0.2.13",
+ "time 0.2.14",
 ]
 
 [[package]]
@@ -228,7 +228,7 @@ dependencies = [
  "futures-util",
  "serde",
  "serde_json",
- "time 0.2.13",
+ "time 0.2.14",
 ]
 
 [[package]]
@@ -262,7 +262,7 @@ dependencies = [
  "redis-async",
  "serde",
  "serde_json",
- "time 0.2.13",
+ "time 0.2.14",
  "tokio",
  "tokio-util 0.2.0",
 ]
@@ -337,7 +337,7 @@ dependencies = [
  "futures-util",
  "serde",
  "serde_json",
- "time 0.2.13",
+ "time 0.2.14",
 ]
 
 [[package]]
@@ -441,7 +441,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded",
- "time 0.2.13",
+ "time 0.2.14",
  "url",
 ]
 
@@ -965,9 +965,9 @@ dependencies = [
 
 [[package]]
 name = "failure"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8529c2421efa3066a5cbd8063d2244603824daccb6936b079010bb2aa89464b"
+checksum = "d32e9bd16cc02eae7db7ef620b392808b89f6a5e16bb3497d159c6b92a0f4f86"
 dependencies = [
  "backtrace",
  "failure_derive",
@@ -975,9 +975,9 @@ dependencies = [
 
 [[package]]
 name = "failure_derive"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "030a733c8287d6213886dd487564ff5c8f6aae10278b3588ed177f9d18f8d231"
+checksum = "aa4da3c766cd7a0db8242e326e9e4e081edd567072893ed320008189715366a4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2318,9 +2318,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.2.13"
+version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6b5580a7510e7f3c6f199c1cd448515063f7056f026fe42e930c11d97c83e83"
+checksum = "c19b581e837b3f1a6a211e1d30f11a2da711cc8f6d38c16972eecc0398114446"
 dependencies = [
  "cfg-if",
  "libc",
