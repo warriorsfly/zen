@@ -1,14 +1,14 @@
 table! {
     cms_article (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_at -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        created_by -> Text,
+        created_at -> Timestamp,
+        updated_by -> Nullable<Text>,
+        updated_at -> Timestamp,
         author -> Nullable<Text>,
         content -> Nullable<Text>,
-        channel_id -> BigInt,
-        img -> Nullable<Text>,
+        channel_id -> Text,
+        image -> Nullable<Text>,
         title -> Nullable<Text>,
     }
 }
@@ -16,10 +16,10 @@ table! {
 table! {
     cms_banner (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_at -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        created_by -> Nullable<Text>,
+        created_at -> Timestamp,
+        modify_by -> Nullable<Text>,
+        modify_at -> Timestamp,
         id_file -> Nullable<Text>,
         page -> Nullable<Text>,
         param -> Nullable<Text>,
@@ -34,9 +34,9 @@ table! {
     cms_channel (id) {
         id -> Text,
         create_by -> Nullable<BigInt>,
-        create_at -> Nullable<Timestamp>,
+        create_at -> Timestamp,
         modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        modify_at -> Timestamp,
         code -> Nullable<Text>,
         name -> Nullable<Text>,
     }
@@ -46,9 +46,9 @@ table! {
     shop_user (id) {
         id -> Text,
         avatar -> Nullable<Text>,
-        create_time -> Nullable<Timestamp>,
+        created_at -> Timestamp,
         gender -> Nullable<Text>,
-        last_login_time -> Nullable<Timestamp>,
+        last_login_time -> Timestamp,
         mobile -> Nullable<Text>,
         nick_name -> Nullable<Text>,
         password -> Nullable<Text>,
@@ -59,10 +59,10 @@ table! {
 table! {
     sys_dept (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_time -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_time -> Nullable<Timestamp>,
+        create_by -> Nullable<Text>,
+        create_at -> Timestamp,
+        modify_by -> Nullable<Text>,
+        modify_at -> Timestamp,
         full_name -> Nullable<Text>,
         num -> Nullable<Integer>,
         pid -> Nullable<BigInt>,
@@ -76,10 +76,10 @@ table! {
 table! {
     sys_express (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_time -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        create_by -> Nullable<Text>,
+        created_at -> Timestamp,
+        modify_by -> Nullable<Text>,
+        updated_at -> Timestamp,
         code -> Nullable<Text>,
         disabled -> Nullable<Bool>,
         name -> Nullable<Text>,
@@ -90,10 +90,10 @@ table! {
 table! {
     sys_file_info (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_at -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        created_by -> Nullable<Text>,
+        created_at -> Timestamp,
+        updated_by -> Nullable<Text>,
+        updated_at -> Timestamp,
         original_file_name -> Nullable<Text>,
         real_file_name -> Nullable<Text>,
     }
@@ -102,13 +102,13 @@ table! {
 table! {
     sys_user (id) {
         id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_time -> Nullable<Timestamp>,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Nullable<Timestamp>,
+        create_by -> Nullable<Text>,
+        created_at -> Timestamp,
+        updated_by -> Nullable<Text>,
+        updated_at -> Nullable<Timestamp>,
         account -> Nullable<Text>,
         avatar -> Nullable<Text>,
-        birthday -> Nullable<Timestamp>,
+        birthday -> Timestamp,
         deptid -> Nullable<Text>,
         email -> Nullable<Text>,
         name -> Nullable<Text>,
@@ -116,7 +116,7 @@ table! {
         phone -> Nullable<Text>,
         roleid -> Nullable<Text>,
         salt -> Nullable<Text>,
-        sex -> Nullable<Integer>,
+        gender -> Nullable<Integer>,
         status -> Nullable<Integer>,
         version -> Nullable<Integer>,
     }

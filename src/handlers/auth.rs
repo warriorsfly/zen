@@ -13,6 +13,7 @@ use actix_web::{
 };
 
 use serde::Serialize;
+use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
@@ -99,11 +100,3 @@ pub async fn wx_login(
         Err(ServiceError::BadRequest(res.errmsg.unwrap()))
     }
 }
-
-// pub async fn wx_access(broadcaster: Data<Mutex<PollState>>) -> Result<String, ServiceError> {
-//     if let Some(t) = broadcaster.lock().unwrap().state.get(WECHAT_T) {
-//         Ok(t.to_owned())
-//     } else {
-//         Err(ServiceError::BadRequest("".into()))
-//     }
-// }
