@@ -36,6 +36,13 @@ table! {
 }
 
 table! {
+    favorites (user, article) {
+        user -> Int4,
+        article -> Int4,
+    }
+}
+
+table! {
     follows (follower, followed) {
         follower -> Int4,
         followed -> Int4,
@@ -141,6 +148,8 @@ table! {
 joinable!(articles -> users (author));
 joinable!(comments -> articles (article));
 joinable!(comments -> users (author));
+joinable!(favorites -> articles (article));
+joinable!(favorites -> users (user));
 joinable!(user_role -> roles (role_id));
 joinable!(user_role -> users (user_id));
 
@@ -148,6 +157,7 @@ allow_tables_to_appear_in_same_query!(
     accounts,
     articles,
     comments,
+    favorites,
     follows,
     roles,
     user_auth,
