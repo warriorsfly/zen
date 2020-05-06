@@ -1,135 +1,62 @@
 table! {
-    cms_article (id) {
-        id -> Text,
-        created_by -> Text,
-        created_at -> Timestamp,
-        updated_by -> Nullable<Text>,
-        updated_at -> Timestamp,
-        author -> Nullable<Text>,
-        content -> Nullable<Text>,
-        channel_id -> Text,
+    accounts (id) {
+        id -> Int4,
+        username -> Text,
+        email -> Text,
+        bio -> Nullable<Text>,
         image -> Nullable<Text>,
-        title -> Nullable<Text>,
+        hash -> Text,
     }
 }
 
 table! {
-    cms_banner (id) {
-        id -> Text,
-        created_by -> Nullable<Text>,
-        created_at -> Timestamp,
-        modify_by -> Nullable<Text>,
-        modify_at -> Timestamp,
-        id_file -> Nullable<Text>,
-        page -> Nullable<Text>,
-        param -> Nullable<Text>,
-        title -> Nullable<Text>,
-        #[sql_name = "type"]
-        type_ -> Nullable<Text>,
-        url -> Nullable<Text>,
+    articles (id) {
+        id -> Int4,
+        slug -> Text,
+        title -> Text,
+        description -> Text,
+        body -> Text,
+        author -> Int4,
+        tag_list -> Array<Text>,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        favorites_count -> Int4,
     }
 }
 
 table! {
-    cms_channel (id) {
-        id -> Text,
-        create_by -> Nullable<BigInt>,
-        create_at -> Timestamp,
-        modify_by -> Nullable<BigInt>,
-        modify_at -> Timestamp,
-        code -> Nullable<Text>,
-        name -> Nullable<Text>,
+    comments (id) {
+        id -> Int4,
+        body -> Text,
+        article -> Int4,
+        author -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
 table! {
-    shop_user (id) {
-        id -> Text,
-        avatar -> Nullable<Text>,
-        created_at -> Timestamp,
-        gender -> Nullable<Text>,
-        last_login_time -> Timestamp,
-        mobile -> Nullable<Text>,
-        nick_name -> Nullable<Text>,
-        password -> Nullable<Text>,
-        salt -> Nullable<Text>,
+    follows (follower, followed) {
+        follower -> Int4,
+        followed -> Int4,
     }
 }
 
 table! {
-    sys_dept (id) {
-        id -> Text,
-        create_by -> Nullable<Text>,
-        create_at -> Timestamp,
-        modify_by -> Nullable<Text>,
-        modify_at -> Timestamp,
-        full_name -> Nullable<Text>,
-        num -> Nullable<Integer>,
-        pid -> Nullable<BigInt>,
-        pids -> Nullable<Text>,
-        simple_name -> Nullable<Text>,
-        tips -> Nullable<Text>,
-        version -> Nullable<Integer>,
-    }
-}
-
-table! {
-    sys_express (id) {
-        id -> Text,
-        create_by -> Nullable<Text>,
-        created_at -> Timestamp,
-        modify_by -> Nullable<Text>,
-        updated_at -> Timestamp,
-        code -> Nullable<Text>,
-        disabled -> Nullable<Bool>,
-        name -> Nullable<Text>,
-        sort -> Nullable<Integer>,
-    }
-}
-
-table! {
-    sys_file_info (id) {
-        id -> Text,
-        created_by -> Nullable<Text>,
-        created_at -> Timestamp,
-        updated_by -> Nullable<Text>,
-        updated_at -> Timestamp,
-        original_file_name -> Nullable<Text>,
-        real_file_name -> Nullable<Text>,
-    }
-}
-
-table! {
-    sys_user (id) {
-        id -> Text,
-        create_by -> Nullable<Text>,
-        created_at -> Timestamp,
-        updated_by -> Nullable<Text>,
-        updated_at -> Nullable<Timestamp>,
-        account -> Nullable<Text>,
-        avatar -> Nullable<Text>,
-        birthday -> Timestamp,
-        deptid -> Nullable<Text>,
-        email -> Nullable<Text>,
-        name -> Nullable<Text>,
-        password -> Nullable<Text>,
-        phone -> Nullable<Text>,
-        roleid -> Nullable<Text>,
-        salt -> Nullable<Text>,
-        gender -> Nullable<Integer>,
-        status -> Nullable<Integer>,
-        version -> Nullable<Integer>,
+    roles (role_id) {
+        role_id -> Int4,
+        role -> Nullable<Varchar>,
     }
 }
 
 table! {
     user_auth (id) {
-        id -> Text,
-        uid -> Text,
-        identity_type -> Integer,
-        identifier -> Text,
-        certificate -> Text,
-        login_session -> Text,
+        id -> Varchar,
+        uid -> Varchar,
+        identity_type -> Int4,
+        identifier -> Varchar,
+        certificate -> Varchar,
+        login_session -> Varchar,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -137,72 +64,96 @@ table! {
 
 table! {
     user_base (id) {
-        id -> Text,
-        user_role -> Integer,
-        register_source -> Integer,
-        nick_name -> Text,
-        gender -> Integer,
+        id -> Varchar,
+        user_role -> Int4,
+        register_source -> Int4,
+        nick_name -> Varchar,
+        gender -> Int4,
         birthday -> Nullable<Timestamp>,
-        signature -> Text,
-        mobile -> Text,
+        signature -> Varchar,
+        mobile -> Varchar,
         mobile_bind_time -> Nullable<Timestamp>,
-        email -> Text,
+        email -> Varchar,
         email_bind_time -> Nullable<Timestamp>,
-        avatar -> Text,
-        avatar200 -> Text,
-        avatar_source -> Text,
+        avatar -> Varchar,
+        avatar200 -> Varchar,
+        avatar_source -> Varchar,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
-        push_token -> Text,
+        push_token -> Varchar,
     }
 }
 
 table! {
     user_extra (uid) {
-        uid -> Text,
-        vendor -> Text,
-        client_name -> Text,
-        client_version -> Text,
-        os_name -> Text,
-        os_version -> Text,
-        device_name -> Text,
-        device_id -> Text,
-        idfa -> Text,
-        idfv -> Text,
-        market -> Text,
+        uid -> Varchar,
+        vendor -> Varchar,
+        client_name -> Varchar,
+        client_version -> Varchar,
+        os_name -> Varchar,
+        os_version -> Varchar,
+        device_name -> Varchar,
+        device_id -> Varchar,
+        idfa -> Varchar,
+        idfv -> Varchar,
+        market -> Varchar,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
-        extend1 -> Text,
-        extend2 -> Text,
-        extend3 -> Text,
+        extend1 -> Varchar,
+        extend2 -> Varchar,
+        extend3 -> Varchar,
     }
 }
 
 table! {
     user_location (uid) {
-        uid -> Text,
-        curr_nation -> Text,
-        curr_province -> Text,
-        curr_city -> Text,
-        curr_district -> Text,
-        location -> Text,
-        longitude -> Float,
-        latitude -> Float,
+        uid -> Varchar,
+        curr_nation -> Varchar,
+        curr_province -> Varchar,
+        curr_city -> Varchar,
+        curr_district -> Varchar,
+        location -> Varchar,
+        longitude -> Float8,
+        latitude -> Float8,
         updated_at -> Nullable<Timestamp>,
     }
 }
 
+table! {
+    user_role (user_id, role_id) {
+        user_id -> Int4,
+        role_id -> Int4,
+    }
+}
+
+table! {
+    users (user_id) {
+        user_id -> Int4,
+        active -> Nullable<Bool>,
+        email -> Nullable<Varchar>,
+        last_name -> Nullable<Varchar>,
+        name -> Nullable<Varchar>,
+        password -> Nullable<Varchar>,
+        user_name -> Nullable<Varchar>,
+    }
+}
+
+joinable!(articles -> users (author));
+joinable!(comments -> articles (article));
+joinable!(comments -> users (author));
+joinable!(user_role -> roles (role_id));
+joinable!(user_role -> users (user_id));
+
 allow_tables_to_appear_in_same_query!(
-    cms_article,
-    cms_banner,
-    cms_channel,
-    shop_user,
-    sys_dept,
-    sys_express,
-    sys_file_info,
-    sys_user,
+    accounts,
+    articles,
+    comments,
+    follows,
+    roles,
     user_auth,
     user_base,
     user_extra,
     user_location,
+    user_role,
+    users,
 );
