@@ -1,5 +1,8 @@
 // use crate::auth::Auth;
-use chrono::{Duration, Utc};
+use crate::{
+    auth::{create_jwt, AccountClaim},
+    errors::ServiceError,
+};
 use serde::Serialize;
 
 type Url = String;
@@ -33,22 +36,16 @@ pub struct Profile {
 }
 
 impl Account {
-    pub fn to_user_auth(&self, secret: &[u8]) -> AccountAuth {
-        let exp = Utc::now() + Duration::days(60); // TODO: move to config
-        let token = Auth {
-            id: self.id,
-            username: self.username.clone(),
-            exp: exp.timestamp(),
-        }
-        .token(secret);
+    pub fn to_user_auth(&self) -> Result<AccountAuth, ServiceError> {
+        let token = create_jwt(AccountClaim::new(self.id, self.username.clone()))?;
 
-        AccountAuth {
+        Ok(AccountAuth {
             username: &self.username,
             email: &self.email,
             bio: self.bio.as_ref().map(String::as_str),
             image: self.image.as_ref().map(String::as_str),
             token,
-        }
+        })
     }
 
     pub fn to_profile(self, following: bool) -> Profile {
