@@ -17,7 +17,7 @@ table! {
         description -> Text,
         body -> Text,
         author -> Int4,
-        tag_list -> Array<Text>,
+        tags -> Array<Text>,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         favorites_count -> Int4,
@@ -46,13 +46,6 @@ table! {
     follows (follower, followed) {
         follower -> Int4,
         followed -> Int4,
-    }
-}
-
-table! {
-    roles (role_id) {
-        role_id -> Int4,
-        role -> Nullable<Varchar>,
     }
 }
 
@@ -127,21 +120,13 @@ table! {
 }
 
 table! {
-    user_role (user_id, role_id) {
-        user_id -> Int4,
-        role_id -> Int4,
-    }
-}
-
-table! {
-    users (user_id) {
-        user_id -> Int4,
-        active -> Nullable<Bool>,
-        email -> Nullable<Varchar>,
-        last_name -> Nullable<Varchar>,
-        name -> Nullable<Varchar>,
-        password -> Nullable<Varchar>,
-        user_name -> Nullable<Varchar>,
+    users (id) {
+        id -> Int4,
+        username -> Text,
+        email -> Text,
+        bio -> Nullable<Text>,
+        image -> Nullable<Text>,
+        hash -> Text,
     }
 }
 
@@ -150,8 +135,6 @@ joinable!(comments -> articles (article));
 joinable!(comments -> users (author));
 joinable!(favorites -> articles (article));
 joinable!(favorites -> users (user));
-joinable!(user_role -> roles (role_id));
-joinable!(user_role -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     accounts,
@@ -159,11 +142,9 @@ allow_tables_to_appear_in_same_query!(
     comments,
     favorites,
     follows,
-    roles,
     user_auth,
     user_base,
     user_extra,
     user_location,
-    user_role,
     users,
 );
