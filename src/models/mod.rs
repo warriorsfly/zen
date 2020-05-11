@@ -1,1 +1,3 @@
-pub mod account;
+pub mod article;
+pub mod comment;
+pub mod user;

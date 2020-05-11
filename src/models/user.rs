@@ -8,7 +8,7 @@ use serde::Serialize;
 type Url = String;
 
 #[derive(Queryable, Serialize)]
-pub struct Account {
+pub struct User {
     pub id: i32,
     pub username: String,
     pub email: String,
@@ -35,7 +35,7 @@ pub struct Profile {
     following: bool,
 }
 
-impl Account {
+impl User {
     pub fn to_user_auth(&self) -> Result<AccountAuth, ServiceError> {
         let token = create_jwt(AccountClaim::new(self.id, self.username.clone()))?;
 

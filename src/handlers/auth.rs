@@ -4,30 +4,40 @@ use crate::{
     database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
-    models::account::Profile,
+    models::user::{Profile, User},
 };
 use actix_web::{
     self,
-    client::Client,
-    web::{Data, Json, Path},
+    web::{Data, Json},
 };
-
-use serde::Serialize;
 use validator::Validate;
 
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct CertRequest {
-    pub username: String,
-
-    #[validate(length(
-        min = 6,
-        max = 16,
-        message = "certificate is required and must be at least 6 characters,at most 16 characters"
-    ))]
-    pub password: String,
-
-    pub identity_type: i32,
+#[derive(Deserialize, Validate)]
+struct NewUserDto {
+    #[validate(length(min = 1))]
+    username: Option<String>,
+    #[validate(email)]
+    email: Option<String>,
+    #[validate(length(min = 8))]
+    password: Option<String>,
 }
+
+// pub async fn register(pool: Data<PoolType>, dto: Json<NewUserDto>) {
+//     // await User::register()
+// }
+// #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+// pub struct CertRequest {
+//     pub username: String,
+
+//     #[validate(length(
+//         min = 6,
+//         max = 16,
+//         message = "certificate is required and must be at least 6 characters,at most 16 characters"
+//     ))]
+//     pub password: String,
+
+//     pub identity_type: i32,
+// }
 
 // /// 登录返回数据
 // #[derive(Debug, Deserialize, Serialize)]
