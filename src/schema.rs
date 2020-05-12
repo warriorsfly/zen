@@ -12,7 +12,6 @@ table! {
 table! {
     articles (id) {
         id -> Int4,
-        slug -> Text,
         title -> Text,
         description -> Text,
         body -> Text,

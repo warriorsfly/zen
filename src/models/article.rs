@@ -6,7 +6,6 @@ use serde::Serialize;
 #[derive(Queryable)]
 pub struct Article {
     pub id: i32,
-    pub slug: String,
     pub title: String,
     pub description: String,
     pub body: String,
@@ -21,7 +20,6 @@ impl Article {
     pub fn attach(self, author: User, favorited: bool) -> ArticleJson {
         ArticleJson {
             id: self.id,
-            slug: self.slug,
             title: self.title,
             description: self.description,
             body: self.body,
@@ -38,7 +36,6 @@ impl Article {
 #[derive(Serialize)]
 pub struct ArticleJson {
     pub id: i32,
-    pub slug: String,
     pub title: String,
     pub description: String,
     pub body: String,

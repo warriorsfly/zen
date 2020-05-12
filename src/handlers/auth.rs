@@ -1,7 +1,6 @@
 use crate::{
     auth::{create_jwt, AccountClaim},
     config::CONFIG,
-    database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
     models::user::{Profile, User},

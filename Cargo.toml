@@ -54,4 +54,4 @@ actix-http-test = "1.0.0"
 mysql = []
 postgres = []
 sqlite = []
-default = ["sqlite"]
+default = ["postgres"]

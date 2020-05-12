@@ -89,11 +89,6 @@ pub mod tests {
         let hashed_again = hash(password);
         println!("{}", hashed);
         println!("{}", hashed_again);
-        // println!(format!(
-        //     "hashed is {:02x},hashed_again is {:02x}",
-        //     hashed,
-        //     hashed_again.clone()
-        // ));
         assert_eq!(hashed, hashed_again);
     }
 
