@@ -1,5 +1,9 @@
+use crate::db::article;
 use crate::errors::ServiceError;
-use crate::validate::validate;
+use crate::{
+    auth::JwtAccount, database::PoolType, helpers::respond_json, models::article::ArticleJson,
+    validate::validate,
+};
 use actix_web::{
     post,
     web::{Data, Json},
@@ -14,21 +18,33 @@ pub struct NewArticle {
 #[derive(Deserialize, Validate)]
 pub struct NewArticleData {
     #[validate(length(min = 1))]
-    title: Option<String>,
+    title: String,
     #[validate(length(min = 1))]
-    description: Option<String>,
+    description: String,
     #[validate(length(min = 1))]
-    body: Option<String>,
+    body: String,
     #[serde(rename = "tagList")]
     tags: Vec<String>,
 }
 
-// #[post("/articles")]
-// pub async fn post_articles(
-//     pool: Data<PoolType>,
-//     params: Json<NewArticle>,
-// ) -> Result<String, ServiceError> {
-//     validate(&params)?;
+#[post("/articles")]
+pub async fn post_articles(
+    author: JwtAccount,
+    pool: Data<PoolType>,
+    params: Json<NewArticle>,
+) -> Result<Json<ArticleJson>, ServiceError> {
+    validate(&params)?;
+    let new_article = params.into_inner().article;
 
-//     let new_article = params.into_inner().article;
-// }
+    match article::create(
+        pool.as_ref(),
+        author.id,
+        &new_article.title,
+        &new_article.description,
+        &new_article.body,
+        &new_article.tags,
+    ) {
+        Ok(arti) => respond_json(arti),
+        Err(e) => Err(e),
+    }
+}

@@ -5,11 +5,11 @@ authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix = "0.10.0-alpha.2"
+actix = "0.10.0-alpha.3"
 actix-cors = "0.3.0-alpha.1"
 # actix-files = "0.2.1"
 actix-identity = "0.3.0-alpha.1"
-actix-redis = "0.9.0-alpha.1"
+# actix-redis = "0.9.0-alpha.1"
 actix-rt = "1.1"
 actix-service = "1.0.5"
 argon2rs = "0.2.5"

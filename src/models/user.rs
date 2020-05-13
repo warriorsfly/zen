@@ -1,6 +1,6 @@
 // use crate::auth::Auth;
 use crate::{
-    auth::{create_jwt, AccountClaim},
+    auth::{create_jwt, JwtAccount},
     errors::ServiceError,
 };
 use serde::Serialize;
@@ -37,7 +37,7 @@ pub struct Profile {
 
 impl User {
     pub fn to_user_auth(&self) -> Result<AccountAuth, ServiceError> {
-        let token = create_jwt(AccountClaim::new(self.id, self.username.clone()))?;
+        let token = create_jwt(JwtAccount::new(self.id, self.username.clone()))?;
 
         Ok(AccountAuth {
             username: &self.username,

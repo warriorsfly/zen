@@ -1,5 +1,5 @@
 use crate::{
-    auth::{create_jwt, AccountClaim},
+    auth::{create_jwt, JwtAccount},
     config::CONFIG,
     errors::ServiceError,
     helpers::respond_json,

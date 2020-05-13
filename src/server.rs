@@ -1,7 +1,4 @@
-use crate::{
-    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes,
-    state::new_state,
-};
+use crate::{awc::add_awc, config::CONFIG, database::add_pool, routes::routes, state::new_state};
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 use listenfd::ListenFd;
