@@ -25,14 +25,14 @@ pub type MysqlPool = Pool<MysqlConnection>;
 pub type PostgresPool = Pool<PgConnection>;
 pub type SqlitePool = Pool<SqliteConnection>;
 
-// #[cfg(feature = "mysql")]
-// pub type PoolType = MysqlPool;
+#[cfg(feature = "mysql")]
+pub type PoolType = MysqlPool;
 
 #[cfg(feature = "postgres")]
 pub type PoolType = PostgresPool;
 
-// #[cfg(feature = "sqlite")]
-// pub type PoolType = SqlitePool;
+#[cfg(feature = "sqlite")]
+pub type PoolType = SqlitePool;
 
 #[derive(Clone)]
 pub enum DatabasePool {
