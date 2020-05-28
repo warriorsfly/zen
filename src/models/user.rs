@@ -1,11 +1,20 @@
-// use crate::auth::Auth;
 use crate::{
     auth::{create_jwt, JwtAccount},
     errors::ServiceError,
+    schema::users,
 };
 use serde::Serialize;
+use validator::Validate;
 
 type Url = String;
+
+#[derive(Insertable, Serialize, Validate)]
+#[table_name = "users"]
+pub struct NewUser<'a> {
+    pub username: &'a str,
+    pub email: &'a str,
+    pub password: &'a str,
+}
 
 #[derive(Queryable, Serialize)]
 pub struct User {
@@ -15,7 +24,7 @@ pub struct User {
     pub bio: Option<String>,
     pub image: Option<Url>,
     #[serde(skip_serializing)]
-    pub hash: String,
+    pub password: String,
 }
 
 #[derive(Serialize)]

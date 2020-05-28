@@ -35,23 +35,28 @@ uuid = { version = "0.8.1", features = ["serde", "v4"] }
 validator = "0.10.0"
 validator_derive = "0.10.0"
 
+
+# Needed for sqlite.
+libsqlite3-sys = { version = "*", features = ["bundled"] }
+
 [dependencies.actix-web]
-version = "3.0.0-alpha.2"
-features = ["rustls"]
+version = "3.0.0-alpha.3"
+# features = ["rustls"]
 
 [dependencies.diesel]
 version = "1.4.4"
-features = ["chrono","mysql", "postgres", "sqlite", "r2d2", "uuid"]
+features = ["chrono", "postgres", "sqlite", "r2d2", "uuid"]
+# features = ["chrono","mysql", "postgres", "sqlite", "r2d2", "uuid"]
 
 [dependencies.chrono]
 version = "0.4.11"
 features = ["serde"]
 
 [dev-dependencies]
-actix-http-test = "1.0.0"
+actix-http-test = "2.0.0-alpha.1"
 
 [features]
 # mysql = []
 postgres = []
 # sqlite = []
-# default = ["postgres"]
+default = ["postgres"]

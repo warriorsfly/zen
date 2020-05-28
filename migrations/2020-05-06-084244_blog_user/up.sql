@@ -5,5 +5,5 @@ CREATE TABLE users (
   email TEXT NOT NULL UNIQUE,
   bio TEXT,
   image TEXT,
-  hash TEXT NOT NULL
+  password TEXT NOT NULL
 );

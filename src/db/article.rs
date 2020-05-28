@@ -52,3 +52,25 @@ pub fn create(
 
     Ok(art)
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use crate::tests::helpers::tests::get_pool;
+
+    #[test]
+    fn create_an_article() {
+        let pool = get_pool();
+        let res = create(
+            &pool,
+            1,
+            "test create",
+            "test create for unit",
+            "东方红",
+            &vec!["三".to_owned(), "四".to_owned()],
+        );
+
+        assert!(res.is_ok());
+    }
+}

@@ -16,3 +16,11 @@ pub struct UserBaseResponse {
     pub avatar_source: String,
     pub push_token: String,
 }
+
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
+pub struct UserResponse {
+    pub id: Uuid,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+}
