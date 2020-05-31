@@ -1,26 +1,24 @@
-use uuid::Uuid;
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UserBaseResponse {
-    pub id: Uuid,
-    pub user_role: i32,
-    pub register_source: i32,
-    pub user_name: String,
-    pub nick_name: String,
-    pub gender: i32,
-    pub birthday: chrono::NaiveDateTime,
-    pub signature: String,
-    pub mobile: String,
-    pub email: String,
-    pub avatar: String,
-    pub avatar200: String,
-    pub avatar_source: String,
-    pub push_token: String,
+use crate::{
+    database::PoolType,
+    db,
+    errors::ServiceError,
+    helpers::respond_json,
+    models::user::{NewUser, User},
+};
+use actix_web::web::{block, Data, Json, Path};
+
+pub async fn create_user(
+    pool: Data<PoolType>,
+    dto: Json<NewUser>,
+) -> Result<Json<User>, ServiceError> {
+    let user = block(move || db::user::create(&pool, &dto)).await?;
+    respond_json(user)
 }
 
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UserResponse {
-    pub id: Uuid,
-    pub first_name: String,
-    pub last_name: String,
-    pub email: String,
+pub async fn get_user(
+    pool: Data<PoolType>,
+    user_id: Path<i32>,
+) -> Result<Json<User>, ServiceError> {
+    let user = block(move || db::user::get_user(&pool, *user_id)).await?;
+    respond_json(user)
 }

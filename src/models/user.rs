@@ -8,15 +8,15 @@ use validator::Validate;
 
 type Url = String;
 
-#[derive(Insertable, Serialize, Validate)]
+#[derive(Deserialize, Insertable, Serialize, Validate)]
 #[table_name = "users"]
-pub struct NewUser<'a> {
-    pub username: &'a str,
-    pub email: &'a str,
-    pub password: &'a str,
+pub struct NewUser {
+    pub username: String,
+    pub email: String,
+    pub password: String,
 }
 
-#[derive(Queryable, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Queryable, Identifiable, Insertable)]
 pub struct User {
     pub id: i32,
     pub username: String,
