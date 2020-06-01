@@ -4,6 +4,6 @@ CREATE TABLE users (
   username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
   bio TEXT,
-  image TEXT,
+  avtar TEXT,
   password TEXT NOT NULL
 );

@@ -1,6 +1,7 @@
 use crate::{
     auth::{create_jwt, JwtAccount},
     config::CONFIG,
+    database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
     models::user::{Profile, User},
@@ -108,3 +109,15 @@ struct NewUserDto {
 //         Err(ServiceError::BadRequest(res.errmsg.unwrap()))
 //     }
 // }
+
+pub fn login(pool: &PoolType, user_name: &str, password: &str) -> Result<User, ServiceError> {
+    use crate::schema::users::dsl::*;
+    let conn = pool.get()?;
+    let not_found = format!("User {} not found", user_name);
+    let user = users
+        .filter(username.eq(user_name))
+        .first::<User>(&conn)
+        .map_err(|_| ServiceError::NotFound(not_found))?;
+
+    Ok(user)
+}

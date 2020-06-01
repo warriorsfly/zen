@@ -4,7 +4,7 @@ table! {
         username -> Text,
         email -> Text,
         bio -> Nullable<Text>,
-        image -> Nullable<Text>,
+        avtar -> Nullable<Text>,
         hash -> Text,
     }
 }
@@ -54,7 +54,7 @@ table! {
         username -> Text,
         email -> Text,
         bio -> Nullable<Text>,
-        image -> Nullable<Text>,
+        avtar -> Nullable<Text>,
         password -> Text,
     }
 }

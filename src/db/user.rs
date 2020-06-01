@@ -1,13 +1,13 @@
 use crate::{
     database::PoolType,
     errors::ServiceError,
-    models::user::{NewUser, User},
+    models::user::{NewUserData, UpdateUserData, User},
 };
 
 use diesel::prelude::*;
 
 // create user
-pub fn create(pool: &PoolType, new_user: &NewUser) -> Result<User, ServiceError> {
+pub fn create(pool: &PoolType, new_user: &NewUserData) -> Result<User, ServiceError> {
     use crate::schema::users::dsl::users;
     let conn = pool.get()?;
 
@@ -29,14 +29,22 @@ pub fn get_user(pool: &PoolType, user_id: i32) -> Result<User, ServiceError> {
     Ok(user)
 }
 
-pub fn update_user(pool: &PoolType, user_id: i32) -> Result<User, ServiceError> {
-    use crate::schema::users::dsl::*;
+pub fn update_user(
+    pool: &PoolType,
+    user_id: i32,
+    dto: &UpdateUserData,
+) -> Result<User, ServiceError> {
+    use crate::schema::users;
     let conn = pool.get()?;
-    let not_found = format!("User {} not found", user_id);
-    let user = users
-        .filter(id.eq(user_id))
-        .first::<User>(&conn)
-        .map_err(|_| ServiceError::NotFound(not_found))?;
+
+    let data = &UpdateUserData {
+        password: None,
+        ..dto.clone()
+    };
+    let user = diesel::update(users::table.find(user_id))
+        .set(data)
+        .get_result(&conn)
+        .map_err(|err| ServiceError::NotFound(err.to_string()))?;
 
     Ok(user)
 }
@@ -51,7 +59,7 @@ mod tests {
         let pool = get_pool();
 
         let password = hash("love22222222").into();
-        let walker = NewUser {
+        let walker = NewUserData {
             username: "Allen".into(),
             email: "warriorsfly@gmail.com".into(),
             password: password,

@@ -3,13 +3,13 @@ use crate::{
     db,
     errors::ServiceError,
     helpers::respond_json,
-    models::user::{NewUser, User},
+    models::user::{NewUserData, User},
 };
 use actix_web::web::{block, Data, Json, Path};
 
 pub async fn create_user(
     pool: Data<PoolType>,
-    dto: Json<NewUser>,
+    dto: Json<NewUserData>,
 ) -> Result<Json<User>, ServiceError> {
     let user = block(move || db::user::create(&pool, &dto)).await?;
     respond_json(user)
