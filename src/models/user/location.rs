@@ -3,41 +3,28 @@ use chrono;
 use diesel::prelude::*;
 use futures::future::{ready, Ready};
 use serde::Serialize;
-// use uuid::Uuid;
+use uuid::Uuid;
 
 // use crate::{
 //     config::db::Connection,
 //     constants,
-//     entity::{
-//         // login_history::LoginHistory,
-//         user::token::UserToken,
-//     },
-//     schema::{
-//         user_extra::{self, dsl::*},
-//     }
+//     schema::user_location::{self, dsl::*},
 // };
-
 #[derive(Debug, Serialize, Deserialize, Queryable)]
-pub struct UserExtra {
-    pub uid: String,
-    pub vendor: String,
-    pub client_name: String,
-    pub client_version: String,
-    pub os_name: String,
-    pub os_version: String,
-    pub device_id: String,
-    pub device_name: String,
-    pub idfa: String,
-    pub idfv: String,
-    pub market: String,
-    pub created_at: chrono::NaiveDateTime,
+// #[table_name = "user_location"]
+pub struct UserLocation {
+    pub uid: i32,
+    pub curr_nation: String,
+    pub curr_province: String,
+    pub curr_city: String,
+    pub curr_district: String,
+    pub location: String,
+    pub longitude: f64,
+    pub latitude: f64,
     pub updated_at: chrono::NaiveDateTime,
-    pub extend1: String,
-    pub extend2: String,
-    pub extend3: String,
 }
 
-impl Responder for UserExtra {
+impl Responder for UserLocation {
     type Error = Error;
     type Future = Ready<Result<HttpResponse, Error>>;
 

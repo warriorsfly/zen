@@ -26,14 +26,14 @@ pub enum Claim {
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
-    pub uid: Uuid,
+    pub uid: i32,
     pub identifier: String,
     pub identity_type: i32,
     exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(uid: Uuid, identifier: String, identity_type: i32) -> Self {
+    pub fn new(uid: i32, identifier: String, identity_type: i32) -> Self {
         Self {
             uid,
             identifier,
@@ -108,14 +108,14 @@ pub mod tests {
 
     #[test]
     fn it_creates_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
+        let private_claim = PrivateClaim::new(1, PHONE.into(), 1);
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
 
     #[test]
     fn it_decodes_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
+        let private_claim = PrivateClaim::new(1, PHONE.into(), 1);
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);

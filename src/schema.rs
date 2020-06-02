@@ -1,11 +1,10 @@
 table! {
     user_auth (id) {
-        id -> Text,
-        uid -> Text,
-        identity_type -> Integer,
+        id -> Int4,
+        uid -> Int4,
+        identity_type -> Int4,
         identifier -> Text,
         certificate -> Text,
-        login_session -> Text,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -13,11 +12,11 @@ table! {
 
 table! {
     user_base (id) {
-        id -> Text,
-        user_role -> Integer,
-        register_source -> Integer,
+        id -> Int4,
+        user_role -> Int4,
+        register_source -> Int4,
         nick_name -> Text,
-        gender -> Integer,
+        gender -> Int4,
         birthday -> Nullable<Timestamp>,
         signature -> Text,
         mobile -> Text,
@@ -29,13 +28,12 @@ table! {
         avatar_source -> Text,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
-        push_token -> Text,
     }
 }
 
 table! {
-    user_extra (uid) {
-        uid -> Text,
+    user_extra (id) {
+        id -> Int4,
         vendor -> Text,
         client_name -> Text,
         client_version -> Text,
@@ -55,15 +53,15 @@ table! {
 }
 
 table! {
-    user_location (uid) {
-        uid -> Text,
+    user_location (id) {
+        id -> Int4,
         curr_nation -> Text,
         curr_province -> Text,
         curr_city -> Text,
         curr_district -> Text,
         location -> Text,
-        longitude -> Float,
-        latitude -> Float,
+        longitude -> Float8,
+        latitude -> Float8,
         updated_at -> Nullable<Timestamp>,
     }
 }

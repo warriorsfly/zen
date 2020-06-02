@@ -16,7 +16,7 @@ use serde::Serialize;
 #[derive(Debug, Serialize, Deserialize, Insertable)]
 #[table_name = "user_base"]
 pub struct UserBaseDto<'a> {
-    pub id: &'a str,
+    pub id: i32,
     pub user_role: i32,
     pub register_source: i32,
     pub nick_name: &'a str,
@@ -24,7 +24,7 @@ pub struct UserBaseDto<'a> {
 
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct UserBase {
-    pub id: String,
+    pub id: i32,
     pub user_role: i32,
     pub register_source: i32,
     pub nick_name: String,
