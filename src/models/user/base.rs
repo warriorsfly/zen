@@ -15,8 +15,7 @@ use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize, Insertable)]
 #[table_name = "user_base"]
-pub struct UserBaseDto<'a> {
-    pub id: i32,
+pub struct UserBaseInputDto<'a> {
     pub user_role: i32,
     pub register_source: i32,
     pub nick_name: &'a str,
@@ -40,7 +39,6 @@ pub struct UserBase {
     pub avatar_source: String,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: Option<chrono::NaiveDateTime>,
-    pub push_token: String,
 }
 
 impl UserBase {}
