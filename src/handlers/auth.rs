@@ -4,12 +4,14 @@ use crate::{
     database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
-    models::user::{Profile, User},
+    models::{Profile, User},
 };
 use actix_web::{
     self,
     web::{Data, Json},
 };
+
+use diesel::prelude::*;
 use validator::Validate;
 
 #[derive(Deserialize, Validate)]

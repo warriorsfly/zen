@@ -1,3 +1,7 @@
-pub mod article;
-pub mod comment;
-pub mod user;
+mod article;
+mod comment;
+mod user;
+
+pub use article::{Article, ArticleJson};
+pub use comment::{Comment, CommentJson};
+pub use user::{NewUserData, Profile, UpdateUserData, User};

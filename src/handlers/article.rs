@@ -1,7 +1,7 @@
 use crate::db::article;
 use crate::errors::ServiceError;
 use crate::{
-    auth::JwtAccount, database::PoolType, helpers::respond_json, models::article::ArticleJson,
+    auth::JwtAccount, database::PoolType, helpers::respond_json, models::ArticleJson,
     validate::validate,
 };
 use actix_web::{

@@ -3,10 +3,7 @@ use crate::schema::users;
 use crate::{
     database::PoolType,
     errors::ServiceError,
-    models::{
-        article::{Article, ArticleJson},
-        user::User,
-    },
+    models::{Article, ArticleJson, User},
 };
 use diesel::prelude::*;
 

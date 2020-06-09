@@ -44,7 +44,7 @@ version = "3.0.0-alpha.3"
 # features = ["rustls"]
 
 [dependencies.diesel]
-version = "1.4.4"
+version = "1.4.5"
 features = ["chrono", "postgres", "sqlite", "r2d2", "uuid"]
 # features = ["chrono","mysql", "postgres", "sqlite", "r2d2", "uuid"]
 

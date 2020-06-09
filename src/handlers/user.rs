@@ -3,7 +3,7 @@ use crate::{
     db,
     errors::ServiceError,
     helpers::respond_json,
-    models::user::{NewUserData, User},
+    models::{NewUserData, User},
 };
 use actix_web::web::{block, Data, Json, Path};
 

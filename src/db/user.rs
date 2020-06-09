@@ -1,7 +1,7 @@
 use crate::{
     database::PoolType,
     errors::ServiceError,
-    models::user::{NewUserData, UpdateUserData, User},
+    models::{NewUserData, UpdateUserData, User},
 };
 
 use diesel::prelude::*;
