@@ -1,22 +1,20 @@
 use chrono::NaiveDateTime;
 use uuid::Uuid;
 
-use crate::schema::comments;
+use crate::schema::followers;
 
 #[derive(Debug, Queryable, Identifiable)]
-pub struct Comment {
-    pub id: i32,
-    pub article_id: Uuid,
+#[primary_key(user_id, follower_id)]
+pub struct Follower {
     pub user_id: Uuid,
-    pub body: String,
+    pub follower_id: Uuid,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
 
 #[derive(Debug, Insertable)]
-#[table_name = "comments"]
-pub struct NewComment {
-    pub article_id: Uuid,
+#[table_name = "followers"]
+pub struct NewFollower {
     pub user_id: Uuid,
-    pub body: String,
+    pub follower_id: Uuid,
 }

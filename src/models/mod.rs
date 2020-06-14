@@ -1,7 +1,7 @@
 mod article;
+mod article_tag;
 mod comment;
+mod follower;
 mod user;
 
-pub use article::{Article, ArticleJson};
-pub use comment::{Comment, CommentJson};
-pub use user::{NewUserData, Profile, UpdateUserData, User};
+pub use self::{article::*, article_tag::*, comment::*, follower::*, user::*};
