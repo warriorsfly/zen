@@ -10,7 +10,7 @@ pub struct User {
     pub email: String,
     pub password: String,
     pub bio: Option<String>,
-    pub image: Option<String>,
+    pub avatar: Option<String>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
@@ -22,7 +22,7 @@ pub struct NewUser {
     pub email: String,
     pub password: String,
     pub bio: Option<String>,
-    pub image: Option<String>,
+    pub avatar: Option<String>,
 }
 
 #[derive(Debug, AsChangeset)]
@@ -32,5 +32,5 @@ pub struct UserChange {
     pub email: Option<String>,
     pub password: Option<String>,
     pub bio: Option<String>,
-    pub image: Option<String>,
+    pub avatar: Option<String>,
 }
