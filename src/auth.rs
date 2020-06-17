@@ -25,16 +25,17 @@ pub enum Claim {
     Wechat { uid: Uuid, openid: String },
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct JwtAccount {
+pub struct PrivateClaim {
     /// timestamp
-    pub exp: i64,
+
     /// user id
-    pub id: i32,
+    pub id: Uuid,
     pub username: String,
+    pub exp: i64,
 }
 
-impl JwtAccount {
-    pub fn new(id: i32, username: String) -> Self {
+impl PrivateClaim {
+    pub fn new(id: Uuid, username: String) -> Self {
         Self {
             id,
             username,
@@ -44,16 +45,16 @@ impl JwtAccount {
 }
 
 /// Create a json web token (JWT)
-pub fn create_jwt(private_claim: JwtAccount) -> Result<String, ServiceError> {
+pub fn create_jwt(private_claim: PrivateClaim) -> Result<String, ServiceError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     encode(&Header::default(), &private_claim, &encoding_key)
         .map_err(|e| ServiceError::EncodeTokenError(e.to_string()))
 }
 
 /// Decode a json web token (JWT)
-pub fn decode_jwt(token: &str) -> Result<JwtAccount, ServiceError> {
+pub fn decode_jwt(token: &str) -> Result<PrivateClaim, ServiceError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
-    decode::<JwtAccount>(token, &decoding_key, &Validation::default())
+    decode::<PrivateClaim>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
         .map_err(|e| ServiceError::DecodeTokenError(e.to_string()))
 }
@@ -72,8 +73,8 @@ pub fn hash(password: &str) -> String {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    static PHONE: &str = "18326069658";
-    static ID: i32 = 1;
+    // static PHONE: &str = "18326069658";
+    // static ID: Uuid = Uuid::new_v4();
 
     #[test]
     fn it_hashes_a_password() {
@@ -94,14 +95,18 @@ pub mod tests {
 
     #[test]
     fn it_creates_a_jwt() {
-        let private_claim = JwtAccount::new(ID, PHONE.into());
+        let id = Uuid::new_v4();
+        let phone = "password";
+        let private_claim = PrivateClaim::new(id, phone.into());
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
 
     #[test]
     fn it_decodes_a_jwt() {
-        let private_claim = JwtAccount::new(ID, PHONE.into());
+        let id = Uuid::new_v4();
+        let phone = "password";
+        let private_claim = PrivateClaim::new(id, phone.into());
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);

@@ -18,7 +18,7 @@ mod cache;
 mod config;
 mod constants;
 mod database;
-mod db;
+// mod db;
 mod errors;
 mod extractors;
 pub mod handlers;

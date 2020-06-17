@@ -1,4 +1,4 @@
-use crate::auth::{decode_jwt, JwtAccount};
+use crate::auth::{decode_jwt, PrivateClaim};
 use crate::{constants, errors::ServiceError};
 use actix_web::{dev::Payload, web::HttpRequest, FromRequest};
 use futures::future::{err, ok, Ready};
@@ -6,7 +6,7 @@ use futures::future::{err, ok, Ready};
 /// Extractor for pulling the user out of a request.
 ///
 /// Simply add "user: AuthClaim" to a handler to invoke this.
-impl FromRequest for JwtAccount {
+impl FromRequest for PrivateClaim {
     type Error = ServiceError;
     type Future = Ready<Result<Self, Self::Error>>;
     type Config = ();
