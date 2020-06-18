@@ -6,29 +6,26 @@ use derive_more::Display;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Display, Serialize, Deserialize, PartialEq)]
-pub enum Claim {
-    /// 手机登录
-    #[display(fmt = "")]
-    Phone { uid: Uuid, phone: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Email { uid: Uuid, email: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Name { uid: Uuid, name: String },
-    /// QQ登录
-    #[display(fmt = "")]
-    QQ { uid: Uuid, qq: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Wechat { uid: Uuid, openid: String },
-}
+// #[derive(Clone, Debug, Display, Serialize, Deserialize, PartialEq)]
+// pub enum Claim {
+//     /// 手机登录
+//     #[display(fmt = "")]
+//     Phone { uid: Uuid, phone: String },
+//     /// 邮箱登录
+//     #[display(fmt = "")]
+//     Email { uid: Uuid, email: String },
+//     /// 邮箱登录
+//     #[display(fmt = "")]
+//     Name { uid: Uuid, name: String },
+//     /// QQ登录
+//     #[display(fmt = "")]
+//     QQ { uid: Uuid, qq: String },
+//     /// 邮箱登录
+//     #[display(fmt = "")]
+//     Wechat { uid: Uuid, openid: String },
+// }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
-    /// timestamp
-
-    /// user id
     pub id: Uuid,
     pub username: String,
     pub exp: i64,

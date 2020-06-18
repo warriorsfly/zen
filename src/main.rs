@@ -1,3 +1,4 @@
+extern crate openssl;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
@@ -18,7 +19,7 @@ mod cache;
 mod config;
 mod constants;
 mod database;
-// mod db;
+mod db;
 mod errors;
 mod extractors;
 pub mod handlers;

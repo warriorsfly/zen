@@ -9,6 +9,7 @@ ADD . ./
 # Fix permissions on source code.
 RUN sudo chown -R rust:rust /home/rust
 
+RUN cargo update
 # Build our application.
 RUN cargo build --release
 
