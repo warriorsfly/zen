@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  # db:
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_PASSWORD: "postgres"
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_DB: "postgres"
+
+  #   ports:
+  #     - "5432:5432"
+  # volumes:
+  #   - database_data:/var/lib/postgres/data
+  api:
+    env_file:
+      - .env.docker
+    # environment:
+    # DATABASE_URL: "postgres://postgres"
+    image: warriorsfly/mimosa
+    ports:
+      - "3000:3000"
+    # links:
+    # - db
+  # 后面要补上 flutter前端
+  # mimosa-frontend:
+  # volumes:
+  #   database_data:
+  #     driver: local
