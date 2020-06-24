@@ -1,29 +1,38 @@
 version: "3.3"
 
 services:
-  # db:
-  #   image: postgres
-  #   environment:
-  #     POSTGRES_PASSWORD: "postgres"
-  #     POSTGRES_USER: "postgres"
-  #     POSTGRES_DB: "postgres"
+  db:
+    image: postgres
+    container_name: mimosa.postgres
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: "postgres"
 
-  #   ports:
-  #     - "5432:5432"
-  # volumes:
-  #   - database_data:/var/lib/postgres/data
+
+    volumes:
+      - database_data:/var/lib/postgres/:delegated
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+  
+    volumes:
+      - database_data:/var/lib/postgres/data
+
+    restart: unless-stopped
+
   api:
     env_file:
       - .env.docker
-    # environment:
-    # DATABASE_URL: "postgres://postgres"
+    container_name: mimosa.api
+    environment:
+      DATABASE_URL: postgres://mimosa.postgres
     image: warriorsfly/mimosa
     ports:
       - "3000:3000"
-    # links:
-    # - db
+    depends_on:
+      - db
   # 后面要补上 flutter前端
   # mimosa-frontend:
-  # volumes:
-  #   database_data:
-  #     driver: local
+volumes:
+  database_data:
+    driver: local
