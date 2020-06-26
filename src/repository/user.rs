@@ -15,7 +15,7 @@ pub fn create_user(pool: &PoolType, item: &NewUser) -> Result<User, ServiceError
     insert_into(users)
         .values(item)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::PoolError(err.to_string()))
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
 pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError> {
@@ -24,7 +24,7 @@ pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError
     users
         .find(uid)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::PoolError(err.to_string()))
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
 pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, ServiceError> {
@@ -35,14 +35,17 @@ pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, Servic
         .filter(password.eq(pa))
         .limit(1)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::PoolError(err.to_string()))
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
-pub fn update_user(pool: &PoolType, uid: &str, item: &UserChange) -> Result<User, ServiceError> {
+pub fn update_user(pool: &PoolType, uid: &Uuid, item: &UserChange) -> Result<User, ServiceError> {
     let conn = pool.get()?;
-
+    let user = users
+        .find(uid)
+        .get_result::<User>(&conn)
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
     update(users::table)
         .set(item)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::PoolError(err.to_string()))
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }

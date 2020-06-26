@@ -17,24 +17,6 @@ use validator::Validate;
 pub struct UsersResponse(pub Vec<User>);
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct CreateUserRequest {
-    #[validate(length(
-        min = 6,
-        message = "last_name is required and must be at least 6 characters"
-    ))]
-    pub username: String,
-
-    #[validate(email(message = "email must be a valid email"))]
-    pub email: String,
-
-    #[validate(length(
-        min = 6,
-        message = "password is required and must be at least 6 characters"
-    ))]
-    pub password: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct UpdateUserRequest {
     #[validate(length(
         min = 6,
@@ -54,24 +36,6 @@ pub struct UpdateUserRequest {
 //     let user = block(move || find(&pool, *user_id)).await?;
 //     respond_json(user)
 // }
-
-/// Create a user
-pub async fn create_user(
-    pool: Data<PoolType>,
-    params: Json<CreateUserRequest>,
-) -> Result<Json<User>, ServiceError> {
-    validate(&params)?;
-    let pass = hash(&params.password);
-    let new_user = NewUser {
-        username: params.username.clone(),
-        email: params.email.clone(),
-        password: pass,
-        bio: None,
-        avatar: None,
-    };
-    let user = block(move || repository::create_user(&pool, &new_user)).await?;
-    respond_json(user)
-}
 
 // /// Update a user
 // pub async fn update_user(

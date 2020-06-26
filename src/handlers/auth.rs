@@ -2,11 +2,51 @@ use crate::auth::{create_jwt, hash, PrivateClaim};
 use crate::database::PoolType;
 use crate::errors::ServiceError;
 use crate::helpers::{respond_json, respond_ok};
-use crate::{models::User, repository, validate::validate};
+use crate::{
+    models::{NewUser, User},
+    repository,
+    validate::validate,
+};
 use actix_identity::Identity;
 use actix_web::web::{block, Data, HttpResponse, Json};
 use serde::Serialize;
 use validator::Validate;
+
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+pub struct EmailRegistRequest {
+    #[validate(length(
+        min = 6,
+        message = "last_name is required and must be at least 6 characters"
+    ))]
+    pub username: String,
+
+    #[validate(email(message = "email must be a valid email"))]
+    pub email: String,
+
+    #[validate(length(
+        min = 6,
+        message = "password is required and must be at least 6 characters"
+    ))]
+    pub password: String,
+}
+
+/// 邮箱注册用户
+pub async fn email_regist(
+    pool: Data<PoolType>,
+    params: Json<EmailRegistRequest>,
+) -> Result<Json<User>, ServiceError> {
+    validate(&params)?;
+    let pass = hash(&params.password);
+    let new_user = NewUser {
+        username: params.username.clone(),
+        email: params.email.clone(),
+        password: pass,
+        bio: None,
+        avatar: None,
+    };
+    let user = block(move || repository::create_user(&pool, &new_user)).await?;
+    respond_json(user)
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct LoginRequest {
