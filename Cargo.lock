@@ -1349,7 +1349,6 @@ dependencies = [
  "lazy_static",
  "log",
  "openssl",
- "r2d2",
  "rayon",
  "redis-async",
  "serde",

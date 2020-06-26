@@ -8,13 +8,11 @@
 //! This file throws the Config struct into a CONFIG lazy_static to avoid
 //! multiple processing.
 
-use crate::database::DatabaseConnection;
 use dotenv::dotenv;
 use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Config {
     pub auth_salt: String,
-    pub database: DatabaseConnection,
     pub database_url: String,
     pub jwt_expiration: i64,
     pub jwt_key: String,

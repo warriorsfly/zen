@@ -3,7 +3,7 @@ pub mod tests {
 
     use crate::{
         config::CONFIG,
-        database::{init_pool, Pool},
+        database::{init_pool, PoolType},
         state::{new_state, AppState},
     };
     use diesel::PgConnection;
@@ -13,7 +13,7 @@ pub mod tests {
         new_state::<String>()
     }
     // Mock applicate sql connection pool
-    pub fn get_pool() -> Pool<PgConnection> {
-        init_pool::<PgConnection>(CONFIG.clone()).unwrap()
+    pub fn get_pool() -> PoolType {
+        init_pool(CONFIG.clone()).unwrap()
     }
 }
