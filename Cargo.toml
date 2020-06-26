@@ -11,32 +11,36 @@ actix-cors = "0.3.0-alpha.1"
 actix-identity = "0.3.0-alpha.1"
 actix-redis = "0.9.0-alpha.2"
 actix-rt = "1.1"
-actix-service = "1.0.5"
-argon2rs = "0.2.5"
+actix-service = "1"
+argon2rs = "0.2"
+chrono ={version = "0.4.11",features = ["serde"]}
 # casbin = "0.4"
-derive_more = "0.99.8"
-diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono","postgres", "r2d2", "uuid", "serde_json"]}
-# diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono","mysql", "postgres", "sqlite", "r2d2", "uuid", "serde_json"]}
+derive_more = "0.99"
+# diesel = {version="1.4.5", features = ["chrono", "postgres", "r2d2", "uuid", "serde_json"]}
+diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres", "r2d2", "uuid", "serde_json"]}
 dotenv = "0.15"
 envy = "0.4"
-env_logger = "0.7.1"
-futures = "0.3.5"
-jsonwebtoken = "7.1.2"
+env_logger = "0.7"
+futures = "0.3"
+jsonwebtoken = "7.1"
 lazy_static = "1.4"
-log = "0.4.8"
+# listenfd = "0.3"
+log = "0.4"
 # openssl = "*"
 openssl = "0.10"
 # openssl-probe = "0.1"
-rayon = "1.3.1"
-redis-async = "0.6.3"
+rayon = "1"
+redis-async = "0.6"
 r2d2 = "0.8"
-serde = "1.0.114"
-serde_derive = "1.0.114"
-serde_json = "1.0.55"
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
+
+time = { version = "0.2", features = ["serde"] }
 # tonic = "0.2.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }
-validator = "0.10.1"
-validator_derive = "0.10.1"
+validator = "0.10"
+validator_derive = "0.10"
 
 
 # Needed for sqlite.
@@ -45,12 +49,6 @@ validator_derive = "0.10.1"
 [dependencies.actix-web]
 version = "3.0.0-alpha.3"
 # features = ["rustls"]
-
-# features = ["chrono", "postgres", "r2d2", "uuid"]
-
-[dependencies.chrono]
-version = "0.4.11"
-features = ["serde"]
 
 [dev-dependencies]
 actix-http-test = "2.0.0-alpha.1"

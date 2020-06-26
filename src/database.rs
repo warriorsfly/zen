@@ -2,11 +2,8 @@ use crate::config::Config;
 use crate::config::CONFIG;
 use actix_web::web;
 use diesel::{
-    // mysql::MysqlConnection,
-    pg::PgConnection,
     r2d2::{ConnectionManager, PoolError, R2D2Connection},
-    // sqlite::SqliteConnection,
-    // MysqlConnection,
+    PgConnection,
 };
 #[serde(untagged)]
 #[derive(Clone, Deserialize, Debug, PartialEq)]

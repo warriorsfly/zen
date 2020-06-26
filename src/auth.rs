@@ -1,29 +1,11 @@
 use crate::config::CONFIG;
 use crate::errors::ServiceError;
+use actix_identity::{CookieIdentityPolicy, IdentityService};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
-use derive_more::Display;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use uuid::Uuid;
 
-// #[derive(Clone, Debug, Display, Serialize, Deserialize, PartialEq)]
-// pub enum Claim {
-//     /// 手机登录
-//     #[display(fmt = "")]
-//     Phone { uid: Uuid, phone: String },
-//     /// 邮箱登录
-//     #[display(fmt = "")]
-//     Email { uid: Uuid, email: String },
-//     /// 邮箱登录
-//     #[display(fmt = "")]
-//     Name { uid: Uuid, name: String },
-//     /// QQ登录
-//     #[display(fmt = "")]
-//     QQ { uid: Uuid, qq: String },
-//     /// 邮箱登录
-//     #[display(fmt = "")]
-//     Wechat { uid: Uuid, openid: String },
-// }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
     pub id: Uuid,
@@ -65,6 +47,15 @@ pub fn hash(password: &str) -> String {
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect()
+}
+
+pub fn get_identity_service() -> IdentityService<CookieIdentityPolicy> {
+    IdentityService::new(
+        CookieIdentityPolicy::new(&CONFIG.session_key.as_ref())
+            .name(&CONFIG.session_name)
+            .max_age_time(time::Duration::minutes(CONFIG.session_timeout))
+            .secure(CONFIG.session_secure),
+    )
 }
 
 #[cfg(test)]
