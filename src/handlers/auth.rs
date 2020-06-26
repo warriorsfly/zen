@@ -1,102 +1,134 @@
+use crate::auth::{create_jwt, hash, PrivateClaim};
+use crate::database::PoolType;
+use crate::errors::ServiceError;
+use crate::helpers::{respond_json, respond_ok};
 use crate::{
-    auth::{create_jwt, PrivateClaim},
-    config::CONFIG,
-    database::PoolType,
-    errors::ServiceError,
-    helpers::respond_json,
-    models::account::{auth::find_by_3rd_account, base::UserBase},
+    models::{NewUser, User},
+    repository,
+    validate::validate,
 };
-use actix_web::{
-    self,
-    client::Client,
-    web::{Data, Json, Path},
-};
-
+use actix_identity::Identity;
+use actix_web::web::{block, Data, HttpResponse, Json};
 use serde::Serialize;
-use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct CertRequest {
+pub struct EmailRegistRequest {
+    #[validate(length(
+        min = 6,
+        message = "last_name is required and must be at least 6 characters"
+    ))]
     pub username: String,
+
+    #[validate(email(message = "email must be a valid email"))]
+    pub email: String,
 
     #[validate(length(
         min = 6,
-        max = 16,
-        message = "certificate is required and must be at least 6 characters,at most 16 characters"
+        message = "password is required and must be at least 6 characters"
     ))]
     pub password: String,
-
-    pub identity_type: i32,
 }
 
-/// 登录返回数据
-#[derive(Debug, Deserialize, Serialize)]
-pub struct LoginResponse {
-    pub access_token: String,
-    pub user: UserBase,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct WxSessionResponse {
-    pub openid: Option<String>,
-    pub session_key: Option<String>,
-    pub unionid: Option<String>,
-    pub errcode: Option<i32>,
-    pub errmsg: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct WxUserInfoResponse {
-    /// 昵称
-    pub nickName: String,
-    /// 头像地址
-    pub avatarUrl: String,
-    /// 性别
-    pub gender: i32,
-    pub country: String,
-    pub province: String,
-    pub city: String,
-}
-
-/// 微信小程序登录接口
-pub async fn wx_login(
-    // id: Identity,
+/// 邮箱注册用户
+pub async fn email_regist(
     pool: Data<PoolType>,
-    jscode: Path<String>,
-    client: Data<Client>,
-) -> Result<Json<LoginResponse>, ServiceError> {
-    let url =format!("https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code",appid=&CONFIG.wechat_appid,secret=&CONFIG.wechat_secret,code=jscode);
-    let body = client
-        .get(url)
-        .send()
-        .await
-        .map_err(|err| ServiceError::BadRequest(err.to_string()))?
-        .body()
-        .await
-        .map_err(|err| ServiceError::BadRequest(err.to_string()))?;
+    params: Json<EmailRegistRequest>,
+) -> Result<Json<User>, ServiceError> {
+    validate(&params)?;
+    let pass = hash(&params.password);
+    let new_user = NewUser {
+        username: params.username.clone(),
+        email: params.email.clone(),
+        password: pass,
+        bio: None,
+        avatar: None,
+    };
+    let user = block(move || repository::create_user(&pool, &new_user)).await?;
+    respond_json(user)
+}
 
-    let res: WxSessionResponse =
-        serde_json::from_slice(&body).map_err(|err| ServiceError::BadRequest(err.to_string()))?;
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+pub struct LoginRequest {
+    #[validate(email(message = "email must be a valid email"))]
+    pub email: String,
 
-    // response errorcode==None means  the right openid and session_key
-    // find in redis session,if exists,return it
-    // if doesn't exist,query entity in user_auth,where identity_type=5 and identifier=res.openid
-    // if no result,insert one,identity_type=5 and identifier=res.openid,login_session=res.session_key,
-    //   insert one in user_base
-    //return user_auth entity,create jwt,create redis session
-    if let Some(ident) = res.openid {
-        let res = find_by_3rd_account(&pool, &ident, 3)?;
-        let uid =
-            Uuid::parse_str(&res.0.uid).map_err(|err| ServiceError::UuidError(err.to_string()))?;
-        let identifier = res.0.identifier.clone();
-        let jwt = create_jwt(PrivateClaim::new(uid, identifier, 3))?;
-        // id.remember(jwt);
-        respond_json(LoginResponse {
-            access_token: jwt,
-            user: res.1,
-        })
-    } else {
-        Err(ServiceError::BadRequest(res.errmsg.unwrap()))
+    #[validate(length(
+        min = 6,
+        message = "password is required and must be at least 6 characters"
+    ))]
+    pub password: String,
+}
+
+/// Login a user
+/// Create and remember their JWT
+pub async fn login(
+    id: Identity,
+    pool: Data<PoolType>,
+    params: Json<LoginRequest>,
+) -> Result<Json<User>, ServiceError> {
+    validate(&params)?;
+
+    // Validate that the email + hashed password matches
+    let hashed = hash(&params.password);
+    let user = block(move || repository::find_by_email(&pool, &params.email, &hashed)).await?;
+
+    // Create a JWT
+    let private_claim = PrivateClaim::new(user.id, user.email.clone());
+    let jwt = create_jwt(private_claim)?;
+
+    // Remember the token
+    id.remember(jwt);
+    respond_json(user)
+}
+
+/// Logout a user
+/// Forget their user_id
+pub async fn logout(id: Identity) -> Result<HttpResponse, ServiceError> {
+    id.forget();
+    respond_ok()
+}
+
+#[cfg(test)]
+pub mod tests {
+    use super::*;
+    use actix_identity::Identity;
+    use actix_web::{test, FromRequest};
+
+    async fn get_identity() -> Identity {
+        let (request, mut payload) =
+            test::TestRequest::with_header("content-type", "application/json").to_http_parts();
+        let identity = Option::<Identity>::from_request(&request, &mut payload)
+            .await
+            .unwrap()
+            .unwrap();
+        identity
     }
+
+    // async fn login_user() -> Result<Json<UserResponse>, ServiceError> {
+    //     let params = LoginRequest {
+    //         email: "warriorsfly@gmail.com".into(),
+    //         password: "123456".into(),
+    //     };
+    //     let identity = get_identity().await;
+    //     login(identity, get_data_pool(), Json(params)).await
+    // }
+
+    async fn logout_user() -> Result<HttpResponse, ServiceError> {
+        let identity = get_identity().await;
+        logout(identity).await
+    }
+
+    // #[actix_rt::test]
+    // async fn it_logs_a_user_in() {
+    //     let response = login_user().await;
+    //     assert!(response.is_ok());
+    // }
+
+    // #[actix_rt::test]
+    // async fn it_logs_a_user_out() {
+    //     login_user().await.unwrap();
+    //     let response = logout_user().await;
+    //     assert!(response.is_ok());
+    // }
 }

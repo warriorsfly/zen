@@ -1,4 +1,3 @@
-pub mod admin;
+// pub mod article;
 pub mod auth;
-pub mod third_api;
 pub mod user;

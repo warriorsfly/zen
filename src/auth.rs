@@ -1,43 +1,23 @@
 use crate::config::CONFIG;
 use crate::errors::ServiceError;
+use actix_identity::{CookieIdentityPolicy, IdentityService};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
-use derive_more::Display;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Display, Serialize, Deserialize, PartialEq)]
-pub enum Claim {
-    /// 手机登录
-    #[display(fmt = "")]
-    Phone { uid: Uuid, phone: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Email { uid: Uuid, email: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Name { uid: Uuid, name: String },
-    /// QQ登录
-    #[display(fmt = "")]
-    QQ { uid: Uuid, qq: String },
-    /// 邮箱登录
-    #[display(fmt = "")]
-    Wechat { uid: Uuid, openid: String },
-}
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
-    pub uid: Uuid,
-    pub identifier: String,
-    pub identity_type: i32,
-    exp: i64,
+    pub id: Uuid,
+    pub username: String,
+    pub exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(uid: Uuid, identifier: String, identity_type: i32) -> Self {
+    pub fn new(id: Uuid, username: String) -> Self {
         Self {
-            uid,
-            identifier,
-            identity_type,
+            id,
+            username,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
         }
     }
@@ -69,20 +49,20 @@ pub fn hash(password: &str) -> String {
         .collect()
 }
 
-/// Gets the identity service for injection into an Actix app
-// pub fn get_identity_service() -> IdentityService<CookieIdentityPolicy> {
-//     IdentityService::new(
-//         CookieIdentityPolicy::new(&CONFIG.session_key.as_ref())
-//             .name(&CONFIG.session_name)
-//             .max_age_time(chrono::Duration::minutes(CONFIG.session_timeout))
-//             .secure(CONFIG.session_secure),
-//     )
-// }
+pub fn get_identity_service() -> IdentityService<CookieIdentityPolicy> {
+    IdentityService::new(
+        CookieIdentityPolicy::new(&CONFIG.session_key.as_ref())
+            .name(&CONFIG.session_name)
+            .max_age_time(time::Duration::minutes(CONFIG.session_timeout))
+            .secure(CONFIG.session_secure),
+    )
+}
 
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    static PHONE: &str = "18326069658";
+    // static PHONE: &str = "18326069658";
+    // static ID: Uuid = Uuid::new_v4();
 
     #[test]
     fn it_hashes_a_password() {
@@ -98,24 +78,23 @@ pub mod tests {
         let hashed_again = hash(password);
         println!("{}", hashed);
         println!("{}", hashed_again);
-        // println!(format!(
-        //     "hashed is {:02x},hashed_again is {:02x}",
-        //     hashed,
-        //     hashed_again.clone()
-        // ));
         assert_eq!(hashed, hashed_again);
     }
 
     #[test]
     fn it_creates_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
+        let id = Uuid::new_v4();
+        let phone = "password";
+        let private_claim = PrivateClaim::new(id, phone.into());
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
 
     #[test]
     fn it_decodes_a_jwt() {
-        let private_claim = PrivateClaim::new(Uuid::new_v4(), PHONE.into(), 1);
+        let id = Uuid::new_v4();
+        let phone = "password";
+        let private_claim = PrivateClaim::new(id, phone.into());
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);

@@ -1,34 +1,35 @@
 use crate::{
-    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes,
-    state::new_state,
+    auth::get_identity_service, awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool,
+    routes::routes, state::new_state,
 };
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
-use listenfd::ListenFd;
 
 pub async fn server() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
     let data = new_state::<String>();
-    let mut listenfd = ListenFd::from_env();
 
-    let mut server = HttpServer::new(move || {
+    let server = HttpServer::new(move || {
         App::new()
-            .configure(add_pool)
-            // .configure(add_cache)
+            // 添加缓存
+            .configure(add_cache)
+            // 添加awc
             .configure(add_awc)
+            // 添加跨域
             .wrap(Cors::new().supports_credentials().finish())
+            // 添加日志
             .wrap(Logger::default())
-            // .app_data(data.clone())
+            // 添加Identity服务
+            .wrap(get_identity_service())
+            // 连接数据库
+            .configure(add_pool)
+            // 添加状态
             .app_data(data.clone())
+            // 注册路由
             .configure(routes)
     });
 
-    server = if let Some(l) = listenfd.take_tcp_listener(0)? {
-        server.listen(l)?
-    } else {
-        server.bind(&CONFIG.server)?
-    };
-    server.run().await
+    server.bind(&CONFIG.server)?.run().await
 }

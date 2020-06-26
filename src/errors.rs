@@ -20,7 +20,7 @@ pub enum ServiceError {
     InternalServerError(String),
     NotFound(String),
     UuidError(String),
-    PoolError(String),
+    DataBaseError(String),
     #[display(fmt = "")]
     ValidationError(Vec<String>),
     Unauthorized(String),
@@ -90,7 +90,7 @@ impl From<DBError> for ServiceError {
 /// Convert PoolErrors to ServiceErrors
 impl From<PoolError> for ServiceError {
     fn from(error: PoolError) -> ServiceError {
-        ServiceError::PoolError(error.to_string())
+        ServiceError::DataBaseError(error.to_string())
     }
 }
 

@@ -8,13 +8,11 @@
 //! This file throws the Config struct into a CONFIG lazy_static to avoid
 //! multiple processing.
 
-use crate::database::DatabaseConnection;
 use dotenv::dotenv;
 use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Config {
     pub auth_salt: String,
-    pub database: DatabaseConnection,
     pub database_url: String,
     pub jwt_expiration: i64,
     pub jwt_key: String,
@@ -29,6 +27,9 @@ pub struct Config {
     pub wechat_appid: String,
     pub wechat_secret: String,
 }
+
+/// js toISOString() in test suit can't handle chrono's default precision
+pub const DATE_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
 lazy_static! {
     pub static ref CONFIG: Config = get_config();

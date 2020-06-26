@@ -1,3 +1,4 @@
+extern crate openssl;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
@@ -24,6 +25,7 @@ pub mod handlers;
 mod helpers;
 mod middleware;
 mod models;
+mod repository;
 mod routes;
 mod schema;
 mod server;
