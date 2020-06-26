@@ -1,9 +1,8 @@
 use crate::auth::{create_jwt, hash, PrivateClaim};
 use crate::database::PoolType;
 use crate::errors::ServiceError;
-use crate::handlers::user::UserResponse;
 use crate::helpers::{respond_json, respond_ok};
-use crate::validate::validate;
+use crate::{models::User, repository, validate::validate};
 use actix_identity::Identity;
 use actix_web::web::{block, Data, HttpResponse, Json};
 use serde::Serialize;
@@ -23,25 +22,25 @@ pub struct LoginRequest {
 
 /// Login a user
 /// Create and remember their JWT
-// pub async fn login(
-//     id: Identity,
-//     pool: Data<PoolType>,
-//     params: Json<LoginRequest>,
-// ) -> Result<Json<UserResponse>, ServiceError> {
-//     validate(&params)?;
+pub async fn login(
+    id: Identity,
+    pool: Data<PoolType>,
+    params: Json<LoginRequest>,
+) -> Result<Json<User>, ServiceError> {
+    validate(&params)?;
 
-//     // Validate that the email + hashed password matches
-//     let hashed = hash(&params.password);
-//     let user = block(move || find_by_auth(&pool, &params.email, &hashed)).await?;
+    // Validate that the email + hashed password matches
+    let hashed = hash(&params.password);
+    let user = block(move || repository::find_by_email(&pool, &params.email, &hashed)).await?;
 
-//     // Create a JWT
-//     let private_claim = PrivateClaim::new(user.id, user.email.clone());
-//     let jwt = create_jwt(private_claim)?;
+    // Create a JWT
+    let private_claim = PrivateClaim::new(user.id, user.email.clone());
+    let jwt = create_jwt(private_claim)?;
 
-//     // Remember the token
-//     id.remember(jwt);
-//     respond_json(user.into())
-// }
+    // Remember the token
+    id.remember(jwt);
+    respond_json(user)
+}
 
 /// Logout a user
 /// Forget their user_id

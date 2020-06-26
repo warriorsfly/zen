@@ -1,13 +1,14 @@
-use chrono::NaiveDateTime;
-use uuid::Uuid;
-
 use crate::schema::users;
+use chrono::NaiveDateTime;
+use serde::Serialize;
+use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct User {
     pub id: Uuid,
     pub username: String,
     pub email: String,
+    #[serde(skip_serializing)]
     pub password: String,
     pub bio: Option<String>,
     pub avatar: Option<String>,
@@ -18,7 +19,6 @@ pub struct User {
 #[derive(Debug, Insertable)]
 #[table_name = "users"]
 pub struct NewUser {
-    // pub id: Uuid,
     pub username: String,
     pub email: String,
     pub password: String,

@@ -1,4 +1,5 @@
 use crate::{
+    auth::hash,
     database::PoolType,
     errors::ServiceError,
     helpers::respond_json,
@@ -12,17 +13,8 @@ use serde::Serialize;
 use uuid::Uuid;
 use validator::Validate;
 
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UserResponse {
-    pub id: Uuid,
-    pub username: String,
-    pub email: String,
-    pub bio: Option<String>,
-    pub avatar: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
-pub struct UsersResponse(pub Vec<UserResponse>);
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UsersResponse(pub Vec<User>);
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct CreateUserRequest {
@@ -69,11 +61,11 @@ pub async fn create_user(
     params: Json<CreateUserRequest>,
 ) -> Result<Json<User>, ServiceError> {
     validate(&params)?;
-
+    let pass = hash(&params.password);
     let new_user = NewUser {
         username: params.username.clone(),
         email: params.email.clone(),
-        password: params.password.clone(),
+        password: pass,
         bio: None,
         avatar: None,
     };

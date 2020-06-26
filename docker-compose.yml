@@ -3,13 +3,16 @@ version: "3.3"
 services:
   
   api:
-    image: warriorsfly/mimosa
+    image: warriorsfly/mimosa:0.1.2
     container_name: mimosa.api
     ports:
       - "3000:3000"
 
     env_file:
       - .env.docker
+
+    environment:
+      - DATABASE_URL=postgres://allen:walker@db/mimosa.postgres
 
     depends_on:
       - db
@@ -38,6 +41,8 @@ services:
   redis:
     image: redis
     container_name: mimosa.redis
+    ports:
+      - "6379:6379"
   # 后面要补上 flutter前端
   # application:
 volumes:
