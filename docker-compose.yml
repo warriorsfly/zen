@@ -10,8 +10,6 @@ services:
 
     env_file:
       - .env.docker
-    # environment:
-    #   - DATABASE_URL=postgres://db
 
     depends_on:
       - db
@@ -38,10 +36,10 @@ services:
     restart: unless-stopped
 
   redis:
-    image:redis
-
+    image: redis
+    container_name: mimosa.redis
   # 后面要补上 flutter前端
-  # mimosa-frontend:
+  # application:
 volumes:
   database_data:
     driver: local
