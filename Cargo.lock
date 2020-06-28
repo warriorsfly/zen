@@ -744,9 +744,9 @@ dependencies = [
 
 [[package]]
 name = "derive_more"
-version = "0.99.8"
+version = "0.99.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc655351f820d774679da6cdc23355a93de496867d8203496675162e17b1d671"
+checksum = "298998b1cf6b5b2c8a7b023dfd45821825ce3ba8a8af55c921a0e734e4653f76"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -756,7 +756,7 @@ dependencies = [
 [[package]]
 name = "diesel"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#b4c57c2247875cab34967de792531590abadb7db"
+source = "git+https://github.com/diesel-rs/diesel#6cc2cf5651638dbeb17093c54a7db28726324de4"
 dependencies = [
  "bitflags",
  "byteorder",
@@ -771,7 +771,7 @@ dependencies = [
 [[package]]
 name = "diesel_derives"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#b4c57c2247875cab34967de792531590abadb7db"
+source = "git+https://github.com/diesel-rs/diesel#6cc2cf5651638dbeb17093c54a7db28726324de4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1160,9 +1160,9 @@ dependencies = [
 
 [[package]]
 name = "instant"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7777a24a1ce5de49fcdde84ec46efa487c3af49d5b6e6e0a50367cc5c1096182"
+checksum = "69da7ce1490173c2bf4d26bc8be429aaeeaf4cce6c4b970b7949651fa17655fe"
 
 [[package]]
 name = "iovec"

@@ -31,7 +31,7 @@ pub struct EmailRegistRequest {
 }
 
 /// 邮箱注册用户
-pub async fn email_regist(
+pub async fn signup(
     pool: Data<PoolType>,
     params: Json<EmailRegistRequest>,
 ) -> Result<Json<User>, ServiceError> {
@@ -92,12 +92,14 @@ pub async fn logout(id: Identity) -> Result<HttpResponse, ServiceError> {
 #[cfg(test)]
 pub mod tests {
     use super::*;
+    use crate::tests::helpers::tests::get_data_pool;
     use actix_identity::Identity;
     use actix_web::{test, FromRequest};
 
     async fn get_identity() -> Identity {
         let (request, mut payload) =
             test::TestRequest::with_header("content-type", "application/json").to_http_parts();
+
         let identity = Option::<Identity>::from_request(&request, &mut payload)
             .await
             .unwrap()
@@ -105,30 +107,30 @@ pub mod tests {
         identity
     }
 
-    // async fn login_user() -> Result<Json<UserResponse>, ServiceError> {
-    //     let params = LoginRequest {
-    //         email: "warriorsfly@gmail.com".into(),
-    //         password: "123456".into(),
-    //     };
-    //     let identity = get_identity().await;
-    //     login(identity, get_data_pool(), Json(params)).await
-    // }
+    async fn login_user() -> Result<Json<User>, ServiceError> {
+        let params = LoginRequest {
+            email: "warriorsfly@gmail.com".into(),
+            password: "123456".into(),
+        };
+        let identity = get_identity().await;
+        login(identity, get_data_pool(), Json(params)).await
+    }
 
     async fn logout_user() -> Result<HttpResponse, ServiceError> {
         let identity = get_identity().await;
         logout(identity).await
     }
 
-    // #[actix_rt::test]
-    // async fn it_logs_a_user_in() {
-    //     let response = login_user().await;
-    //     assert!(response.is_ok());
-    // }
+    #[actix_rt::test]
+    async fn it_logs_a_user_in() {
+        let response = login_user().await;
+        assert!(response.is_ok());
+    }
 
-    // #[actix_rt::test]
-    // async fn it_logs_a_user_out() {
-    //     login_user().await.unwrap();
-    //     let response = logout_user().await;
-    //     assert!(response.is_ok());
-    // }
+    #[actix_rt::test]
+    async fn it_logs_a_user_out() {
+        login_user().await.unwrap();
+        let response = logout_user().await;
+        assert!(response.is_ok());
+    }
 }

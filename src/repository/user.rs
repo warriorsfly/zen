@@ -18,6 +18,14 @@ pub fn create_user(pool: &PoolType, item: &NewUser) -> Result<User, ServiceError
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
+// pub fn find_users(pool: &PoolType) -> Result<Vec<User>, ServiceError> {
+//     // use crate::schema::users::{self, dsl::*};
+//     let conn = pool.get()?;
+//     users.
+//         .get_result::<User>(&conn)
+//         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+// }
+
 pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
