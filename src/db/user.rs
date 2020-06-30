@@ -4,7 +4,10 @@ use crate::{
     models::{NewUser, User, UserChange},
 };
 
-use crate::schema::users::{self, dsl::*};
+use crate::{
+    auth::hash,
+    schema::users::{self, dsl::*},
+};
 use diesel::{insert_into, prelude::*, update};
 use uuid::Uuid;
 
@@ -38,6 +41,7 @@ pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError
 pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, ServiceError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
+
     users
         .filter(email.eq(em))
         .filter(password.eq(pa))

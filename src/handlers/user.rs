@@ -1,10 +1,10 @@
 use crate::{
     auth::hash,
     database::PoolType,
+    db,
     errors::ServiceError,
     helpers::respond_json,
     models::{NewUser, User, UserChange},
-    repository::find_user_by_id,
     validate::validate,
 };
 use actix_web::web::{block, Data, Json, Path};
@@ -33,7 +33,7 @@ pub async fn get_user(
     user_id: Path<Uuid>,
     pool: Data<PoolType>,
 ) -> Result<Json<User>, ServiceError> {
-    let user = block(move || find_user_by_id(&pool, &*user_id)).await?;
+    let user = block(move || db::find_user_by_id(&pool, &*user_id)).await?;
     respond_json(user)
 }
 

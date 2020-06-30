@@ -2,15 +2,21 @@
 pub mod tests {
 
     use crate::{
-        auth::get_identity_service,
         cache::add_cache,
         config::CONFIG,
+        constants,
         database::{add_pool, init_pool, PoolType},
-        handlers::auth::LoginRequest,
+        handlers::auth::{LoginRequest, LoginResponse},
+        middleware,
         routes::routes,
         state::{new_state, AppState},
     };
-    use actix_web::{dev::ServiceResponse, test, web::Data, App};
+    use actix_web::{
+        dev::ServiceResponse,
+        test,
+        web::{Data, Json},
+        App,
+    };
     use serde::Serialize;
 
     /// Helper for HTTP GET integration tests
@@ -22,15 +28,15 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
+                .wrap(middleware::Authentication)
                 .configure(add_cache)
                 .app_data(app_state())
-                .wrap(get_identity_service())
                 .configure(add_pool)
                 .configure(routes),
         )
         .await;
 
-        let response = test::call_service(
+        let json: LoginResponse = test::read_response_json(
             &mut app,
             test::TestRequest::post()
                 .set_json(&login_request)
@@ -39,12 +45,12 @@ pub mod tests {
         )
         .await;
 
-        let cookie = response.response().cookies().next().unwrap().to_owned();
+        // let cookie = response.response().headers().get(constants::AUTHORIZATION);
 
         test::call_service(
             &mut app,
             test::TestRequest::get()
-                .cookie(cookie.clone())
+                .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )
@@ -62,13 +68,12 @@ pub mod tests {
             App::new()
                 .configure(add_cache)
                 .app_data(app_state())
-                .wrap(get_identity_service())
                 .configure(add_pool)
                 .configure(routes),
         )
         .await;
 
-        let response = test::call_service(
+        let json: LoginResponse = test::read_response_json(
             &mut app,
             test::TestRequest::post()
                 .set_json(&login_request)
@@ -77,13 +82,11 @@ pub mod tests {
         )
         .await;
 
-        let cookie = response.response().cookies().next().unwrap().to_owned();
-
         test::call_service(
             &mut app,
             test::TestRequest::post()
                 .set_json(&params)
-                .cookie(cookie.clone())
+                .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )
@@ -120,7 +123,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(get_identity_service())
+                .wrap(middleware::Authentication)
                 .configure(add_pool)
                 .configure(routes),
         )

@@ -1,6 +1,5 @@
 use crate::config::CONFIG;
 use crate::errors::ServiceError;
-use actix_identity::{CookieIdentityPolicy, IdentityService};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -47,15 +46,6 @@ pub fn hash(password: &str) -> String {
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect()
-}
-
-pub fn get_identity_service() -> IdentityService<CookieIdentityPolicy> {
-    IdentityService::new(
-        CookieIdentityPolicy::new(&CONFIG.session_key.as_ref())
-            .name(&CONFIG.session_name)
-            .max_age_time(time::Duration::minutes(CONFIG.session_timeout))
-            .secure(CONFIG.session_secure),
-    )
 }
 
 #[cfg(test)]

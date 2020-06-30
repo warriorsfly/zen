@@ -3,7 +3,7 @@ version: "3.3"
 services:
   
   api:
-    image: warriorsfly/mimosa:0.1.2
+    image: warriorsfly/mimosa
     container_name: mimosa.api
     ports:
       - "3000:3000"
