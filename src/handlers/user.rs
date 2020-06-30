@@ -1,14 +1,6 @@
-use crate::{
-    auth::hash,
-    database::PoolType,
-    db,
-    errors::ServiceError,
-    helpers::respond_json,
-    models::{NewUser, User, UserChange},
-    validate::validate,
-};
+use crate::{database::PoolType, db, errors::ServiceError, helpers::respond_json, models::User};
 use actix_web::web::{block, Data, Json, Path};
-use rayon::prelude::*;
+
 use serde::Serialize;
 use uuid::Uuid;
 use validator::Validate;

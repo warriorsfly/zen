@@ -4,10 +4,7 @@ use crate::{
     models::{NewUser, User, UserChange},
 };
 
-use crate::{
-    auth::hash,
-    schema::users::{self, dsl::*},
-};
+use crate::schema::users::{self, dsl::*};
 use diesel::{insert_into, prelude::*, update};
 use uuid::Uuid;
 
