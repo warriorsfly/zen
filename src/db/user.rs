@@ -4,7 +4,10 @@ use crate::{
     models::{NewUser, User, UserChange},
 };
 
-use crate::schema::users::{self, dsl::*};
+use crate::{
+    auth::PrivateClaim,
+    schema::users::{self, dsl::*},
+};
 use diesel::{insert_into, prelude::*, update};
 use uuid::Uuid;
 
@@ -47,10 +50,14 @@ pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, Servic
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
-pub fn update_user(pool: &PoolType, uid: &Uuid, item: &UserChange) -> Result<User, ServiceError> {
+pub fn update_user(
+    claim: PrivateClaim,
+    pool: &PoolType,
+    item: &UserChange,
+) -> Result<User, ServiceError> {
     let conn = pool.get()?;
     let user = users
-        .find(uid)
+        .find(claim.id)
         .get_result::<User>(&conn)
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
     update(users::table)

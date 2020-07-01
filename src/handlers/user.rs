@@ -1,4 +1,7 @@
-use crate::{database::PoolType, db, errors::ServiceError, helpers::respond_json, models::User};
+use crate::{
+    auth::PrivateClaim, database::PoolType, db, errors::ServiceError, helpers::respond_json,
+    models::User,
+};
 use actix_web::web::{block, Data, Json, Path};
 
 use serde::Serialize;
@@ -22,10 +25,10 @@ pub struct UpdateUserRequest {
 
 /// Get a user
 pub async fn get_user(
-    user_id: Path<Uuid>,
+    claim: PrivateClaim,
     pool: Data<PoolType>,
 ) -> Result<Json<User>, ServiceError> {
-    let user = block(move || db::find_user_by_id(&pool, &*user_id)).await?;
+    let user = block(move || db::find_user_by_id(&pool, &claim.id)).await?;
     respond_json(user)
 }
 

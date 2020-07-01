@@ -79,17 +79,10 @@ pub async fn login(
     let user = block(move || db::find_by_email(&pool, &params.email, &hashed)).await?;
 
     // Create a JWT
-    let private_claim = PrivateClaim::new(user.id, user.email.clone());
+    let private_claim = PrivateClaim::new(user.id);
     let jwt = create_jwt(private_claim)?;
     let response = LoginResponse { user, token: jwt };
     respond_json(response)
-}
-
-/// Logout a user
-/// Forget their user_id
-pub async fn logout() -> Result<HttpResponse, ServiceError> {
-    // id.forget();
-    respond_ok()
 }
 
 #[cfg(test)]
@@ -117,21 +110,9 @@ pub mod tests {
         login(get_data_pool(), Json(params)).await
     }
 
-    async fn logout_user() -> Result<HttpResponse, ServiceError> {
-        // let claim = get_private_claim().await;
-        logout().await
-    }
-
     #[actix_rt::test]
     async fn it_logs_a_user_in() {
         let response = login_user().await;
-        assert!(response.is_ok());
-    }
-
-    #[actix_rt::test]
-    async fn it_logs_a_user_out() {
-        login_user().await.unwrap();
-        let response = logout_user().await;
         assert!(response.is_ok());
     }
 }
