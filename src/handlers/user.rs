@@ -25,8 +25,9 @@ pub struct UpdateUserRequest {
 
 /// Get a user
 pub async fn get_user(
-    claim: PrivateClaim,
     pool: Data<PoolType>,
+
+    claim: PrivateClaim,
 ) -> Result<Json<User>, ServiceError> {
     let user = block(move || db::find_user_by_id(&pool, &claim.id)).await?;
     respond_json(user)
