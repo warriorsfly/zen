@@ -11,7 +11,7 @@ services:
       - DATABASE_URL=postgres://allen:walker@db/mimosa.postgres
     depends_on:
       - db
-      - redis
+      # - redis
 
   db:
     image: postgres
