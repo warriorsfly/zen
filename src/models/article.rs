@@ -1,9 +1,9 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};;
 use uuid::Uuid;
-
+use serde::Serialize;
 use crate::schema::{articles, favorite_articles};
 
-#[derive(Debug, Queryable, Identifiable)]
+#[derive(Queryable)]
 pub struct Article {
     pub id: Uuid,
     pub author_id: Uuid,
@@ -11,33 +11,38 @@ pub struct Article {
     pub title: String,
     pub description: String,
     pub body: String,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
+    pub tag_list: Vec<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Insertable)]
-#[table_name = "articles"]
-pub struct NewArticle {
+impl Article {
+    pub fn attach(self, author: User, favorited: bool) -> ArticleJson {
+        ArticleJson {
+            id: self.id,
+            slug: self.slug,
+            title: self.title,
+            description: self.description,
+            body: self.body,
+            author,
+            tags: self.tag_list,
+            created_at: self.created_at.format(DATE_FORMAT).to_string(),
+            updated_at: self.updated_at.format(DATE_FORMAT).to_string(),
+            favorites_count: self.favorites_count,
+            favorited,
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct ArticleJson {
     pub id: Uuid,
-    pub author_id: Uuid,
+    pub author: User,
     pub slug: String,
     pub title: String,
     pub description: String,
     pub body: String,
-}
-
-#[derive(Debug, AsChangeset)]
-#[table_name = "articles"]
-pub struct ArticleChange {
-    pub slug: Option<String>,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub body: Option<String>,
-}
-
-#[derive(Debug, Insertable)]
-#[table_name = "favorite_articles"]
-pub struct NewFavoriteArticle {
-    pub user_id: Uuid,
-    pub article_id: Uuid,
+    pub tags: Vec<String>,
+    pub created_at: String,
+    pub updated_at: String,
 }

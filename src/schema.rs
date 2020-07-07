@@ -1,13 +1,4 @@
 table! {
-    article_tags (article_id, tag_name) {
-        article_id -> Uuid,
-        tag_name -> Text,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
-    }
-}
-
-table! {
     articles (id) {
         id -> Uuid,
         author_id -> Uuid,
@@ -15,6 +6,7 @@ table! {
         title -> Text,
         description -> Text,
         body -> Text,
+        tag_list -> Array<Text>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -62,7 +54,6 @@ table! {
     }
 }
 
-joinable!(article_tags -> articles (article_id));
 joinable!(articles -> users (author_id));
 joinable!(comments -> articles (article_id));
 joinable!(comments -> users (user_id));
@@ -70,7 +61,6 @@ joinable!(favorite_articles -> articles (article_id));
 joinable!(favorite_articles -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
-    article_tags,
     articles,
     comments,
     favorite_articles,
