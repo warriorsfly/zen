@@ -1,5 +1,5 @@
 use crate::auth::{create_jwt, hash, PrivateClaim};
-use crate::database::PoolType;
+use crate::database::DatabasePoolType;
 use crate::errors::ServiceError;
 use crate::helpers::{respond_json, respond_ok};
 use crate::{
@@ -12,7 +12,7 @@ use serde::Serialize;
 use validator::Validate;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct SignupRequest {
+pub struct SignupData {
     #[validate(length(
         min = 6,
         message = "last_name is required and must be at least 6 characters"
@@ -31,8 +31,8 @@ pub struct SignupRequest {
 
 /// 邮箱注册用户
 pub async fn signup(
-    pool: Data<PoolType>,
-    params: Json<SignupRequest>,
+    pool: Data<DatabasePoolType>,
+    params: Json<SignupData>,
 ) -> Result<Json<User>, ServiceError> {
     validate(&params)?;
     let pass = hash(&params.password);
@@ -48,7 +48,7 @@ pub async fn signup(
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct LoginRequest {
+pub struct LoginData {
     #[validate(email(message = "email must be a valid email"))]
     pub email: String,
 
@@ -69,8 +69,8 @@ pub struct LoginResponse {
 /// Login a user
 /// Create and remember their JWT
 pub async fn login(
-    pool: Data<PoolType>,
-    params: Json<LoginRequest>,
+    pool: Data<DatabasePoolType>,
+    params: Json<LoginData>,
 ) -> Result<Json<LoginResponse>, ServiceError> {
     validate(&params)?;
 
@@ -103,7 +103,7 @@ pub mod tests {
     }
 
     async fn login_user() -> Result<Json<LoginResponse>, ServiceError> {
-        let params = LoginRequest {
+        let params = LoginData {
             email: "warriorsfly@gmail.com".into(),
             password: "123456".into(),
         };

@@ -1,5 +1,5 @@
 use crate::{
-    database::PoolType,
+    database::DatabasePoolType,
     errors::ServiceError,
     models::{NewUser, User, UserChange},
 };
@@ -9,7 +9,7 @@ use diesel::{insert_into, prelude::*, update};
 use uuid::Uuid;
 
 /// create user
-pub fn create_user(pool: &PoolType, item: &NewUser) -> Result<User, ServiceError> {
+pub fn create_user(pool: &DatabasePoolType, item: &NewUser) -> Result<User, ServiceError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
     insert_into(users)
@@ -26,7 +26,7 @@ pub fn create_user(pool: &PoolType, item: &NewUser) -> Result<User, ServiceError
 //         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 // }
 
-pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError> {
+pub fn find_user_by_id(pool: &DatabasePoolType, uid: &Uuid) -> Result<User, ServiceError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
     users
@@ -35,7 +35,7 @@ pub fn find_user_by_id(pool: &PoolType, uid: &Uuid) -> Result<User, ServiceError
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
-pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, ServiceError> {
+pub fn find_by_email(pool: &DatabasePoolType, em: &str, pa: &str) -> Result<User, ServiceError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
 
@@ -47,7 +47,11 @@ pub fn find_by_email(pool: &PoolType, em: &str, pa: &str) -> Result<User, Servic
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
-pub fn update_user(pool: &PoolType, uid: Uuid, item: &UserChange) -> Result<User, ServiceError> {
+pub fn update_user(
+    pool: &DatabasePoolType,
+    uid: Uuid,
+    item: &UserChange,
+) -> Result<User, ServiceError> {
     let conn = pool.get()?;
     let user = users
         .find(uid)

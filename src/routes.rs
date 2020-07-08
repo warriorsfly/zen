@@ -1,4 +1,4 @@
-use crate::handlers::{auth, user};
+use crate::handlers::{article, auth, user};
 use actix_web::web;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
@@ -13,6 +13,11 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/users").route("/{id}", web::get().to(user::get_user)), // .route("/{id}", web::put().to(update_user))
                                                                                     // .route("/{id}", web::delete().to(delete_user))
                                                                                     // .route("", web::get().to(get_users))
+            )
+            .service(
+                web::scope("/articles").route("", web::post().to(article::post_article)), // .route("/{id}", web::put().to(update_user))
+                                                                                          // .route("/{id}", web::delete().to(delete_user))
+                                                                                          // .route("", web::get().to(get_users))
             ),
     );
 }

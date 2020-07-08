@@ -1,6 +1,6 @@
 use crate::{
-    auth::PrivateClaim, database::PoolType, db, errors::ServiceError, helpers::respond_json,
-    models::User,
+    auth::PrivateClaim, database::DatabasePoolType, db, errors::ServiceError,
+    helpers::respond_json, models::User,
 };
 use actix_web::web::{block, Data, Json, Path};
 
@@ -25,7 +25,7 @@ pub struct UpdateUserRequest {
 
 /// Get a user
 pub async fn get_user(
-    pool: Data<PoolType>,
+    pool: Data<DatabasePoolType>,
 
     claim: PrivateClaim,
 ) -> Result<Json<User>, ServiceError> {

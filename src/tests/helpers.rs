@@ -5,8 +5,8 @@ pub mod tests {
         cache::add_cache,
         config::CONFIG,
         constants,
-        database::{add_pool, init_pool, PoolType},
-        handlers::auth::{LoginRequest, LoginResponse},
+        database::{add_pool, init_pool, DatabasePoolType},
+        handlers::auth::{LoginData, LoginResponse},
         middleware,
         routes::routes,
         state::{new_state, AppState},
@@ -21,7 +21,7 @@ pub mod tests {
 
     /// Helper for HTTP GET integration tests
     pub async fn test_get(route: &str) -> ServiceResponse {
-        let login_request = LoginRequest {
+        let login_request = LoginData {
             email: "warriorsfly@gmail.com".into(),
             password: "123456".into(),
         };
@@ -59,7 +59,7 @@ pub mod tests {
 
     /// Helper for HTTP GET integration tests
     pub async fn test_post<T: Serialize>(route: &str, params: T) -> ServiceResponse {
-        let login_request = LoginRequest {
+        let login_request = LoginData {
             email: "warriorsfly@gmail.com".into(),
             password: "123456".into(),
         };
@@ -106,17 +106,17 @@ pub mod tests {
     }
 
     // Mock applicate sql connection pool
-    pub fn get_pool() -> PoolType {
+    pub fn get_pool() -> DatabasePoolType {
         init_pool(CONFIG.clone()).unwrap()
     }
 
     /// Returns a r2d2 Pooled Connection wrappedn in Actix Application Data
-    pub fn get_data_pool() -> Data<PoolType> {
+    pub fn get_data_pool() -> Data<DatabasePoolType> {
         Data::new(get_pool())
     }
 
     pub async fn login() -> ServiceResponse {
-        let login_request = LoginRequest {
+        let login_request = LoginData {
             email: "warriorsfly@gmail.com".into(),
             password: "123456".into(),
         };

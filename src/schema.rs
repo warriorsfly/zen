@@ -7,8 +7,8 @@ table! {
         description -> Text,
         body -> Text,
         tag_list -> Array<Text>,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -18,8 +18,8 @@ table! {
         article_id -> Uuid,
         user_id -> Uuid,
         body -> Text,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -27,8 +27,8 @@ table! {
     favorite_articles (user_id, article_id) {
         user_id -> Uuid,
         article_id -> Uuid,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -36,8 +36,8 @@ table! {
     followers (user_id, follower_id) {
         user_id -> Uuid,
         follower_id -> Uuid,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -49,8 +49,8 @@ table! {
         password -> Text,
         bio -> Nullable<Text>,
         avatar -> Nullable<Text>,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 

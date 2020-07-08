@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 use crate::schema::followers;
@@ -8,8 +8,8 @@ use crate::schema::followers;
 pub struct Follower {
     pub user_id: Uuid,
     pub follower_id: Uuid,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Insertable)]
