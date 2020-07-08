@@ -13,7 +13,7 @@ const SUFFIX_LEN: usize = 6;
 const DEFAULT_LIMIT: usize = 20;
 #[derive(Debug, Insertable)]
 #[table_name = "articles"]
-pub struct NewArticle<'a> {
+struct NewArticle<'a> {
     pub author_id: &'a Uuid,
     pub slug: &'a str,
     pub title: &'a str,
