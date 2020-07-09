@@ -1,50 +1,43 @@
-version: "3.3"
-
+version: "3"
 services:
-  
   api:
-    image: warriorsfly/mimosa:0.1.2
-    container_name: mimosa.api
+    image: warriorsfly/mimosa
+    container_name: mimosa-api
     ports:
       - "3000:3000"
-
     env_file:
       - .env.docker
-
     environment:
-      - DATABASE_URL=postgres://allen:walker@db/mimosa.postgres
-
+      - DATABASE_URL=postgres://allen:walker@db/mimosa-postgres
     depends_on:
       - db
       - redis
 
   db:
     image: postgres
-    container_name: mimosa.postgres
+    container_name: mimosa-postgres
     environment:
       - POSTGRES_USER=allen
       - POSTGRES_PASSWORD=walker
-      - POSTGRES_DB=mimosa.postgres
-
-    volumes:
-      - database_data:/var/lib/postgres/:delegated
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d
-
+      - POSTGRES_DB=mimosa-postgres
     ports:
       - "5432:5432"
-
     volumes:
       - database_data:/var/lib/postgres/data
-
-    restart: unless-stopped
+    restart: always
 
   redis:
     image: redis
-    container_name: mimosa.redis
+    container_name: mimosa-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/var/lib/redis/data
+    restart: always
   # 后面要补上 flutter前端
   # application:
 volumes:
   database_data:
+    driver: local
+  redis_data:
     driver: local

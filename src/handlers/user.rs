@@ -1,14 +1,9 @@
 use crate::{
-    auth::hash,
-    database::PoolType,
-    errors::ServiceError,
-    helpers::respond_json,
-    models::{NewUser, User, UserChange},
-    repository,
-    validate::validate,
+    auth::PrivateClaim, database::DatabasePoolType, db, errors::ServiceError,
+    helpers::respond_json, models::User,
 };
 use actix_web::web::{block, Data, Json, Path};
-use rayon::prelude::*;
+
 use serde::Serialize;
 use uuid::Uuid;
 use validator::Validate;
@@ -29,13 +24,14 @@ pub struct UpdateUserRequest {
 }
 
 /// Get a user
-// pub async fn get_user(
-//     user_id: Path<Uuid>,
-//     pool: Data<PoolType>,
-// ) -> Result<Json<UserResponse>, ServiceError> {
-//     let user = block(move || find(&pool, *user_id)).await?;
-//     respond_json(user)
-// }
+pub async fn get_user(
+    pool: Data<DatabasePoolType>,
+
+    claim: PrivateClaim,
+) -> Result<Json<User>, ServiceError> {
+    let user = block(move || db::find_user_by_id(&pool, &claim.id)).await?;
+    respond_json(user)
+}
 
 // /// Update a user
 // pub async fn update_user(

@@ -5,9 +5,9 @@ use diesel::{
     PgConnection,
 };
 
-pub type PoolType = Pool<ConnectionManager<PgConnection>>;
+pub type DatabasePoolType = Pool<ConnectionManager<PgConnection>>;
 
-pub fn init_pool(config: Config) -> Result<PoolType, PoolError> {
+pub fn init_pool(config: Config) -> Result<DatabasePoolType, PoolError> {
     let manager = ConnectionManager::<PgConnection>::new(config.database_url);
     Pool::builder().build(manager)
 }

@@ -1,6 +1,5 @@
 use crate::config::CONFIG;
 use crate::errors::ServiceError;
-use actix_identity::{CookieIdentityPolicy, IdentityService};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -9,15 +8,13 @@ use uuid::Uuid;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrivateClaim {
     pub id: Uuid,
-    pub username: String,
     pub exp: i64,
 }
 
 impl PrivateClaim {
-    pub fn new(id: Uuid, username: String) -> Self {
+    pub fn new(id: Uuid) -> Self {
         Self {
             id,
-            username,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
         }
     }
@@ -49,15 +46,6 @@ pub fn hash(password: &str) -> String {
         .collect()
 }
 
-pub fn get_identity_service() -> IdentityService<CookieIdentityPolicy> {
-    IdentityService::new(
-        CookieIdentityPolicy::new(&CONFIG.session_key.as_ref())
-            .name(&CONFIG.session_name)
-            .max_age_time(time::Duration::minutes(CONFIG.session_timeout))
-            .secure(CONFIG.session_secure),
-    )
-}
-
 #[cfg(test)]
 pub mod tests {
     use super::*;
@@ -84,8 +72,7 @@ pub mod tests {
     #[test]
     fn it_creates_a_jwt() {
         let id = Uuid::new_v4();
-        let phone = "password";
-        let private_claim = PrivateClaim::new(id, phone.into());
+        let private_claim = PrivateClaim::new(id);
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
@@ -93,8 +80,7 @@ pub mod tests {
     #[test]
     fn it_decodes_a_jwt() {
         let id = Uuid::new_v4();
-        let phone = "password";
-        let private_claim = PrivateClaim::new(id, phone.into());
+        let private_claim = PrivateClaim::new(id);
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);

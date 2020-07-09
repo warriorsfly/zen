@@ -1,6 +1,6 @@
 use crate::{
-    auth::get_identity_service, awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool,
-    routes::routes, state::new_state,
+    awc::add_awc, cache::add_cache, config::CONFIG, database::add_pool, routes::routes,
+    state::new_state,
 };
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
@@ -21,8 +21,6 @@ pub async fn server() -> std::io::Result<()> {
             .wrap(Cors::new().supports_credentials().finish())
             // 添加日志
             .wrap(Logger::default())
-            // 添加Identity服务
-            .wrap(get_identity_service())
             // 连接数据库
             .configure(add_pool)
             // 添加状态

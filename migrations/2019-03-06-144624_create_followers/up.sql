@@ -2,8 +2,8 @@ CREATE TABLE followers (
     user_id UUID NOT NULL REFERENCES users (id),
     follower_id UUID NOT NULL REFERENCES users (id),
     PRIMARY KEY (user_id, follower_id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 -- followers_user_id_idx index may already be created, as postgres automatically indexes only the leftmost column in a composite key

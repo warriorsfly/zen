@@ -5,8 +5,9 @@ CREATE TABLE articles (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     body TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    tag_list TEXT[] NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX articles_author_id_idx ON articles (author_id);
@@ -18,8 +19,8 @@ CREATE TABLE favorite_articles (
     user_id UUID NOT NULL REFERENCES users (id),
     article_id UUID NOT NULL REFERENCES articles (id),
     PRIMARY KEY (user_id, article_id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX favorite_articles_user_id_idx ON favorite_articles (user_id);

@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 use crate::schema::comments;
@@ -9,8 +9,8 @@ pub struct Comment {
     pub article_id: Uuid,
     pub user_id: Uuid,
     pub body: String,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Insertable)]
