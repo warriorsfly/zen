@@ -1,6 +1,6 @@
 use crate::{
     auth::PrivateClaim,
-    cache::{set, Cache},
+    cache::{Cache},
     database::DatabasePoolType,
     db,
     errors::ServiceError,
