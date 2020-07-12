@@ -6,7 +6,9 @@ edition = "2018"
 
 [dependencies]
 actix = "0.10.0-alpha.3"
+actix-web="3.0.0-alpha.3"
 actix-cors = "0.3.0-alpha.1"
+actix-http-test="2.0.0-alpha.1"
 # actix-files = "0.2.1"
 # actix-identity = "0.3.0-alpha.1"
 actix-redis = "0.9.0-alpha.2"
@@ -46,13 +48,6 @@ validator_derive = "0.10"
 
 # Needed for sqlite.
 # libsqlite3-sys = { version = "*", features = ["bundled"] }
-
-[dependencies.actix-web]
-version = "3.0.0-alpha.3"
-# features = ["rustls"]
-
-[dev-dependencies]
-actix-http-test = "2.0.0-alpha.1"
 
 [features]
 default = ["random-suffix"]

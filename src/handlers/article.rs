@@ -1,12 +1,6 @@
 use crate::{
-    auth::PrivateClaim,
-    cache::{Cache},
-    database::DatabasePoolType,
-    db,
-    errors::ServiceError,
-    helpers::respond_json,
-    models::ArticleJson,
-    validate::validate,
+    auth::PrivateClaim, cache::Cache, database::DatabasePoolType, db, errors::ServiceError,
+    helpers::respond_json, models::ArticleJson, validate::validate,
 };
 use actix_web::web::{block, Data, Json};
 use serde::Deserialize;
