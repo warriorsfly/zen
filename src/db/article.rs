@@ -1,16 +1,17 @@
+use super::Paginate;
 use crate::{
+    auth::PrivateClaim,
     database::DatabasePoolType,
     errors::ServiceError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, users},
 };
-use diesel::{insert_into, prelude::*};
+use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use slug;
 use uuid::Uuid;
 
 const SUFFIX_LEN: usize = 6;
-const DEFAULT_LIMIT: usize = 20;
 #[derive(Debug, Insertable)]
 #[table_name = "articles"]
 struct NewArticle<'a> {
@@ -81,3 +82,92 @@ fn generate_suffix(len: usize) -> String {
     let mut rng = thread_rng();
     (0..len).map(|_| rng.sample(Alphanumeric)).collect()
 }
+
+#[derive(Deserialize, Default)]
+pub struct ArticleFindData {
+    tag: Option<String>,
+    author: Option<String>,
+    favorited: Option<String>,
+    offset: Option<i64>,
+}
+
+/// 查找文章
+pub fn search(
+    pool: &DatabasePoolType,
+    uid: Option<Uuid>,
+    params: &ArticleFindData,
+) -> Result<(Vec<ArticleJson>, i64), ServiceError> {
+    let conn = pool.get()?;
+    let mut query = articles::table
+        .inner_join(users::table)
+        .left_join(
+            favorite_articles::table.on(
+                articles::id
+                    .eq(favorite_articles::article_id)
+                    .and(favorite_articles::user_id.eq(uid.unwrap())), // TODO: refactor
+            ),
+        )
+        .select((
+            articles::all_columns,
+            users::all_columns,
+            favorite_articles::user_id.nullable().is_not_null(),
+        ))
+        .into_boxed();
+
+    if let Some(ref author) = params.author {
+        query = query.filter(users::username.eq(author));
+    }
+
+    if let Some(ref tag) = params.tag {
+        query = query.or_filter(articles::tag_list.contains(vec![tag]));
+    }
+    if let Some(ref favorited) = params.favorited {
+        let result = users::table
+            .select(users::id)
+            .filter(users::username.eq(favorited))
+            .get_result::<Uuid>(&conn)?;
+        query = query.filter(diesel::dsl::sql(&format!(
+            "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
+            result
+        )));
+    }
+
+    query
+        .paginate(params.offset.unwrap_or_default())
+        // .offset(params.offset.unwrap_or_default())
+        // .limit(params.limit.unwrap_or(c))
+        .load_and_count_pages::<(Article, User, bool)>(&conn)
+        .map(|(res, count)| {
+            (
+                res.into_iter()
+                    .map(|(article, author, favorited)| article.attach(author, 10, favorited))
+                    .collect::<Vec<ArticleJson>>(),
+                count,
+            )
+        })
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+}
+
+// fn find_one(pool: &DatabasePoolType, slug: &str, uid: Uuid) -> Result<ArticleJson, ServiceError> {
+//     let conn = pool.get()?;
+//     let article = articles::table
+//         .filter(articles::slug.eq(slug))
+//         .first::<Article>(&conn)
+//         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+
+//     let article_json = article.attach(author, 10, favorited)
+// }
+
+// fn is_favorited(conn:&PgConnection,article:&Article,uid:&Uuid)->bool{
+//     use diesel::dsl::exists;
+//     use diesel::select;
+
+//     select(exists(favorite_articles::table.find((uid,article.id))))
+// }
+
+// fn populate(conn:&PgConnection,article:Article,favorites_count:u32,favorited:bool)->ArticleJson{
+//     let author = users::table.find(article.author_id).get_result::<User>(conn).expect("Error loading authors");
+
+//     article.attach(author, favorites_count, favorited)
+
+// }

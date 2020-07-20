@@ -1,4 +1,5 @@
 mod article;
+mod pagination;
 mod user;
 
-pub use self::{article::*, user::*};
+pub use self::{article::*, pagination::*, user::*};

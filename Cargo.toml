@@ -1,12 +1,12 @@
 [package]
 name = "mimosa"
-version = "0.2.1" #完成一个模块+0.1,完成一个功能+0.0.1
+version = "0.2.2" #完成一个模块+0.1,完成一个功能+0.0.1
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
 
 [dependencies]
 actix = "0.10.0-alpha.3"
-actix-web="3.0.0-alpha.3"
+actix-web="3.0.0-beta.1"
 actix-cors = "0.3.0-alpha.1"
 actix-http-test="2.0.0-alpha.1"
 # actix-files = "0.2.1"

@@ -3,6 +3,7 @@ use crate::{
     helpers::respond_json, models::ArticleJson, validate::validate,
 };
 use actix_web::web::{block, Data, Json};
+use db::ArticleFindData;
 use serde::Deserialize;
 use validator::Validate;
 
@@ -36,4 +37,15 @@ pub async fn post_article(
     })
     .await?;
     respond_json(new_article)
+}
+
+pub async fn search_article(
+    pool: Data<DatabasePoolType>,
+    redis: Cache,
+    claim: PrivateClaim,
+    params: Json<ArticleFindData>,
+) -> Result<Json<(Vec<ArticleJson>, i64)>, ServiceError> {
+    // validate(&params)?;
+    let articles = block(move || db::search(&pool, Some(claim.id), &params)).await?;
+    respond_json(articles)
 }
