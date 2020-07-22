@@ -1,5 +1,5 @@
 use crate::{
-    auth::PrivateClaim, cache::Cache, database::DatabasePoolType, db, errors::ServiceError,
+    auth::PrivateClaim, cache::Cache, database::DatabaseConnectionPool, db, errors::ServiceError,
     helpers::respond_json, models::ArticleJson, validate::validate,
 };
 use actix_web::web::{block, Data, Json};
@@ -19,7 +19,7 @@ pub struct NewArticle {
 }
 pub struct ArticleRequest {}
 pub async fn post_article(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     redis: Cache,
     claim: PrivateClaim,
     params: Json<NewArticle>,
@@ -40,7 +40,7 @@ pub async fn post_article(
 }
 
 pub async fn search_article(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     redis: Cache,
     claim: PrivateClaim,
     params: Json<ArticleFindData>,

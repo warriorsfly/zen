@@ -13,12 +13,13 @@ pub struct Article {
     pub description: String,
     pub body: String,
     pub tag_list: Vec<String>,
+    pub favorites_count: i32,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
 
 impl Article {
-    pub fn attach(self, author: User, favorites_count: u32, favorited: bool) -> ArticleJson {
+    pub fn attach(self, author: User, favorited: bool) -> ArticleJson {
         ArticleJson {
             id: self.id,
             slug: self.slug,
@@ -29,7 +30,7 @@ impl Article {
             tags: self.tag_list,
             created_at: self.created_at.format(DATE_FORMAT).to_string(),
             updated_at: self.updated_at.format(DATE_FORMAT).to_string(),
-            favorites_count: favorites_count,
+            favorites_count: self.favorites_count,
             favorited,
         }
     }
@@ -46,6 +47,6 @@ pub struct ArticleJson {
     pub tags: Vec<String>,
     pub created_at: String,
     pub updated_at: String,
-    pub favorites_count: u32,
+    pub favorites_count: i32,
     pub favorited: bool,
 }

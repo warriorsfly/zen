@@ -7,6 +7,7 @@ table! {
         description -> Text,
         body -> Text,
         tag_list -> Array<Text>,
+        favorites_count -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }
@@ -60,4 +61,10 @@ joinable!(comments -> users (user_id));
 joinable!(favorite_articles -> articles (article_id));
 joinable!(favorite_articles -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(articles, comments, favorite_articles, followers, users,);
+allow_tables_to_appear_in_same_query!(
+    articles,
+    comments,
+    favorite_articles,
+    followers,
+    users,
+);

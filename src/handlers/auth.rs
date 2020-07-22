@@ -1,5 +1,5 @@
 use crate::auth::{create_jwt, hash, PrivateClaim};
-use crate::database::DatabasePoolType;
+use crate::database::DatabaseConnectionPool;
 use crate::errors::ServiceError;
 use crate::helpers::{respond_json, respond_ok};
 use crate::{
@@ -31,7 +31,7 @@ pub struct SignupData {
 
 /// 邮箱注册用户
 pub async fn signup(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
 ) -> Result<Json<User>, ServiceError> {
     validate(&params)?;
@@ -69,7 +69,7 @@ pub struct LoginResponse {
 /// Login a user
 /// Create and remember their JWT
 pub async fn login(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<LoginData>,
 ) -> Result<Json<LoginResponse>, ServiceError> {
     validate(&params)?;

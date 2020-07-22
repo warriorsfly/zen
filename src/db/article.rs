@@ -1,7 +1,7 @@
 use super::Paginate;
 use crate::{
     auth::PrivateClaim,
-    database::DatabasePoolType,
+    database::DatabaseConnectionPool,
     errors::ServiceError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, users},
@@ -41,7 +41,7 @@ pub struct NewFavoriteArticle {
 
 /// 创建文章
 pub fn create_article(
-    pool: &DatabasePoolType,
+    pool: &DatabaseConnectionPool,
     author: &Uuid,
     title: &str,
     description: &str,
@@ -67,7 +67,7 @@ pub fn create_article(
         .get_result::<Article>(&conn)
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
 
-    Ok(new_article.attach(author, 0, false))
+    Ok(new_article.attach(author, false))
 }
 
 fn slugify(title: &str) -> String {
@@ -93,7 +93,7 @@ pub struct ArticleFindData {
 
 /// 查找文章
 pub fn search(
-    pool: &DatabasePoolType,
+    pool: &DatabaseConnectionPool,
     uid: Option<Uuid>,
     params: &ArticleFindData,
 ) -> Result<(Vec<ArticleJson>, i64), ServiceError> {
@@ -140,7 +140,7 @@ pub fn search(
         .map(|(res, count)| {
             (
                 res.into_iter()
-                    .map(|(article, author, favorited)| article.attach(author, 10, favorited))
+                    .map(|(article, author, favorited)| article.attach(author, favorited))
                     .collect::<Vec<ArticleJson>>(),
                 count,
             )

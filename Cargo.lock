@@ -73,9 +73,9 @@ dependencies = [
 
 [[package]]
 name = "actix-http"
-version = "2.0.0-beta.1"
+version = "2.0.0-beta.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33f501768e82e8548763b7f55309e2f8bcc7f9f4273c75b47af99ac2b2581f37"
+checksum = "44529cd6813ebf4a2f2a6ea36ffe88a0e4b0bc08b26ad0b8f7f4581d4d4f3247"
 dependencies = [
  "actix",
  "actix-codec",
@@ -522,9 +522,9 @@ checksum = "f8aac770f1885fd7e387acedd76065302551364496e46b3dd00860b2f8359b9d"
 
 [[package]]
 name = "awc"
-version = "2.0.0-beta.1"
+version = "2.0.0-beta.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "374057b508d4083208996be82141891c2e14c8885f45991b21c1621200ab6df3"
+checksum = "eafb5c150b1dc89bf6aa5907ed6900534320c41920b5d6f13ff3ddb40f14dfac"
 dependencies = [
  "actix-codec",
  "actix-http",
@@ -774,12 +774,12 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-channel"
-version = "0.4.2"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cced8691919c02aac3cb0a1bc2e9b73d89e832bf9a06fc579d4e71b68a2da061"
+checksum = "09ee0cc8804d5393478d743b035099520087a5186f3b93fa58cec08fa62407b6"
 dependencies = [
+ "cfg-if",
  "crossbeam-utils",
- "maybe-uninit",
 ]
 
 [[package]]
@@ -860,7 +860,7 @@ checksum = "850878694b7933ca4c9569d30a34b55031b9b139ee1fc7b94a527c4ef960d690"
 [[package]]
 name = "diesel"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#b271cbbf69d8f4474e1767e1b43f24c54ff64888"
+source = "git+https://github.com/diesel-rs/diesel#6827dba6d7ff404eb2ef76bbd8ee44aa571993e7"
 dependencies = [
  "bitflags",
  "byteorder",
@@ -875,7 +875,7 @@ dependencies = [
 [[package]]
 name = "diesel_derives"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#b271cbbf69d8f4474e1767e1b43f24c54ff64888"
+source = "git+https://github.com/diesel-rs/diesel#6827dba6d7ff404eb2ef76bbd8ee44aa571993e7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2352,9 +2352,9 @@ checksum = "502d53007c02d7605a05df1c1a73ee436952781653da5d0bf57ad608f66932c1"
 
 [[package]]
 name = "syn"
-version = "1.0.34"
+version = "1.0.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "936cae2873c940d92e697597c5eee105fb570cd5689c695806f672883653349b"
+checksum = "fb7f4c519df8c117855e19dd8cc851e89eb746fe7a73f0157e0d95fdec5369b0"
 dependencies = [
  "proc-macro2",
  "quote",
