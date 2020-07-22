@@ -1,10 +1,8 @@
-use super::Paginate;
+use super::{pagination, Paginate};
 use crate::{
-    auth::PrivateClaim,
-    database::DatabaseConnectionPool,
     errors::ServiceError,
     models::{Article, ArticleJson, User},
-    schema::{articles, favorite_articles, users},
+    schema::{articles, favorite_articles, followers, users},
 };
 use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
@@ -41,7 +39,7 @@ pub struct NewFavoriteArticle {
 
 /// 创建文章
 pub fn create_article(
-    pool: &DatabaseConnectionPool,
+    conn: &PgConnection,
     author: &Uuid,
     title: &str,
     description: &str,
@@ -56,15 +54,14 @@ pub fn create_article(
         body,
         tag_list: tags,
     };
-    let conn = pool.get()?;
     let author = users::table
         .find(author)
-        .get_result::<User>(&conn)
+        .get_result::<User>(conn)
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
 
     let new_article = insert_into(articles::table)
         .values(new_article)
-        .get_result::<Article>(&conn)
+        .get_result::<Article>(conn)
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
 
     Ok(new_article.attach(author, false))
@@ -92,12 +89,11 @@ pub struct ArticleFindData {
 }
 
 /// 查找文章
-pub fn search(
-    pool: &DatabaseConnectionPool,
+pub fn search_articles(
+    conn: &PgConnection,
     uid: Option<Uuid>,
     params: &ArticleFindData,
 ) -> Result<(Vec<ArticleJson>, i64), ServiceError> {
-    let conn = pool.get()?;
     let mut query = articles::table
         .inner_join(users::table)
         .left_join(
@@ -125,7 +121,7 @@ pub fn search(
         let result = users::table
             .select(users::id)
             .filter(users::username.eq(favorited))
-            .get_result::<Uuid>(&conn)?;
+            .get_result::<Uuid>(conn)?;
         query = query.filter(diesel::dsl::sql(&format!(
             "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
             result
@@ -136,7 +132,7 @@ pub fn search(
         .paginate(params.offset.unwrap_or_default())
         // .offset(params.offset.unwrap_or_default())
         // .limit(params.limit.unwrap_or(c))
-        .load_and_count_pages::<(Article, User, bool)>(&conn)
+        .load_and_count_pages::<(Article, User, bool)>(conn)
         .map(|(res, count)| {
             (
                 res.into_iter()
@@ -148,26 +144,148 @@ pub fn search(
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
 }
 
-// fn find_one(pool: &DatabasePoolType, slug: &str, uid: Uuid) -> Result<ArticleJson, ServiceError> {
-//     let conn = pool.get()?;
-//     let article = articles::table
-//         .filter(articles::slug.eq(slug))
-//         .first::<Article>(&conn)
-//         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+pub fn find_one_article(
+    conn: &PgConnection,
+    slug: &str,
+    uid: &Uuid,
+) -> Result<ArticleJson, ServiceError> {
+    let article = articles::table
+        .filter(articles::slug.eq(slug))
+        .first::<Article>(conn)
+        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+    let favorited = is_favorite_article(conn, &article, &uid);
 
-//     let article_json = article.attach(author, 10, favorited)
-// }
+    Ok(populate_article(conn, article, favorited))
+}
 
-// fn is_favorited(conn:&PgConnection,article:&Article,uid:&Uuid)->bool{
-//     use diesel::dsl::exists;
-//     use diesel::select;
+#[derive(Deserialize, Default)]
+pub struct FeedArticleData {
+    limit: Option<i64>,
+    offset: Option<i64>,
+}
 
-//     select(exists(favorite_articles::table.find((uid,article.id))))
-// }
+pub fn feed_article(conn: &PgConnection, params: FeedArticleData, uid: &Uuid) -> Vec<ArticleJson> {
+    articles::table
+        .filter(
+            articles::author_id.eq_any(
+                followers::table
+                    .select(followers::user_id)
+                    .filter(followers::follower_id.eq(uid)),
+            ),
+        )
+        .inner_join(users::table)
+        .left_join(
+            favorite_articles::table.on(articles::id
+                .eq(favorite_articles::article_id)
+                .and(favorite_articles::user_id.eq(uid))),
+        )
+        .select((
+            articles::all_columns,
+            users::all_columns,
+            favorite_articles::user_id.nullable().is_not_null(),
+        ))
+        .limit(params.limit.unwrap_or(pagination::DEFAULT_PAGE_SIZE))
+        .offset(params.offset.unwrap_or(0))
+        .load::<(Article, User, bool)>(conn)
+        .expect("Cannot load feed")
+        .into_iter()
+        .map(|(article, author, favorited)| article.attach(author, favorited))
+        .collect()
+}
 
-// fn populate(conn:&PgConnection,article:Article,favorites_count:u32,favorited:bool)->ArticleJson{
-//     let author = users::table.find(article.author_id).get_result::<User>(conn).expect("Error loading authors");
+pub fn favorite_article(conn: &PgConnection, slug: &str, uid: &Uuid) -> Option<ArticleJson> {
+    conn.transaction::<_, diesel::result::Error, _>(|| {
+        let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+            .set(articles::favorites_count.eq(articles::favorites_count + 1))
+            .get_result::<Article>(conn)?;
+        diesel::insert_into(favorite_articles::table)
+            .values((
+                favorite_articles::user_id.eq(uid),
+                favorite_articles::article_id.eq(article.id),
+            ))
+            .execute(conn)?;
 
-//     article.attach(author, favorites_count, favorited)
+        Ok(populate_article(conn, article, true))
+    })
+    .map_err(|err| eprintln!("articles::favorite: {}", err))
+    .ok()
+}
 
-// }
+pub fn unfavorite_article(conn: &PgConnection, slug: &str, uid: &Uuid) -> Option<ArticleJson> {
+    conn.transaction::<_, diesel::result::Error, _>(|| {
+        let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+            .set(articles::favorites_count.eq(articles::favorites_count - 1))
+            .get_result::<Article>(conn)?;
+
+        diesel::delete(favorite_articles::table.find((uid, article.id))).execute(conn)?;
+
+        Ok(populate_article(conn, article, false))
+    })
+    .map_err(|err| eprintln!("articles::unfavorite: {}", err))
+    .ok()
+}
+
+#[derive(Deserialize, AsChangeset, Default, Clone)]
+#[table_name = "articles"]
+pub struct UpdateArticleData {
+    title: Option<String>,
+    description: Option<String>,
+    body: Option<String>,
+    #[serde(skip)]
+    slug: Option<String>,
+    tag_list: Vec<String>,
+}
+
+pub fn update_article(
+    conn: &PgConnection,
+    slug: &str,
+    uid: &Uuid,
+    mut data: UpdateArticleData,
+) -> Option<ArticleJson> {
+    if let Some(ref title) = data.title {
+        data.slug = Some(slugify(&title));
+    }
+    // TODO: check for not_found
+    let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+        .set(&data)
+        .get_result(conn)
+        .expect("Error loading article");
+
+    let favorited = is_favorite_article(conn, &article, uid);
+    Some(populate_article(conn, article, favorited))
+}
+
+pub fn delete_article(conn: &PgConnection, slug: &str, uid: &Uuid) {
+    let result = diesel::delete(
+        articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))),
+    )
+    .execute(conn);
+    if let Err(err) = result {
+        eprintln!("articles::delete: {}", err);
+    }
+}
+
+pub fn get_tags(conn: &PgConnection) -> Vec<String> {
+    articles::table
+        .select(diesel::dsl::sql("distinct unnest(tag_list)"))
+        .load::<String>(conn)
+        .expect("Cannot load tags")
+}
+
+fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &Uuid) -> bool {
+    use diesel::dsl::exists;
+    use diesel::select;
+
+    select(exists(favorite_articles::table.find((uid, article.id))))
+        .get_result(conn)
+        .unwrap_or(false)
+}
+
+fn populate_article(conn: &PgConnection, article: Article, favorited: bool) -> ArticleJson {
+    let author = users::table
+        .find(article.author_id)
+        .get_result::<User>(conn)
+        .expect("Error loading authors");
+
+    article.attach(author, favorited)
+}

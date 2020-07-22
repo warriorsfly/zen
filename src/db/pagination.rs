@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use diesel::query_builder::*;
 use diesel::query_dsl::methods::LoadQuery;
 use diesel::sql_types::BigInt;
-const DEFAULT_PAGE_SIZE: i64 = 20;
+pub const DEFAULT_PAGE_SIZE: i64 = 20;
 pub trait Paginate: Sized {
     fn paginate(self, page_index: i64) -> Paginated<Self>;
 }
@@ -27,7 +27,14 @@ pub struct Paginated<T> {
 
 impl<T> Paginated<T> {
     pub fn page_sizing(self, page_size: i64) -> Self {
-        Paginated { page_size, ..self }
+        if page_size == 0 {
+            Paginated { page_size, ..self }
+        } else {
+            Paginated {
+                page_size: DEFAULT_PAGE_SIZE,
+                ..self
+            }
+        }
     }
 
     pub fn load_and_count_pages<U>(self, conn: &PgConnection) -> QueryResult<(Vec<U>, i64)>
