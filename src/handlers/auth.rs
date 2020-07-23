@@ -1,13 +1,13 @@
-use crate::auth::{create_jwt, hash, PrivateClaim};
-use crate::database::DatabaseConnectionPool;
-use crate::errors::ServiceError;
-use crate::helpers::{respond_json, respond_ok};
 use crate::{
+    auth::{create_jwt, hash, PrivateClaim},
+    database::DatabaseConnectionPool,
     db,
+    errors::ServiceError,
+    helpers::respond_json,
     models::{NewUser, User},
     validate::validate,
 };
-use actix_web::web::{block, Data, HttpResponse, Json};
+use actix_web::web::{block, Data, Json};
 use serde::Serialize;
 use validator::Validate;
 

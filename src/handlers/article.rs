@@ -35,9 +35,8 @@ pub async fn create_article(
 ) -> Result<Json<ArticleJson>, ServiceError> {
     validate(&params)?;
     let new_article = block(move || {
-        let conn = &pool.get()?;
         db::create_article(
-            conn,
+            &pool,
             &claim.id,
             &params.title,
             &params.description,
@@ -56,11 +55,8 @@ pub async fn search_articles(
     params: Form<ArticleFindData>,
 ) -> Result<Json<(Vec<ArticleJson>, i64)>, ServiceError> {
     // validate(&params)?;
-    let articles = block(move || {
-        let conn = &pool.get()?;
-        db::search_articles(conn, Some(claim.id), &params)
-    })
-    .await?;
+    let articles =
+        block(move || db::search_articles(&pool.into_inner(), Some(claim.id), &params)).await?;
     respond_json(articles)
 }
 
@@ -70,11 +66,7 @@ pub async fn get_one_article(
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
-    let article = block(move || {
-        let conn = &pool.get()?;
-        db::find_one_article(conn, &slug, &claim.id)
-    })
-    .await?;
+    let article = block(move || db::find_one_article(&pool, &slug, &claim.id)).await?;
 
     respond_json(article)
 }
@@ -85,11 +77,7 @@ pub async fn favorite_article(
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
-    let article = block(move || {
-        let conn = &pool.get()?;
-        Ok(db::favorite_article(conn, &slug, &claim.id).unwrap())
-    })
-    .await?;
+    let article = block(move || Ok(db::favorite_article(&pool, &slug, &claim.id).unwrap())).await?;
 
     respond_json(article)
 }
@@ -100,11 +88,8 @@ pub async fn unfavorite_article(
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
-    let article = block(move || {
-        let conn = &pool.get()?;
-        Ok(db::unfavorite_article(conn, &slug, &claim.id).unwrap())
-    })
-    .await?;
+    let article =
+        block(move || Ok(db::unfavorite_article(&pool, &slug, &claim.id).unwrap())).await?;
 
     respond_json(article)
 }
@@ -115,11 +100,8 @@ pub async fn feed_articles(
     claim: PrivateClaim,
     slug: Form<FeedArticleData>,
 ) -> Result<Json<Vec<ArticleJson>>, ServiceError> {
-    let articles = block(move || {
-        let conn = &pool.get()?;
-        Ok(db::feed_article(conn, slug.into_inner(), &claim.id))
-    })
-    .await?;
+    let articles =
+        block(move || Ok(db::feed_article(&pool, slug.into_inner(), &claim.id))).await??;
 
     respond_json(articles)
 }
@@ -133,8 +115,7 @@ pub async fn update_article(
 ) -> Result<Json<ArticleJson>, ServiceError> {
     // validate(&params)?;
     let article = block(move || {
-        let conn = &pool.get()?;
-        Ok(db::update_article(conn, slug.as_ref(), &claim.id, params.into_inner()).unwrap())
+        Ok(db::update_article(&pool, slug.as_ref(), &claim.id, params.into_inner()).unwrap())
     })
     .await?;
 
@@ -148,11 +129,7 @@ pub async fn delete_article(
     slug: Path<String>,
 ) -> Result<HttpResponse, ServiceError> {
     // validate(&params)?;
-    block(move || {
-        let conn = &pool.get()?;
-        Ok(db::delete_article(conn, slug.as_ref(), &claim.id))
-    })
-    .await?;
+    block(move || db::delete_article(&pool, slug.as_ref(), &claim.id)).await?;
 
     respond_ok()
 }

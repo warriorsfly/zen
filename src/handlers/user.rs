@@ -2,10 +2,9 @@ use crate::{
     auth::PrivateClaim, database::DatabaseConnectionPool, db, errors::ServiceError,
     helpers::respond_json, models::User,
 };
-use actix_web::web::{block, Data, Json, Path};
+use actix_web::web::{block, Data, Json};
 
 use serde::Serialize;
-use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Serialize)]

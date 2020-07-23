@@ -57,7 +57,7 @@ pub fn update_user(
     item: &UserChange,
 ) -> Result<User, ServiceError> {
     let conn = pool.get()?;
-    let user = users
+    let _user = users
         .find(uid)
         .get_result::<User>(&conn)
         .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
