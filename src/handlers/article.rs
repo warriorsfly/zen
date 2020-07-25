@@ -1,6 +1,6 @@
 use crate::{
     auth::PrivateClaim,
-    cache::Cache,
+    // cache::Cache,
     database::DatabaseConnectionPool,
     db,
     errors::ServiceError,
@@ -29,7 +29,7 @@ pub struct NewArticle {
 pub struct ArticleRequest {}
 pub async fn create_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     params: Json<NewArticle>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
@@ -50,7 +50,7 @@ pub async fn create_article(
 
 pub async fn search_articles(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     params: Form<ArticleFindData>,
 ) -> Result<Json<(Vec<ArticleJson>, i64)>, ServiceError> {
@@ -62,7 +62,7 @@ pub async fn search_articles(
 
 pub async fn get_one_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
@@ -73,7 +73,7 @@ pub async fn get_one_article(
 
 pub async fn favorite_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
@@ -84,7 +84,7 @@ pub async fn favorite_article(
 
 pub async fn unfavorite_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
@@ -96,7 +96,7 @@ pub async fn unfavorite_article(
 
 pub async fn feed_articles(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Form<FeedArticleData>,
 ) -> Result<Json<Vec<ArticleJson>>, ServiceError> {
@@ -108,7 +108,7 @@ pub async fn feed_articles(
 
 pub async fn update_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
     params: Json<UpdateArticleData>,
@@ -124,7 +124,7 @@ pub async fn update_article(
 
 pub async fn delete_article(
     pool: Data<DatabaseConnectionPool>,
-    redis: Cache,
+    // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
 ) -> Result<HttpResponse, ServiceError> {

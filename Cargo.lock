@@ -833,7 +833,7 @@ checksum = "850878694b7933ca4c9569d30a34b55031b9b139ee1fc7b94a527c4ef960d690"
 [[package]]
 name = "diesel"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#6827dba6d7ff404eb2ef76bbd8ee44aa571993e7"
+source = "git+https://github.com/diesel-rs/diesel#bab0d242f37630c0c48e81e7dbe8b54a451380f4"
 dependencies = [
  "bitflags",
  "byteorder",
@@ -848,7 +848,7 @@ dependencies = [
 [[package]]
 name = "diesel_derives"
 version = "2.0.0"
-source = "git+https://github.com/diesel-rs/diesel#6827dba6d7ff404eb2ef76bbd8ee44aa571993e7"
+source = "git+https://github.com/diesel-rs/diesel#bab0d242f37630c0c48e81e7dbe8b54a451380f4"
 dependencies = [
  "proc-macro2",
  "quote",
