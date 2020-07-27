@@ -15,9 +15,9 @@ table! {
 
 table! {
     comments (id) {
-        id -> Int4,
+        id -> Uuid,
         article_id -> Uuid,
-        user_id -> Uuid,
+        author_id -> Uuid,
         body -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
@@ -57,8 +57,14 @@ table! {
 
 joinable!(articles -> users (author_id));
 joinable!(comments -> articles (article_id));
-joinable!(comments -> users (user_id));
+joinable!(comments -> users (author_id));
 joinable!(favorite_articles -> articles (article_id));
 joinable!(favorite_articles -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(articles, comments, favorite_articles, followers, users,);
+allow_tables_to_appear_in_same_query!(
+    articles,
+    comments,
+    favorite_articles,
+    followers,
+    users,
+);
