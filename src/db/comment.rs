@@ -46,7 +46,7 @@ pub fn create_comment(
 }
 
 //TODO 后续需要修改,要考虑分页的情况
-pub fn find_by_slug(
+pub fn find_comments_by_slug(
     pool: &DatabaseConnectionPool,
     slug: &str,
 ) -> Result<Vec<CommentJson>, ServiceError> {
@@ -67,6 +67,25 @@ pub fn find_by_slug(
     Ok(result)
 }
 
-// pub fn delete_comment(pool:&DatabaseConnectionPool,author:Uuid,slug:&str,comment_id:Uuid)->{
+pub fn delete_comment(
+    pool: &DatabaseConnectionPool,
+    author: Uuid,
+    slug: &str,
+    comment_id: Uuid,
+) -> Result<(), ServiceError> {
+    use diesel::dsl::exists;
+    use diesel::select;
+    let conn = pool.get()?;
+    let belongs_to_author_result = select(exists(
+        articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(author))),
+    ))
+    .get_result::<bool>(&conn)
+    .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+    if belongs_to_author_result {
+        let _result = diesel::delete(comments::table.find(comment_id))
+            .execute(&conn)
+            .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+    }
 
-// }
+    Ok(())
+}

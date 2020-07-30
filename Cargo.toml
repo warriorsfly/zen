@@ -38,8 +38,6 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 slug="0.1"
-
-time = { version = "0.2", features = ["serde"] }
 # tonic = "0.2.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }
 validator = "0.10"

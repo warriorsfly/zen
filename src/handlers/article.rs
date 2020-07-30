@@ -133,3 +133,7 @@ pub async fn delete_article(
 
     respond_ok()
 }
+
+// pub struct create_comment(pool:Data<DatabaseConnectionPool>,claim:PrivateClaim,slug:&str,)->Result<Json<Comment>,ServiceError>{
+//     block(move||db::create_comment(&pool, claim.id, slug, body))
+// }
