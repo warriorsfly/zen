@@ -125,10 +125,16 @@ pub fn search_articles(
             .select(users::id)
             .filter(users::username.eq(favorited))
             .get_result::<Uuid>(&conn)?;
-        query = query.filter(diesel::dsl::sql(&format!(
-            "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
-            result
-        )));
+
+        // query = query.filter(
+        //     favorite_articles::table::select(favorite_articles::article_id)
+        //         .filter(favorite_articles::user_id.eq(result))
+        //         .ex(articles::id),
+        // );
+        // query = query.filter(diesel::dsl::sql(&format!(
+        //     "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
+        //     result
+        // )).);
     }
 
     query
