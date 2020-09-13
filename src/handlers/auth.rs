@@ -110,7 +110,7 @@ pub mod tests {
         login(get_data_pool(), Json(params)).await
     }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_logs_a_user_in() {
     //     let response = login_user().await;
     //     assert!(response.is_ok());
