@@ -1,13 +1,13 @@
-use crate::auth::{create_jwt, hash, PrivateClaim};
-use crate::database::DatabasePoolType;
-use crate::errors::ServiceError;
-use crate::helpers::{respond_json, respond_ok};
 use crate::{
+    auth::{create_jwt, hash, PrivateClaim},
+    database::DatabaseConnectionPool,
     db,
+    errors::ServiceError,
+    helpers::respond_json,
     models::{NewUser, User},
     validate::validate,
 };
-use actix_web::web::{block, Data, HttpResponse, Json};
+use actix_web::web::{block, Data, Json};
 use serde::Serialize;
 use validator::Validate;
 
@@ -31,7 +31,7 @@ pub struct SignupData {
 
 /// 邮箱注册用户
 pub async fn signup(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
 ) -> Result<Json<User>, ServiceError> {
     validate(&params)?;
@@ -69,7 +69,7 @@ pub struct LoginResponse {
 /// Login a user
 /// Create and remember their JWT
 pub async fn login(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<LoginData>,
 ) -> Result<Json<LoginResponse>, ServiceError> {
     validate(&params)?;
@@ -110,7 +110,7 @@ pub mod tests {
         login(get_data_pool(), Json(params)).await
     }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_logs_a_user_in() {
     //     let response = login_user().await;
     //     assert!(response.is_ok());

@@ -5,7 +5,7 @@ pub mod tests {
         cache::add_cache,
         config::CONFIG,
         constants,
-        database::{add_pool, init_pool, DatabasePoolType},
+        database::{add_pool, init_pool, DatabaseConnectionPool},
         handlers::auth::{LoginData, LoginResponse},
         middleware,
         routes::routes,
@@ -106,12 +106,12 @@ pub mod tests {
     }
 
     // Mock applicate sql connection pool
-    pub fn get_pool() -> DatabasePoolType {
+    pub fn get_pool() -> DatabaseConnectionPool {
         init_pool(CONFIG.clone()).unwrap()
     }
 
     /// Returns a r2d2 Pooled Connection wrappedn in Actix Application Data
-    pub fn get_data_pool() -> Data<DatabasePoolType> {
+    pub fn get_data_pool() -> Data<DatabaseConnectionPool> {
         Data::new(get_pool())
     }
 

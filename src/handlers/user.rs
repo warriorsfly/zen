@@ -1,11 +1,10 @@
 use crate::{
-    auth::PrivateClaim, database::DatabasePoolType, db, errors::ServiceError,
+    auth::PrivateClaim, database::DatabaseConnectionPool, db, errors::ServiceError,
     helpers::respond_json, models::User,
 };
-use actix_web::web::{block, Data, Json, Path};
+use actix_web::web::{block, Data, Json};
 
 use serde::Serialize;
-use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -25,7 +24,7 @@ pub struct UpdateUserRequest {
 
 /// Get a user
 pub async fn get_user(
-    pool: Data<DatabasePoolType>,
+    pool: Data<DatabaseConnectionPool>,
 
     claim: PrivateClaim,
 ) -> Result<Json<User>, ServiceError> {
@@ -75,7 +74,7 @@ pub mod tests {
     //     get_all_users().0[0].id
     // }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_gets_a_user() {
     //     let first_user = &get_all_users().0[0];
     //     let user_id: Path<Uuid> = get_first_users_id().into();
@@ -83,7 +82,7 @@ pub mod tests {
     //     assert_eq!(response.into_inner(), *first_user);
     // }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_doesnt_find_a_user() {
     //     let uuid = Uuid::new_v4();
     //     let user_id: Path<Uuid> = uuid.into();
@@ -93,7 +92,7 @@ pub mod tests {
     //     assert_eq!(response.unwrap_err(), expected_error);
     // }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_creates_a_user() {
     //     let params = Json(CreateUserRequest {
     //         first_name: "Satoshi".into(),
@@ -107,7 +106,7 @@ pub mod tests {
     //     assert_eq!(response.into_inner().username, params.first_name);
     // }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_updates_a_user() {
     //     let first_user = &get_all_users().0[0];
     //     let user_id: Path<Uuid> = get_first_users_id().into();
@@ -121,7 +120,7 @@ pub mod tests {
     //     assert_eq!(response.into_inner().user, params.first_name);
     // }
 
-    // #[actix_rt::test]
+    // #[actix_web::test]
     // async fn it_deletes_a_user() {
     //     let created = model_create_user();
     //     let user_id = created.unwrap().id;

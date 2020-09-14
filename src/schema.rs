@@ -7,6 +7,7 @@ table! {
         description -> Text,
         body -> Text,
         tag_list -> Array<Text>,
+        favorites_count -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }
@@ -14,9 +15,9 @@ table! {
 
 table! {
     comments (id) {
-        id -> Int4,
+        id -> Uuid,
         article_id -> Uuid,
-        user_id -> Uuid,
+        author_id -> Uuid,
         body -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
@@ -56,7 +57,7 @@ table! {
 
 joinable!(articles -> users (author_id));
 joinable!(comments -> articles (article_id));
-joinable!(comments -> users (user_id));
+joinable!(comments -> users (author_id));
 joinable!(favorite_articles -> articles (article_id));
 joinable!(favorite_articles -> users (user_id));
 
