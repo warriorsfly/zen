@@ -86,7 +86,7 @@ fn generate_suffix(len: usize) -> String {
 pub struct ArticleFindData {
     tag: Option<String>,
     author: Option<String>,
-    favorited: Option<String>,
+    // favorited: Option<String>,
     offset: Option<i64>,
 }
 
@@ -120,22 +120,20 @@ pub fn search_articles(
     if let Some(ref tag) = params.tag {
         query = query.or_filter(articles::tag_list.contains(vec![tag]));
     }
-    if let Some(ref favorited) = params.favorited {
-        let result = users::table
-            .select(users::id)
-            .filter(users::username.eq(favorited))
-            .get_result::<Uuid>(&conn)?;
+    // if let Some(ref favorited) = params.favorited {
+    //     let result = users::table
+    //         .select(users::id)
+    //         .filter(users::username.eq(favorited))
+    //         .get_result::<Uuid>(&conn)?;
 
-        // query = query.filter(
-        //     favorite_articles::table::select(favorite_articles::article_id)
-        //         .filter(favorite_articles::user_id.eq(result))
-        //         .ex(articles::id),
-        // );
-        // query = query.filter(diesel::dsl::sql(&format!(
-        //     "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
-        //     result
-        // )).);
-    }
+    //     // query = query.filter(
+    //     //     diesel
+    //     // );
+    //     // query = query.filter(diesel::dsl::sql(&format!(
+    //     //     "articles.id IN(SELECT favorites.article_id FROM favorites WHERE favorites.user_id={}",
+    //     //     result
+    //     // )));
+    // }
 
     query
         .paginate(params.offset.unwrap_or_default())

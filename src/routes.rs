@@ -22,6 +22,11 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                     .route("/{slug}", web::get().to(article::get_one_article))
                     .route("/{slug}", web::post().to(article::update_article))
                     .route("/{slug}", web::get().to(article::delete_article))
+                    .route("/{slug}/comment", web::get().to(article::create_comment))
+                    .route(
+                        "/{slug}/comment/{comment_id}",
+                        web::delete().to(article::delete_comment),
+                    )
                     .route(
                         "/{slug}/favorite",
                         web::post().to(article::favorite_article),

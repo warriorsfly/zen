@@ -6,6 +6,7 @@ use crate::{
     errors::ServiceError,
     helpers::{respond_json, respond_ok},
     models::ArticleJson,
+    models::CommentJson,
     validate::validate,
 };
 use actix_web::{
@@ -14,7 +15,7 @@ use actix_web::{
 };
 use db::{ArticleFindData, FeedArticleData, UpdateArticleData};
 use serde::Deserialize;
-use validator::Validate;
+use uuid::Uuid;
 
 #[derive(Deserialize, Validate)]
 pub struct NewArticle {
@@ -134,6 +135,23 @@ pub async fn delete_article(
     respond_ok()
 }
 
-// pub struct create_comment(pool:Data<DatabaseConnectionPool>,claim:PrivateClaim,slug:&str,)->Result<Json<Comment>,ServiceError>{
-//     block(move||db::create_comment(&pool, claim.id, slug, body))
-// }
+pub async fn create_comment(
+    pool: Data<DatabaseConnectionPool>,
+    claim: PrivateClaim,
+    slug: String,
+    body: String,
+) -> Result<Json<CommentJson>, ServiceError> {
+    let comment =
+        block(move || db::create_comment(&pool, claim.id, slug.as_ref(), body.as_ref())).await?;
+    respond_json(comment)
+}
+
+pub async fn delete_comment(
+    pool: Data<DatabaseConnectionPool>,
+    claim: PrivateClaim,
+    slug: String,
+    comment_id: String,
+) -> Result<String, ServiceError> {
+    block(move || db::delete_comment(&pool, claim.id, slug.as_ref(), comment_id.as_ref())).await?;
+    Ok("success".to_string())
+}

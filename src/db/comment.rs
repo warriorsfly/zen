@@ -71,7 +71,7 @@ pub fn delete_comment(
     pool: &DatabaseConnectionPool,
     author: Uuid,
     slug: &str,
-    comment_id: Uuid,
+    comment_id: &str,
 ) -> Result<(), ServiceError> {
     use diesel::dsl::exists;
     use diesel::select;
@@ -82,7 +82,7 @@ pub fn delete_comment(
     .get_result::<bool>(&conn)
     .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
     if belongs_to_author_result {
-        let _result = diesel::delete(comments::table.find(comment_id))
+        let _result = diesel::delete(comments::table.find(Uuid::parse_str(comment_id).unwrap()))
             .execute(&conn)
             .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
     }
