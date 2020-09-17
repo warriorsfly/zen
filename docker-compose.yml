@@ -8,33 +8,33 @@ services:
     env_file:
       - .env.docker
     environment:
-      - DATABASE_URL=postgres://allen:walker@db/mimosa-postgres
+      - DATABASE_URL=postgres://allen:walker@db/postgres
     depends_on:
       - db
       - redis
 
   db:
     image: postgres
-    container_name: mimosa-postgres
+    container_name: postgres
     environment:
       - POSTGRES_USER=allen
       - POSTGRES_PASSWORD=walker
-      - POSTGRES_DB=mimosa-postgres
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
     volumes:
       - database_data:/var/lib/postgres/data
-      - ./migrations/00000000000000_diesel_initial_setup/up.sql:/docker-entrypoint-initdb.d/up1.sql
-      - ./migrations/2019-03-06-144033_create_users/up.sql:/docker-entrypoint-initdb.d/up2.sql
-      - ./migrations/2019-03-06-144624_create_followers/up.sql:/docker-entrypoint-initdb.d/up3.sql
-      - ./migrations/2019-03-06-145146_create_articles/up.sql:/docker-entrypoint-initdb.d/up4.sql
-      - ./migrations/2019-03-06-152302_create_comments/up.sql:/docker-entrypoint-initdb.d/up5.sql
+      - ./migrations/00000000000000_diesel_initial_setup/up.sql:/docker-entrypoint-initdb.d/00000000000000_diesel_initial_setup.sql
+      - ./migrations/2019-03-06-144033_create_users/up.sql:/docker-entrypoint-initdb.d/2019-03-06-144033_create_users.sql
+      - ./migrations/2019-03-06-144624_create_followers/up.sql:/docker-entrypoint-initdb.d/2019-03-06-144624_create_followers.sql
+      - ./migrations/2019-03-06-145146_create_articles/up.sql:/docker-entrypoint-initdb.d/2019-03-06-145146_create_articles.sql
+      - ./migrations/2019-03-06-152302_create_comments/up.sql:/docker-entrypoint-initdb.d/2019-03-06-152302_create_comments.sql
 
     restart: always
 
   redis:
     image: redis
-    container_name: mimosa-redis
+    container_name: redis
     ports:
       - "6379:6379"
     volumes:
