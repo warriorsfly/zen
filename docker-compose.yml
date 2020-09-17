@@ -24,6 +24,12 @@ services:
       - "5432:5432"
     volumes:
       - database_data:/var/lib/postgres/data
+      - ./migrations/00000000000000_diesel_initial_setup/up.sql:/docker-entrypoint-initdb.d/up1.sql
+      - ./migrations/2019-03-06-144033_create_users/up.sql:/docker-entrypoint-initdb.d/up2.sql
+      - ./migrations/2019-03-06-144624_create_followers/up.sql:/docker-entrypoint-initdb.d/up3.sql
+      - ./migrations/2019-03-06-145146_create_articles/up.sql:/docker-entrypoint-initdb.d/up4.sql
+      - ./migrations/2019-03-06-152302_create_comments/up.sql:/docker-entrypoint-initdb.d/up5.sql
+
     restart: always
 
   redis:
