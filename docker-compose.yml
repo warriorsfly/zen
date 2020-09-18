@@ -2,7 +2,7 @@ version: "3"
 services:
   api:
     image: warriorsfly/mimosa
-    container_name: mimosa-api
+    container_name: api-server
     ports:
       - "3000:3000"
     env_file:
