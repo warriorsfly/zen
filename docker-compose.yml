@@ -1,5 +1,13 @@
 version: "3"
 services:
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: nginx-alpine
+  #   volumes:
+  #     - "./default.conf:/etc/nginx/conf.d/default.conf"
+  #   environment:
+  #     - NGINX_HOST=walking.com
+  #     - NGINX_PORT=80
   api:
     image: warriorsfly/mimosa
     container_name: api-server
@@ -14,7 +22,7 @@ services:
       - redis
 
   db:
-    image: postgres
+    image: postgres:alpine
     container_name: postgres
     environment:
       - POSTGRES_USER=allen
@@ -33,7 +41,7 @@ services:
     restart: always
 
   redis:
-    image: redis
+    image: redis:alpine
     container_name: redis
     ports:
       - "6379:6379"
