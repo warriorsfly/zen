@@ -1,5 +1,5 @@
 use crate::{
-    database::DatabaseConnectionPool,
+    database::ConnectionPool,
     errors::ServiceError,
     models::{Comment, CommentJson, User},
     schema::{articles, comments, users},
@@ -16,7 +16,7 @@ struct NewComment<'a> {
 }
 
 pub fn create_comment(
-    pool: &DatabaseConnectionPool,
+    pool: &ConnectionPool,
     author: Uuid,
     slug: &str,
     body: &str,
@@ -47,7 +47,7 @@ pub fn create_comment(
 
 //TODO 后续需要修改,要考虑分页的情况
 pub fn find_comments_by_slug(
-    pool: &DatabaseConnectionPool,
+    pool: &ConnectionPool,
     slug: &str,
 ) -> Result<Vec<CommentJson>, ServiceError> {
     let conn = pool.get()?;
@@ -68,7 +68,7 @@ pub fn find_comments_by_slug(
 }
 
 pub fn delete_comment(
-    pool: &DatabaseConnectionPool,
+    pool: &ConnectionPool,
     author: Uuid,
     slug: &str,
     comment_id: &str,

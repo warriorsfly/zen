@@ -1,7 +1,7 @@
 use crate::{
     auth::PrivateClaim,
     // cache::Cache,
-    database::DatabaseConnectionPool,
+    database::ConnectionPool,
     db,
     errors::ServiceError,
     helpers::{respond_json, respond_ok},
@@ -29,7 +29,7 @@ pub struct NewArticle {
 }
 pub struct ArticleRequest {}
 pub async fn create_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     params: Json<NewArticle>,
@@ -50,7 +50,7 @@ pub async fn create_article(
 }
 
 pub async fn search_articles(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     params: Form<ArticleFindData>,
@@ -62,7 +62,7 @@ pub async fn search_articles(
 }
 
 pub async fn get_one_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
@@ -73,7 +73,7 @@ pub async fn get_one_article(
 }
 
 pub async fn favorite_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
@@ -84,7 +84,7 @@ pub async fn favorite_article(
 }
 
 pub async fn unfavorite_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
@@ -96,7 +96,7 @@ pub async fn unfavorite_article(
 }
 
 pub async fn feed_articles(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Form<FeedArticleData>,
@@ -108,7 +108,7 @@ pub async fn feed_articles(
 }
 
 pub async fn update_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
@@ -124,7 +124,7 @@ pub async fn update_article(
 }
 
 pub async fn delete_article(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     // redis: Cache,
     claim: PrivateClaim,
     slug: Path<String>,
@@ -136,7 +136,7 @@ pub async fn delete_article(
 }
 
 pub async fn create_comment(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     claim: PrivateClaim,
     slug: String,
     body: String,
@@ -147,7 +147,7 @@ pub async fn create_comment(
 }
 
 pub async fn find_comments_by_slug(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     claim: PrivateClaim,
     slug: String,
 ) -> Result<Json<Vec<CommentJson>>, ServiceError> {
@@ -156,7 +156,7 @@ pub async fn find_comments_by_slug(
 }
 
 pub async fn delete_comment(
-    pool: Data<DatabaseConnectionPool>,
+    pool: Data<ConnectionPool>,
     claim: PrivateClaim,
     slug: String,
     comment_id: String,
