@@ -146,6 +146,15 @@ pub async fn create_comment(
     respond_json(comment)
 }
 
+pub async fn find_comments_by_slug(
+    pool: Data<DatabaseConnectionPool>,
+    claim: PrivateClaim,
+    slug: String,
+) -> Result<Json<Vec<CommentJson>>, ServiceError> {
+    let comments = block(move || db::find_comments_by_slug(&pool, slug.as_ref())).await?;
+    respond_json(comments)
+}
+
 pub async fn delete_comment(
     pool: Data<DatabaseConnectionPool>,
     claim: PrivateClaim,
