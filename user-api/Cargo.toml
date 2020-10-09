@@ -1,5 +1,5 @@
 [package]
-name = "mimosa-auth"
+name = "user-api"
 version = "0.3.2" #完成一个模块+0.1,完成一个功能+0.0.1
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"

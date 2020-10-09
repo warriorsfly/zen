@@ -1,5 +1,5 @@
 [workspace]
 members = [
     # 用户认证service
-    "mimosa-auth",
+    "user-api",
 ]
