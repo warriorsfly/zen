@@ -1,0 +1,10 @@
+.github
+.vscode
+
+target
+.env.example
+.gitignore
+.travis.yml
+Cargo.lock
+Dockerfile
+README.md

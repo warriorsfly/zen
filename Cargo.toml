@@ -1,5 +1,8 @@
 [workspace]
 members = [
+    "mcore",
     # 用户认证service
     "user-api",
+    "article-api",
+
 ]
