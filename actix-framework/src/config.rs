@@ -20,21 +20,17 @@ pub struct Config {
     pub backtrace: u8,
     pub log: String,
     pub server: String,
-    pub session_key: String,
-    pub session_name: String,
-    pub session_secure: bool,
-    pub session_timeout: i64,
-    pub wechat_appid: String,
-    pub wechat_secret: String,
+    // pub session_key: String,
+    // pub session_name: String,
+    // pub session_secure: bool,
+    // pub session_timeout: i64,
 }
 
 /// js toISOString() in test suit can't handle chrono's default precision
 pub const DATE_FORMAT: &str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
-lazy_static! {
-    pub static ref CONFIG: Config = get_config();
-}
-
+/// get the server config
+#[allow(dead_code)]
 fn get_config() -> Config {
     dotenv().ok();
     match envy::from_env::<Config>() {
@@ -50,11 +46,6 @@ mod tests {
     #[test]
     fn get_a_config() {
         let config = get_config();
-        assert_ne!(config.server, "".to_string());
-    }
-    #[test]
-    fn get_config_from_the_lazy_static() {
-        let config = &CONFIG;
         assert_ne!(config.server, "".to_string());
     }
 }

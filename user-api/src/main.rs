@@ -14,13 +14,9 @@ extern crate validator_derive;
 use crate::server::server;
 
 mod auth;
-mod awc;
-mod cache;
-mod config;
 mod constants;
 mod database;
 mod db;
-mod errors;
 mod extractors;
 pub mod handlers;
 mod helpers;

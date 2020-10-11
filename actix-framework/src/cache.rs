@@ -1,4 +1,3 @@
-use crate::config::CONFIG;
 use crate::errors::ServiceError;
 use actix::prelude::*;
 use actix_redis::{Command, RedisActor};
@@ -31,20 +30,20 @@ pub async fn delete<'a>(redis: Cache, key: &'a str) -> Result<String, ServiceErr
 /// Send a command to the redis actor
 async fn send<'a>(redis: Cache, command: RespValue) -> Result<String, ServiceError> {
     let error_message = format!("Could not send {:?} command to Redis", command);
-    let error = ServiceError::CacheError(error_message.into());
+    let error = ServiceError::InternalServerError(error_message.into());
     let response = redis.send(Command(command)).await.map_err(|_| error)?;
     match response {
         Ok(message) => Ok::<String, _>(FromResp::from_resp(message).unwrap_or("".into())),
-        Err(message) => Err(ServiceError::CacheError(format!("{:?}", message))),
+        Err(message) => Err(ServiceError::InternalServerError(format!("{:?}", message))),
     }
 }
 
 /// Add the redis actor to actix data if the URL is set
 #[allow(dead_code)]
-pub fn add_cache(cfg: &mut ServiceConfig) {
-    if !&CONFIG.redis_url.is_empty() {
+pub fn add_cache(cfg: &mut ServiceConfig, url: &str) {
+    if !url.is_empty() {
         // Start a new supervisor with redis actor
-        let cache = RedisActor::start(&CONFIG.redis_url);
+        let cache = RedisActor::start(url);
         cfg.data(cache);
     }
 }
@@ -52,15 +51,15 @@ pub fn add_cache(cfg: &mut ServiceConfig) {
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    const REDIS_URL: &str = "127.0.0.1:6379";
     fn get_cache() -> Cache {
-        let cache = RedisActor::start(&CONFIG.redis_url);
+        let cache = RedisActor::start(REDIS_URL);
         Data::new(cache)
     }
 
     #[actix_rt::test]
     async fn it_creates_new_application_cache_and_sets_and_reads_it() {
-        if !&CONFIG.redis_url.is_empty() {
+        if !REDIS_URL.is_empty() {
             let cache = get_cache();
             set(cache.clone(), "testing", "123").await.unwrap();
             let value = get(cache, "testing").await.unwrap();
@@ -72,7 +71,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn it_removes_an_entry_in_application_cache() {
-        if !&CONFIG.redis_url.is_empty() {
+        if !REDIS_URL.is_empty() {
             let cache = get_cache();
             set(cache.clone(), "testing", "123").await.unwrap();
             let value = get(cache.clone(), "testing").await.unwrap();

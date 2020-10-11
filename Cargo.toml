@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "mcore",
+    "actix-framework",
     # 用户认证service
     "user-api",
     "article-api",
