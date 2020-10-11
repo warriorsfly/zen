@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 actix = "0.10"
 actix-web = "3"
-actix-redis = "0.9"
+actix-redis = { version = "0.9", optional = true }
 argon2rs = "0.2"
 chrono ={version = "0.4",features = ["serde"]}
 
@@ -18,7 +18,7 @@ dotenv = "0.15"
 envy = "0.4"
 futures = "0.3"
 rayon = "1"
-redis-async = "0.6"
+redis-async = { version = "0.6", optional = true }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
@@ -29,7 +29,6 @@ thiserror="1"
 actix-rt = "1"
 
 [features]
-
 default=["postgres","redis"]
 # sql types
 cockraoch=[]
@@ -37,5 +36,5 @@ mysql=[]
 postgres=[]
 sqlite=[]
 # use redis or not
-redis=[]
+redis=["actix-redis"]
 

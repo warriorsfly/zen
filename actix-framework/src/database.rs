@@ -37,6 +37,7 @@ pub type PoolType = PostgresConnectionPool;
 #[cfg(feature = "sqlite")]
 pub type PoolType = SqliteConnectionPool;
 
+/// database connection pool
 #[derive(Clone)]
 pub enum DatabaseConnectionPool {
     Cockroach(CockroachConnectionPool),
@@ -45,7 +46,7 @@ pub enum DatabaseConnectionPool {
     Sqlite(SqliteConnectionPool),
 }
 
-impl InferPool {
+impl DatabaseConnectionPool {
     pub fn init_pool(config: Config) -> Result<Self, r2d2::Error> {
         match config.database {
             DatabaseConnection::Cockroach => {

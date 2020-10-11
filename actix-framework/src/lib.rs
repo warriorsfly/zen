@@ -1,3 +1,4 @@
+/// if using redis, then use redis_async
 #[cfg(feature = "redis")]
 #[macro_use]
 extern crate redis_async;
@@ -8,6 +9,7 @@ pub mod awc;
 pub mod cache;
 pub mod config;
 pub mod errors;
+pub mod pagination;
 
 #[cfg(test)]
 mod tests {

@@ -16,6 +16,7 @@ pub struct Config {
     pub database_url: String,
     pub jwt_expiration: i64,
     pub jwt_key: String,
+    #[cfg(feature = "redis")]
     pub redis_url: String,
     pub backtrace: u8,
     pub log: String,
