@@ -1,5 +1,5 @@
-use crate::config::CONFIG;
-use crate::errors::ServiceError;
+use actix_framework::config::Config;
+use actix_framework::errors::ServiceError;
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};

@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate diesel;
 /// if using redis, then use redis_async
 #[cfg(feature = "redis")]
 #[macro_use]
@@ -8,8 +10,11 @@ extern crate serde_derive;
 pub mod awc;
 pub mod cache;
 pub mod config;
+pub mod database;
 pub mod errors;
-pub mod pagination;
+extern crate actix;
+extern crate actix_web;
+extern crate serde;
 
 #[cfg(test)]
 mod tests {

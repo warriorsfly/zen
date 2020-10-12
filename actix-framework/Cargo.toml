@@ -13,7 +13,7 @@ actix-redis = { version = "0.9", optional = true }
 argon2rs = "0.2"
 chrono ={version = "0.4",features = ["serde"]}
 
-diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "r2d2", "uuid", "serde_json"]}
+diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "r2d2", "serde_json", "uuid", "postgres"], optional = true}
 dotenv = "0.15"
 envy = "0.4"
 futures = "0.3"
@@ -29,12 +29,8 @@ thiserror="1"
 actix-rt = "1"
 
 [features]
-default=["postgres","redis"]
-# sql types
-cockraoch=[]
-mysql=[]
-postgres=[]
-sqlite=[]
+extras=["redis"]
 # use redis or not
-redis=["actix-redis"]
+redis=["actix-redis","redis-async"]
+
 

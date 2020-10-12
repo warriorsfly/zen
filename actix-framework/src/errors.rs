@@ -1,6 +1,7 @@
 use actix_web::{error::ResponseError, HttpResponse};
 use thiserror::Error;
-#[derive(Debug, Error)]
+
+#[derive(Error, Debug)]
 pub enum ServiceError {
     #[error("Bad request:{0}")]
     BadRequest(String),
