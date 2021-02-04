@@ -15,7 +15,6 @@ use actix_web::{
 };
 use db::{ArticleFindData, FeedArticleData, UpdateArticleData};
 use serde::Deserialize;
-use uuid::Uuid;
 
 #[derive(Deserialize, Validate)]
 pub struct NewArticle {

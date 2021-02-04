@@ -2,7 +2,6 @@
 pub mod tests {
 
     use crate::{
-        cache::add_cache,
         config::CONFIG,
         constants,
         database::{add_pool, init_pool, ConnectionPool},
@@ -29,7 +28,7 @@ pub mod tests {
         let mut app = test::init_service(
             App::new()
                 .wrap(middleware::Authentication)
-                .configure(add_cache)
+                // .configure(add_cache)
                 .app_data(app_state())
                 .configure(add_pool)
                 .configure(routes),
@@ -66,7 +65,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .configure(add_cache)
+                // .configure(add_cache)
                 .app_data(app_state())
                 .configure(add_pool)
                 .configure(routes),

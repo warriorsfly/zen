@@ -9,8 +9,8 @@ services:
   #     - NGINX_HOST=walking.com
   #     - NGINX_PORT=80
   api:
-    image: warriorsfly/mimosa
-    container_name: api-server
+    image: warriorsfly/peacock
+    container_name: peacock-server
     ports:
       - "3000:3000"
     env_file:
@@ -19,7 +19,7 @@ services:
       - DATABASE_URL=postgres://allen:walker@db/postgres
     depends_on:
       - db
-      - redis
+      # - redis
 
   db:
     image: postgres:alpine
@@ -40,18 +40,18 @@ services:
 
     restart: always
 
-  redis:
-    image: redis:alpine
-    container_name: redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/var/lib/redis/data
-    restart: always
+  # redis:
+  #   image: redis:alpine
+  #   container_name: redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/var/lib/redis/data
+  #   restart: always
   # 后面要补上 flutter前端
   # application:
 volumes:
   database_data:
     driver: local
-  redis_data:
-    driver: local
+  # redis_data:
+  #   driver: local

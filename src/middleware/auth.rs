@@ -1,8 +1,7 @@
 use crate::{auth::decode_jwt, constants};
 
-use actix_service::{Service, Transform};
 use actix_web::{
-    dev::{ServiceRequest, ServiceResponse},
+    dev::{Service, ServiceRequest, ServiceResponse, Transform},
     http::{
         header::{HeaderName, HeaderValue},
         Method,

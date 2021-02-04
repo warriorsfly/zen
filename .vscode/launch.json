@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'mimosa'",
+            "name": "Debug executable 'peacock'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=mimosa",
-                    "--package=mimosa"
+                    "--bin=peacock",
+                    "--package=peacock"
                 ],
                 "filter": {
-                    "name": "mimosa",
+                    "name": "peacock",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'mimosa'",
+            "name": "Debug unit tests in executable 'peacock'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=mimosa",
-                    "--package=mimosa"
+                    "--bin=peacock",
+                    "--package=peacock"
                 ],
                 "filter": {
-                    "name": "mimosa",
+                    "name": "peacock",
                     "kind": "bin"
                 }
             },
