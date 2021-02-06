@@ -1,5 +1,5 @@
 use crate::auth::{decode_jwt, Claims};
-use crate::{constants, errors::ServiceError};
+use crate::{constants, errors::ServError};
 use actix_web::{dev::Payload, web::HttpRequest, FromRequest};
 use futures::future::{err, ok, Ready};
 
@@ -7,7 +7,7 @@ use futures::future::{err, ok, Ready};
 ///
 /// Simply add "user: AuthClaim" to a handler to invoke this.
 impl FromRequest for Claims {
-    type Error = ServiceError;
+    type Error = ServError;
     type Future = Ready<Result<Self, Self::Error>>;
     type Config = ();
 
@@ -27,6 +27,6 @@ impl FromRequest for Claims {
             }
         }
 
-        err(ServiceError::Unauthorized("Unauthorized".into()))
+        err(ServError::Unauthorized("Unauthorized".into()))
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     database::ConnectionPool,
-    errors::ServiceError,
+    errors::ServError,
     models::{Comment, CommentJson, User},
     schema::{articles, comments, users},
 };
@@ -20,17 +20,17 @@ pub fn create_comment(
     author: Uuid,
     slug: &str,
     body: &str,
-) -> Result<CommentJson, ServiceError> {
+) -> Result<CommentJson, ServError> {
     let conn = pool.get()?;
     let article_id = articles::table
         .select(articles::id)
         .filter(articles::slug.eq(slug))
         .get_result::<Uuid>(&conn)
-        .map_err(|_| ServiceError::DataBaseError("Canot find the article".into()))?;
+        .map_err(|_| ServError::DataBaseError("Canot find the article".into()))?;
     let author = users::table
         .find(&author)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
 
     let comment = NewComment {
         body,
@@ -49,7 +49,7 @@ pub fn create_comment(
 pub fn find_comments_by_slug(
     pool: &ConnectionPool,
     slug: &str,
-) -> Result<Vec<CommentJson>, ServiceError> {
+) -> Result<Vec<CommentJson>, ServError> {
     let conn = pool.get()?;
     let result = comments::table
         .inner_join(articles::table)
@@ -72,7 +72,7 @@ pub fn delete_comment(
     author: Uuid,
     slug: &str,
     comment_id: &str,
-) -> Result<(), ServiceError> {
+) -> Result<(), ServError> {
     use diesel::dsl::exists;
     use diesel::select;
     let conn = pool.get()?;
@@ -80,11 +80,11 @@ pub fn delete_comment(
         articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(author))),
     ))
     .get_result::<bool>(&conn)
-    .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+    .map_err(|err| ServError::DataBaseError(err.to_string()))?;
     if belongs_to_author_result {
         let _result = diesel::delete(comments::table.find(Uuid::parse_str(comment_id).unwrap()))
             .execute(&conn)
-            .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+            .map_err(|err| ServError::DataBaseError(err.to_string()))?;
     }
 
     Ok(())

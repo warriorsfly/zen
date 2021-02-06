@@ -1,5 +1,5 @@
 use crate::config::CONFIG;
-use crate::errors::ServiceError;
+use crate::errors::ServError;
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -22,18 +22,18 @@ impl Claims {
 }
 
 /// Create a json web token (JWT)
-pub fn create_jwt(claim: Claims) -> Result<String, ServiceError> {
+pub fn create_jwt(claim: Claims) -> Result<String, ServError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     encode(&Header::default(), &claim, &encoding_key)
-        .map_err(|e| ServiceError::EncodeTokenError(e.to_string()))
+        .map_err(|e| ServError::EncodeTokenError(e.to_string()))
 }
 
 /// Decode a json web token (JWT)
-pub fn decode_jwt(token: &str) -> Result<Claims, ServiceError> {
+pub fn decode_jwt(token: &str) -> Result<Claims, ServError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     decode::<Claims>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
-        .map_err(|e| ServiceError::DecodeTokenError(e.to_string()))
+        .map_err(|e| ServError::DecodeTokenError(e.to_string()))
 }
 
 /// Encrypt a password

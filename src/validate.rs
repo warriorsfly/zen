@@ -1,14 +1,14 @@
-use crate::errors::ServiceError;
+use crate::errors::ServError;
 use actix_web::web::Json;
 use validator::{Validate, ValidationErrors};
 
-pub fn validate<T>(params: &Json<T>) -> Result<(), ServiceError>
+pub fn validate<T>(params: &Json<T>) -> Result<(), ServError>
 where
     T: Validate,
 {
     match params.validate() {
         Ok(()) => Ok(()),
-        Err(error) => Err(ServiceError::ValidationError(collect_errors(error))),
+        Err(error) => Err(ServError::ValidationError(collect_errors(error))),
     }
 }
 

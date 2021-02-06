@@ -1,5 +1,5 @@
 use crate::{
-    auth::Claims, database::ConnectionPool, db, errors::ServiceError, helpers::respond_json,
+    auth::Claims, database::ConnectionPool, db, errors::ServError, helpers::respond_json,
     models::User,
 };
 use actix_web::web::{block, Data, Json};
@@ -22,11 +22,7 @@ pub struct UpdateUserRequest {
 }
 
 /// Get a user
-pub async fn get_user(
-    pool: Data<ConnectionPool>,
-
-    claim: Claims,
-) -> Result<Json<User>, ServiceError> {
+pub async fn get_user(pool: Data<ConnectionPool>, claim: Claims) -> Result<Json<User>, ServError> {
     let user = block(move || db::find_user_by_id(&pool, &claim.id)).await?;
     respond_json(user)
 }

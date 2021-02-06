@@ -1,18 +1,18 @@
-use crate::errors::ServiceError;
+use crate::errors::ServError;
 use actix_web::{
     body::Body,
     web::{HttpResponse, Json},
 };
 use serde::Serialize;
 /// 快速组装Ok/Json response
-pub fn respond_json<T>(data: T) -> Result<Json<T>, ServiceError>
+pub fn respond_json<T>(data: T) -> Result<Json<T>, ServError>
 where
     T: Serialize,
 {
     Ok(Json(data))
 }
 /// 快速组装Ok/Ok response
-pub fn respond_ok() -> Result<HttpResponse, ServiceError> {
+pub fn respond_ok() -> Result<HttpResponse, ServError> {
     Ok(HttpResponse::Ok().body(Body::Empty))
 }
 

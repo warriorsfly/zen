@@ -1,7 +1,7 @@
 use super::{pagination, Paginate};
 use crate::{
     database::ConnectionPool,
-    errors::ServiceError,
+    errors::ServError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
 };
@@ -46,7 +46,7 @@ pub fn create_article(
     description: &str,
     body: &str,
     tags: &Vec<String>,
-) -> Result<ArticleJson, ServiceError> {
+) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     let new_article = NewArticle {
         author_id: author,
@@ -59,12 +59,12 @@ pub fn create_article(
     let author = users::table
         .find(author)
         .get_result::<User>(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
 
     let new_article = insert_into(articles::table)
         .values(new_article)
         .get_result::<Article>(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
 
     Ok(new_article.attach(author, false))
 }
@@ -98,7 +98,7 @@ pub fn search_articles(
     pool: &ConnectionPool,
     uid: Option<Uuid>,
     params: &ArticleFindData,
-) -> Result<(Vec<ArticleJson>, i64), ServiceError> {
+) -> Result<(Vec<ArticleJson>, i64), ServError> {
     let conn = pool.get()?;
     let mut query = articles::table
         .inner_join(users::table)
@@ -151,19 +151,19 @@ pub fn search_articles(
                 count,
             )
         })
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+        .map_err(|err| ServError::DataBaseError(err.to_string()))
 }
 
 pub fn find_one_article(
     pool: &ConnectionPool,
     slug: &str,
     uid: &Uuid,
-) -> Result<ArticleJson, ServiceError> {
+) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     let article = articles::table
         .filter(articles::slug.eq(slug))
         .first::<Article>(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
     let favorited = is_favorite_article(&conn, &article, &uid);
 
     Ok(populate_article(&conn, article, favorited))
@@ -179,7 +179,7 @@ pub fn feed_article(
     pool: &ConnectionPool,
     params: FeedArticleData,
     uid: &Uuid,
-) -> Result<Vec<ArticleJson>, ServiceError> {
+) -> Result<Vec<ArticleJson>, ServError> {
     let conn = pool.get()?;
     let arts = articles::table
         .filter(
@@ -214,7 +214,7 @@ pub fn favorite_article(
     pool: &ConnectionPool,
     slug: &str,
     uid: &Uuid,
-) -> Result<ArticleJson, ServiceError> {
+) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     conn.transaction::<_, diesel::result::Error, _>(|| {
         let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
@@ -229,14 +229,14 @@ pub fn favorite_article(
 
         Ok(populate_article(&conn, article, true))
     })
-    .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+    .map_err(|err| ServError::DataBaseError(err.to_string()))
 }
 
 pub fn unfavorite_article(
     pool: &ConnectionPool,
     slug: &str,
     uid: &Uuid,
-) -> Result<ArticleJson, ServiceError> {
+) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     conn.transaction::<_, diesel::result::Error, _>(|| {
         let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
@@ -247,7 +247,7 @@ pub fn unfavorite_article(
 
         Ok(populate_article(&conn, article, false))
     })
-    .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+    .map_err(|err| ServError::DataBaseError(err.to_string()))
 }
 
 #[derive(Deserialize, AsChangeset, Default, Clone)]
@@ -266,7 +266,7 @@ pub fn update_article(
     slug: &str,
     uid: &Uuid,
     mut data: UpdateArticleData,
-) -> Result<ArticleJson, ServiceError> {
+) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     if let Some(ref title) = data.title {
         data.slug = Some(slugify(&title));
@@ -280,24 +280,20 @@ pub fn update_article(
     Ok(populate_article(&conn, article, favorited))
 }
 
-pub fn delete_article(
-    pool: &ConnectionPool,
-    slug: &str,
-    uid: &Uuid,
-) -> Result<usize, ServiceError> {
+pub fn delete_article(pool: &ConnectionPool, slug: &str, uid: &Uuid) -> Result<usize, ServError> {
     let conn = pool.get()?;
     diesel::delete(articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))))
         .execute(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+        .map_err(|err| ServError::DataBaseError(err.to_string()))
     //
 }
 
-pub fn get_tags(pool: &ConnectionPool) -> Result<Vec<String>, ServiceError> {
+pub fn get_tags(pool: &ConnectionPool) -> Result<Vec<String>, ServError> {
     let conn = pool.get()?;
     articles::table
         .select(diesel::dsl::sql("distinct unnest(tag_list)"))
         .load::<String>(&conn)
-        .map_err(|err| ServiceError::DataBaseError(err.to_string()))
+        .map_err(|err| ServError::DataBaseError(err.to_string()))
 }
 
 fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &Uuid) -> bool {

@@ -3,7 +3,7 @@ use crate::{
     // cache::Cache,
     database::ConnectionPool,
     db,
-    errors::ServiceError,
+    errors::ServError,
     helpers::{respond_json, respond_ok},
     models::ArticleJson,
     models::CommentJson,
@@ -32,7 +32,7 @@ pub async fn create_article(
     // redis: Cache,
     claim: Claims,
     params: Json<NewArticle>,
-) -> Result<Json<ArticleJson>, ServiceError> {
+) -> Result<Json<ArticleJson>, ServError> {
     validate(&params)?;
     let new_article = block(move || {
         db::create_article(
@@ -53,7 +53,7 @@ pub async fn search_articles(
     // redis: Cache,
     claim: Claims,
     params: Form<ArticleFindData>,
-) -> Result<Json<(Vec<ArticleJson>, i64)>, ServiceError> {
+) -> Result<Json<(Vec<ArticleJson>, i64)>, ServError> {
     // validate(&params)?;
     let articles =
         block(move || db::search_articles(&pool.into_inner(), Some(claim.id), &params)).await?;
@@ -65,7 +65,7 @@ pub async fn get_one_article(
     // redis: Cache,
     claim: Claims,
     slug: Path<String>,
-) -> Result<Json<ArticleJson>, ServiceError> {
+) -> Result<Json<ArticleJson>, ServError> {
     let article = block(move || db::find_one_article(&pool, &slug, &claim.id)).await?;
 
     respond_json(article)
@@ -76,7 +76,7 @@ pub async fn favorite_article(
     // redis: Cache,
     claim: Claims,
     slug: Path<String>,
-) -> Result<Json<ArticleJson>, ServiceError> {
+) -> Result<Json<ArticleJson>, ServError> {
     let article = block(move || Ok(db::favorite_article(&pool, &slug, &claim.id).unwrap())).await?;
 
     respond_json(article)
@@ -87,7 +87,7 @@ pub async fn unfavorite_article(
     // redis: Cache,
     claim: Claims,
     slug: Path<String>,
-) -> Result<Json<ArticleJson>, ServiceError> {
+) -> Result<Json<ArticleJson>, ServError> {
     let article =
         block(move || Ok(db::unfavorite_article(&pool, &slug, &claim.id).unwrap())).await?;
 
@@ -99,7 +99,7 @@ pub async fn feed_articles(
     // redis: Cache,
     claim: Claims,
     slug: Form<FeedArticleData>,
-) -> Result<Json<Vec<ArticleJson>>, ServiceError> {
+) -> Result<Json<Vec<ArticleJson>>, ServError> {
     let articles =
         block(move || Ok(db::feed_article(&pool, slug.into_inner(), &claim.id))).await??;
 
@@ -112,7 +112,7 @@ pub async fn update_article(
     claim: Claims,
     slug: Path<String>,
     params: Json<UpdateArticleData>,
-) -> Result<Json<ArticleJson>, ServiceError> {
+) -> Result<Json<ArticleJson>, ServError> {
     // validate(&params)?;
     let article = block(move || {
         Ok(db::update_article(&pool, slug.as_ref(), &claim.id, params.into_inner()).unwrap())
@@ -127,7 +127,7 @@ pub async fn delete_article(
     // redis: Cache,
     claim: Claims,
     slug: Path<String>,
-) -> Result<HttpResponse, ServiceError> {
+) -> Result<HttpResponse, ServError> {
     // validate(&params)?;
     block(move || db::delete_article(&pool, slug.as_ref(), &claim.id)).await?;
 
@@ -139,7 +139,7 @@ pub async fn create_comment(
     claim: Claims,
     slug: String,
     body: String,
-) -> Result<Json<CommentJson>, ServiceError> {
+) -> Result<Json<CommentJson>, ServError> {
     let comment =
         block(move || db::create_comment(&pool, claim.id, slug.as_ref(), body.as_ref())).await?;
     respond_json(comment)
@@ -149,7 +149,7 @@ pub async fn find_comments_by_slug(
     pool: Data<ConnectionPool>,
     claim: Claims,
     slug: String,
-) -> Result<Json<Vec<CommentJson>>, ServiceError> {
+) -> Result<Json<Vec<CommentJson>>, ServError> {
     let comments = block(move || db::find_comments_by_slug(&pool, slug.as_ref())).await?;
     respond_json(comments)
 }
@@ -159,7 +159,7 @@ pub async fn delete_comment(
     claim: Claims,
     slug: String,
     comment_id: String,
-) -> Result<String, ServiceError> {
+) -> Result<String, ServError> {
     block(move || db::delete_comment(&pool, claim.id, slug.as_ref(), comment_id.as_ref())).await?;
     Ok("success".to_string())
 }
