@@ -1,5 +1,5 @@
 use crate::{
-    auth::{create_jwt, hash, PrivateClaim},
+    auth::{create_jwt, hash, Claims},
     database::ConnectionPool,
     db,
     errors::ServiceError,
@@ -78,7 +78,7 @@ pub async fn login(
     let user = block(move || db::find_by_email(&pool, &params.email, &hashed)).await?;
 
     // Create a JWT
-    let private_claim = PrivateClaim::new(user.id);
+    let private_claim = Claims::new(user.id);
     let jwt = create_jwt(private_claim)?;
     let response = LoginResponse { user, token: jwt };
     respond_json(response)
@@ -90,11 +90,11 @@ pub mod tests {
     use crate::tests::helpers::tests::get_data_pool;
     use actix_web::{test, FromRequest};
 
-    async fn get_private_claim() -> PrivateClaim {
+    async fn get_private_claim() -> Claims {
         let (request, mut payload) =
             test::TestRequest::with_header("content-type", "application/json").to_http_parts();
 
-        let claim = Option::<PrivateClaim>::from_request(&request, &mut payload)
+        let claim = Option::<Claims>::from_request(&request, &mut payload)
             .await
             .unwrap()
             .unwrap();

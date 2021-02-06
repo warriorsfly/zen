@@ -1,5 +1,5 @@
 use crate::{
-    auth::PrivateClaim,
+    auth::Claims,
     // cache::Cache,
     database::ConnectionPool,
     db,
@@ -30,7 +30,7 @@ pub struct ArticleRequest {}
 pub async fn create_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     params: Json<NewArticle>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
     validate(&params)?;
@@ -51,7 +51,7 @@ pub async fn create_article(
 pub async fn search_articles(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     params: Form<ArticleFindData>,
 ) -> Result<Json<(Vec<ArticleJson>, i64)>, ServiceError> {
     // validate(&params)?;
@@ -63,7 +63,7 @@ pub async fn search_articles(
 pub async fn get_one_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
     let article = block(move || db::find_one_article(&pool, &slug, &claim.id)).await?;
@@ -74,7 +74,7 @@ pub async fn get_one_article(
 pub async fn favorite_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
     let article = block(move || Ok(db::favorite_article(&pool, &slug, &claim.id).unwrap())).await?;
@@ -85,7 +85,7 @@ pub async fn favorite_article(
 pub async fn unfavorite_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
     let article =
@@ -97,7 +97,7 @@ pub async fn unfavorite_article(
 pub async fn feed_articles(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Form<FeedArticleData>,
 ) -> Result<Json<Vec<ArticleJson>>, ServiceError> {
     let articles =
@@ -109,7 +109,7 @@ pub async fn feed_articles(
 pub async fn update_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Path<String>,
     params: Json<UpdateArticleData>,
 ) -> Result<Json<ArticleJson>, ServiceError> {
@@ -125,7 +125,7 @@ pub async fn update_article(
 pub async fn delete_article(
     pool: Data<ConnectionPool>,
     // redis: Cache,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: Path<String>,
 ) -> Result<HttpResponse, ServiceError> {
     // validate(&params)?;
@@ -136,7 +136,7 @@ pub async fn delete_article(
 
 pub async fn create_comment(
     pool: Data<ConnectionPool>,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: String,
     body: String,
 ) -> Result<Json<CommentJson>, ServiceError> {
@@ -147,7 +147,7 @@ pub async fn create_comment(
 
 pub async fn find_comments_by_slug(
     pool: Data<ConnectionPool>,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: String,
 ) -> Result<Json<Vec<CommentJson>>, ServiceError> {
     let comments = block(move || db::find_comments_by_slug(&pool, slug.as_ref())).await?;
@@ -156,7 +156,7 @@ pub async fn find_comments_by_slug(
 
 pub async fn delete_comment(
     pool: Data<ConnectionPool>,
-    claim: PrivateClaim,
+    claim: Claims,
     slug: String,
     comment_id: String,
 ) -> Result<String, ServiceError> {

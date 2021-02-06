@@ -7,12 +7,12 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct PrivateClaim {
+pub struct Claims {
     pub id: Uuid,
     pub exp: i64,
 }
 
-impl PrivateClaim {
+impl Claims {
     pub fn new(id: Uuid) -> Self {
         Self {
             id,
@@ -22,16 +22,16 @@ impl PrivateClaim {
 }
 
 /// Create a json web token (JWT)
-pub fn create_jwt(private_claim: PrivateClaim) -> Result<String, ServiceError> {
+pub fn create_jwt(claim: Claims) -> Result<String, ServiceError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
-    encode(&Header::default(), &private_claim, &encoding_key)
+    encode(&Header::default(), &claim, &encoding_key)
         .map_err(|e| ServiceError::EncodeTokenError(e.to_string()))
 }
 
 /// Decode a json web token (JWT)
-pub fn decode_jwt(token: &str) -> Result<PrivateClaim, ServiceError> {
+pub fn decode_jwt(token: &str) -> Result<Claims, ServiceError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
-    decode::<PrivateClaim>(token, &decoding_key, &Validation::default())
+    decode::<Claims>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
         .map_err(|e| ServiceError::DecodeTokenError(e.to_string()))
 }
@@ -73,7 +73,7 @@ pub mod tests {
     #[test]
     fn it_creates_a_jwt() {
         let id = Uuid::new_v4();
-        let private_claim = PrivateClaim::new(id);
+        let private_claim = Claims::new(id);
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
     }
@@ -81,7 +81,7 @@ pub mod tests {
     #[test]
     fn it_decodes_a_jwt() {
         let id = Uuid::new_v4();
-        let private_claim = PrivateClaim::new(id);
+        let private_claim = Claims::new(id);
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();
         assert_eq!(private_claim, decoded);
