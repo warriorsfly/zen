@@ -1,45 +1,12 @@
-use crate::handlers::{article, auth, tag, user};
 use actix_web::web;
 
+use crate::handlers::{graphiql_handler, graphql, playground_handler};
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
-        web::scope("/api")
-            .service(
-                web::scope("/auth")
-                    .route("signup", web::post().to(auth::signup))
-                    .route("login", web::post().to(auth::login)),
-            )
-            .service(
-                web::scope("/users").route("/{id}", web::get().to(user::get_user)), // .route("", web::get().to(get_users))
-            )
-            .service(
-                web::scope("/articles")
-                    .route("", web::post().to(article::create_article))
-                    .route("", web::get().to(article::search_articles))
-                    .route("/tags", web::get().to(tag::get_tags))
-                    .route("/{slug}", web::get().to(article::get_one_article))
-                    .route("/{slug}", web::post().to(article::update_article))
-                    .route("/{slug}", web::get().to(article::delete_article))
-                    .route("/{slug}/comment", web::post().to(article::create_comment))
-                    .route(
-                        "/{slug}/comment",
-                        web::get().to(article::find_comments_by_slug),
-                    )
-                    .route(
-                        "/{slug}/comment/{comment_id}",
-                        web::delete().to(article::delete_comment),
-                    )
-                    .route(
-                        "/{slug}/favorite",
-                        web::post().to(article::favorite_article),
-                    )
-                    .route(
-                        "/{slug}/favorite",
-                        web::delete().to(article::unfavorite_article),
-                    )
-                    .route("/feed", web::post().to(article::feed_articles)),
-                // .route("/{id}", web::delete().to(delete_user))
-                // .route("", web::get().to(get_users))
-            ),
-    );
+        web::resource("/")
+            .route(web::post().to(graphql))
+            .route(web::get().to(graphql)),
+    )
+    .service(web::resource("/playground").route(web::get().to(playground_handler)))
+    .service(web::resource("/graphiql").route(web::get().to(graphiql_handler)));
 }

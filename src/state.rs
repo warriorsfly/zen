@@ -44,24 +44,24 @@ pub fn delete<'a, T>(data: AppState<'a, T>, key: &'a str) -> Option<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::tests::helpers::tests::app_state;
+    // use crate::tests::helpers::tests::app_state;
 
-    #[test]
-    fn it_creates_new_application_state_and_sets_and_reads_it() {
-        let data = app_state();
-        set(data.clone(), "testing", "123".into());
-        let value = get(data, "testing");
-        assert_eq!(value, Some("123".to_string()));
-    }
+    // #[test]
+    // fn it_creates_new_application_state_and_sets_and_reads_it() {
+    //     let data = app_state();
+    //     set(data.clone(), "testing", "123".into());
+    //     let value = get(data, "testing");
+    //     assert_eq!(value, Some("123".to_string()));
+    // }
 
-    #[test]
-    fn it_remove_an_entity_in_application_state() {
-        let data = app_state();
-        set(data.clone(), "testing", "123".into());
-        let value = get(data.clone(), "testing");
-        assert_eq!(value, Some("123".to_string()));
-        delete(data.clone(), "testing");
-        let value = get(data, "testing");
-        assert_eq!(value, None);
-    }
+    // #[test]
+    // fn it_remove_an_entity_in_application_state() {
+    //     let data = app_state();
+    //     set(data.clone(), "testing", "123".into());
+    //     let value = get(data.clone(), "testing");
+    //     assert_eq!(value, Some("123".to_string()));
+    //     delete(data.clone(), "testing");
+    //     let value = get(data, "testing");
+    //     assert_eq!(value, None);
+    // }
 }

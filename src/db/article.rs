@@ -1,6 +1,6 @@
 use super::{pagination, Paginate};
 use crate::{
-    database::ConnectionPool,
+    database::DatabasePool,
     errors::ServError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
@@ -40,7 +40,7 @@ pub struct NewFavoriteArticle {
 
 /// 创建文章
 pub fn create_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     author: &Uuid,
     title: &str,
     description: &str,
@@ -95,7 +95,7 @@ pub struct ArticleFindData {
 
 /// 查找文章
 pub fn search_articles(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     uid: Option<Uuid>,
     params: &ArticleFindData,
 ) -> Result<(Vec<ArticleJson>, i64), ServError> {
@@ -155,7 +155,7 @@ pub fn search_articles(
 }
 
 pub fn find_one_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     slug: &str,
     uid: &Uuid,
 ) -> Result<ArticleJson, ServError> {
@@ -176,7 +176,7 @@ pub struct FeedArticleData {
 }
 
 pub fn feed_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     params: FeedArticleData,
     uid: &Uuid,
 ) -> Result<Vec<ArticleJson>, ServError> {
@@ -211,7 +211,7 @@ pub fn feed_article(
 }
 
 pub fn favorite_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     slug: &str,
     uid: &Uuid,
 ) -> Result<ArticleJson, ServError> {
@@ -233,7 +233,7 @@ pub fn favorite_article(
 }
 
 pub fn unfavorite_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     slug: &str,
     uid: &Uuid,
 ) -> Result<ArticleJson, ServError> {
@@ -262,7 +262,7 @@ pub struct UpdateArticleData {
 }
 
 pub fn update_article(
-    pool: &ConnectionPool,
+    pool: &DatabasePool,
     slug: &str,
     uid: &Uuid,
     mut data: UpdateArticleData,
@@ -280,7 +280,7 @@ pub fn update_article(
     Ok(populate_article(&conn, article, favorited))
 }
 
-pub fn delete_article(pool: &ConnectionPool, slug: &str, uid: &Uuid) -> Result<usize, ServError> {
+pub fn delete_article(pool: &DatabasePool, slug: &str, uid: &Uuid) -> Result<usize, ServError> {
     let conn = pool.get()?;
     diesel::delete(articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))))
         .execute(&conn)
@@ -288,7 +288,7 @@ pub fn delete_article(pool: &ConnectionPool, slug: &str, uid: &Uuid) -> Result<u
     //
 }
 
-pub fn get_tags(pool: &ConnectionPool) -> Result<Vec<String>, ServError> {
+pub fn get_tags(pool: &DatabasePool) -> Result<Vec<String>, ServError> {
     let conn = pool.get()?;
     articles::table
         .select(diesel::dsl::sql("distinct unnest(tag_list)"))

@@ -1,7 +1,7 @@
 table! {
     articles (id) {
-        id -> Uuid,
-        author_id -> Uuid,
+        id -> Int4,
+        author_id -> Int4,
         slug -> Text,
         title -> Text,
         description -> Text,
@@ -15,9 +15,9 @@ table! {
 
 table! {
     comments (id) {
-        id -> Uuid,
-        article_id -> Uuid,
-        author_id -> Uuid,
+        id -> Int4,
+        article_id -> Int4,
+        author_id -> Int4,
         body -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
@@ -26,8 +26,8 @@ table! {
 
 table! {
     favorite_articles (user_id, article_id) {
-        user_id -> Uuid,
-        article_id -> Uuid,
+        user_id -> Int4,
+        article_id -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }
@@ -35,8 +35,8 @@ table! {
 
 table! {
     followers (user_id, follower_id) {
-        user_id -> Uuid,
-        follower_id -> Uuid,
+        user_id -> Int4,
+        follower_id -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }
@@ -44,7 +44,7 @@ table! {
 
 table! {
     users (id) {
-        id -> Uuid,
+        id -> Int4,
         username -> Text,
         email -> Varchar,
         password -> Text,

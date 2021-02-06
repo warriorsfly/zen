@@ -1,12 +1,12 @@
 CREATE TABLE articles (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    author_id UUID NOT NULL REFERENCES users (id),
+    id SERIAL PRIMARY KEY,
+    author_id int NOT NULL REFERENCES users (id),
     slug TEXT UNIQUE NOT NULL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     body TEXT NOT NULL,
     tag_list TEXT[] NOT NULL,
-    favorites_count INTEGER NOT NULL DEFAULT 0,
+    favorites_count int NOT NULL DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
@@ -17,8 +17,8 @@ CREATE INDEX articles_author_id_idx ON articles (author_id);
 SELECT diesel_manage_updated_at('articles');
 
 CREATE TABLE favorite_articles (
-    user_id UUID NOT NULL REFERENCES users (id),
-    article_id UUID NOT NULL REFERENCES articles (id),
+    user_id int NOT NULL REFERENCES users (id),
+    article_id int NOT NULL REFERENCES articles (id),
     PRIMARY KEY (user_id, article_id),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()

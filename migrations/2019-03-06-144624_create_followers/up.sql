@@ -1,6 +1,6 @@
 CREATE TABLE followers (
-    user_id UUID NOT NULL REFERENCES users (id),
-    follower_id UUID NOT NULL REFERENCES users (id),
+    user_id int NOT NULL REFERENCES users (id),
+    follower_id int NOT NULL REFERENCES users (id),
     PRIMARY KEY (user_id, follower_id),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
