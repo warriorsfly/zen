@@ -9,7 +9,7 @@ extern crate lazy_static;
 extern crate validator_derive;
 
 // mod auth;
-use crate::server::serve;
+use crate::server::serv;
 
 mod auth;
 mod awc;
@@ -33,5 +33,5 @@ mod validate;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    serve().await
+    serv().await
 }
