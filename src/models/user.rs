@@ -1,6 +1,6 @@
 use crate::schema::users;
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]

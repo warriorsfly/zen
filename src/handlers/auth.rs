@@ -8,8 +8,7 @@ use crate::{
     validate::validate,
 };
 use actix_web::web::{block, Data, Json};
-use serde::Serialize;
-use validator::Validate;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct SignupData {

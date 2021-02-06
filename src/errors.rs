@@ -8,6 +8,7 @@ use diesel::{
     r2d2::PoolError,
     result::{DatabaseErrorKind, Error as DBError},
 };
+use serde::{Deserialize, Serialize};
 use uuid::Error as UuidError;
 
 #[derive(Debug, Display, PartialEq)]

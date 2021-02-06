@@ -4,8 +4,7 @@ use crate::{
 };
 use actix_web::web::{block, Data, Json};
 
-use serde::Serialize;
-use validator::Validate;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UsersResponse(pub Vec<User>);

@@ -7,7 +7,7 @@ use crate::{
 };
 use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
-
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 const SUFFIX_LEN: usize = 6;
@@ -79,7 +79,10 @@ fn slugify(title: &str) -> String {
 
 fn generate_suffix(len: usize) -> String {
     let mut rng = thread_rng();
-    (0..len).map(|_| rng.sample(Alphanumeric)).collect()
+    (0..len)
+        .map(|_| rng.sample(Alphanumeric))
+        .map(char::from)
+        .collect()
 }
 
 #[derive(Deserialize, Default)]

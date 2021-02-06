@@ -10,12 +10,7 @@ pub mod tests {
         routes::routes,
         state::{new_state, AppState},
     };
-    use actix_web::{
-        dev::ServiceResponse,
-        test,
-        web::{Data, Json},
-        App,
-    };
+    use actix_web::{dev::ServiceResponse, test, web::Data, App};
     use serde::Serialize;
 
     /// Helper for HTTP GET integration tests

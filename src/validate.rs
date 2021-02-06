@@ -32,6 +32,7 @@ fn collect_errors(error: ValidationErrors) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde::{Deserialize, Serialize};
     use serde_json::json;
 
     #[derive(Debug, Deserialize, Serialize, Validate)]

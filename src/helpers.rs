@@ -19,7 +19,7 @@ pub fn respond_ok() -> Result<HttpResponse, ServiceError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    use serde::Deserialize;
     #[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
     pub struct TestResponse {
         pub first_name: String,

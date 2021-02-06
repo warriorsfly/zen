@@ -8,18 +8,18 @@ services:
   #   environment:
   #     - NGINX_HOST=walking.com
   #     - NGINX_PORT=80
-  api:
-    image: warriorsfly/peacock
-    container_name: peacock-server
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env.docker
-    environment:
-      - DATABASE_URL=postgres://allen:walker@db/postgres
-    depends_on:
-      - db
-      # - redis
+  # api:
+  #   image: warriorsfly/peacock
+  #   container_name: peacock-server
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - .env.docker
+  #   environment:
+  #     - DATABASE_URL=postgres://allen:walker@db/postgres
+  #   depends_on:
+  #     - db
+  # - redis
 
   db:
     image: postgres:alpine
