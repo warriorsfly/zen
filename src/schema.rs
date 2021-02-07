@@ -48,8 +48,8 @@ table! {
         username -> Text,
         email -> Varchar,
         password -> Text,
-        bio -> Nullable<Text>,
-        avatar -> Nullable<Text>,
+        bio -> Text,
+        avatar -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }

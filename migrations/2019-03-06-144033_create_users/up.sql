@@ -6,8 +6,8 @@ CREATE TABLE users (
     email VARCHAR(254) NOT NULL,
     UNIQUE (username, email),
     password TEXT NOT NULL,
-    bio TEXT,
-    avatar TEXT,
+    bio TEXT NOT NULL DEFAULT '',
+    avatar TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );

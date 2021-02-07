@@ -1,11 +1,14 @@
 use crate::config::{Config, CONFIG};
 use actix_web::web;
 use diesel::{
-    r2d2::{ConnectionManager, Pool, PoolError},
+    r2d2::{ConnectionManager, Pool, PoolError, PooledConnection},
     PgConnection,
 };
 
+pub mod user;
+
 pub type DatabasePool = Pool<ConnectionManager<PgConnection>>;
+pub type ConnectionPool = PooledConnection<ConnectionManager<PgConnection>>;
 
 pub fn init_pool(config: Config) -> Result<DatabasePool, PoolError> {
     let manager = ConnectionManager::<PgConnection>::new(config.database_url);

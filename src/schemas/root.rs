@@ -1,7 +1,15 @@
-use super::{user::User, DataSource};
-use crate::schema::*;
+use super::{
+    user::{NewUserInput, UpdateUserInput},
+    DataSource,
+};
+use crate::{
+    auth::hash,
+    database::user::{NewUser, User},
+    schema::users::{self, dsl::*},
+};
 use diesel::prelude::*;
-use juniper::{graphql_object, EmptyMutation, EmptySubscription, FieldResult, RootNode};
+use juniper::{graphql_object, EmptySubscription, FieldResult, RootNode};
+
 pub struct Query;
 
 #[graphql_object(Context = DataSource)]
@@ -9,25 +17,53 @@ impl Query {
     #[graphql(description = "List of all users")]
     fn users(ctx: &DataSource) -> FieldResult<Vec<User>> {
         let conn = &ctx.database.get()?;
-        let users = users::table.load::<User>(conn)?;
-        Ok(users)
+        let urs = users::table.load::<User>(conn)?;
+        Ok(urs)
     }
 
     #[graphql(arguments(id(description = "id of the provider")))]
-    fn provider(ctx: &DataSource, id: i32) -> FieldResult<User> {
+    fn user(ctx: &DataSource, uid: i32) -> FieldResult<User> {
         let conn = &ctx.database.get()?;
-        let user = users::table.find(id).get_result::<User>(conn)?;
-        Ok(user)
+        let ur = users::table.find(uid).get_result::<User>(conn)?;
+        Ok(ur)
     }
 }
 
-pub type Schema =
-    RootNode<'static, Query, EmptyMutation<DataSource>, EmptySubscription<DataSource>>;
+pub struct Mutation;
+
+#[graphql_object(Context = DataSource)]
+impl Mutation {
+    #[graphql(description = "sign up a new user")]
+    fn register(ctx: &DataSource, entity: NewUserInput) -> FieldResult<User> {
+        let conn = &ctx.database.get()?;
+        let psw = hash(&entity.password);
+        let ur = NewUser {
+            username: &entity.username,
+            email: &entity.email,
+            password: &psw,
+            bio: &entity.bio.unwrap_or("".into()),
+            avatar: &entity.avatar.unwrap_or("".into()),
+        };
+        let ur = diesel::insert_into(users)
+            .values(ur)
+            .get_result::<User>(conn)
+            .expect("insert user error");
+        Ok(ur)
+    }
+
+    // #[graphql(description = "login into system")]
+    // fn login(ctx: &DataSource, entity: NewUser) -> FieldResult<User> {
+    //     let conn = &ctx.database.get()?;
+    //     let ur = diesel::insert_into(users)
+    //         .values(entity)
+    //         .get_result::<User>(conn)
+    //         .expect("insert user error");
+    //     Ok(ur)
+    // }
+}
+
+pub type Schema = RootNode<'static, Query, Mutation, EmptySubscription<DataSource>>;
 
 pub(crate) fn init_schema() -> Schema {
-    Schema::new(
-        Query,
-        EmptyMutation::<DataSource>::new(),
-        EmptySubscription::<DataSource>::new(),
-    )
+    Schema::new(Query, Mutation, EmptySubscription::<DataSource>::new())
 }

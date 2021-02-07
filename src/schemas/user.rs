@@ -1,20 +1,10 @@
 use super::DataSource;
-use crate::schema::users::{self, dsl::*};
-use chrono::{DateTime, Utc};
+use crate::{
+    database::user::User,
+    schema::users::{self, dsl::*},
+};
+
 use juniper::graphql_object;
-use serde::{Deserialize, Serialize};
-#[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
-pub struct User {
-    pub id: i32,
-    pub username: String,
-    pub email: String,
-    #[serde(skip_serializing)]
-    pub password: String,
-    pub bio: Option<String>,
-    pub avatar: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-}
 
 #[graphql_object(Context = DataSource)]
 impl User {
@@ -30,11 +20,29 @@ impl User {
         &self.email
     }
 
-    pub fn bio(&self) -> &Option<String> {
+    pub fn bio(&self) -> &str {
         &self.bio
     }
 
-    pub fn avatar(&self) -> &Option<String> {
+    pub fn avatar(&self) -> &str {
         &self.avatar
     }
+}
+
+#[derive(Debug, juniper::GraphQLInputObject)]
+pub struct NewUserInput {
+    pub username: String,
+    pub email: String,
+    pub password: String,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+}
+
+#[derive(Debug, juniper::GraphQLInputObject)]
+pub struct UpdateUserInput {
+    pub username: Option<String>,
+    pub email: Option<String>,
+    pub password: Option<String>,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
 }

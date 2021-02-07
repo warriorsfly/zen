@@ -3,7 +3,8 @@ use crate::{
     state::new_state,
 };
 
-use actix_web::{middleware::Logger, App, HttpServer};
+use actix_cors::Cors;
+use actix_web::{http::header, middleware::Logger, App, HttpServer};
 
 pub async fn serv() -> std::io::Result<()> {
     dotenv::dotenv().ok();
@@ -19,8 +20,7 @@ pub async fn serv() -> std::io::Result<()> {
             .configure(add_pool)
             // 添加awc
             .configure(add_awc)
-            .configure(add_graphql)
-            // // 添加跨域
+            // 添加跨域
             // .wrap(
             //     Cors::default()
             //         // .allowed_origin(&CONFIG.server)
@@ -30,6 +30,7 @@ pub async fn serv() -> std::io::Result<()> {
             //         .supports_credentials()
             //         .max_age(3600),
             // )
+            .configure(add_graphql)
             // 添加日志
             .wrap(Logger::default())
             // 添加状态
