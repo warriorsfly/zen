@@ -5,7 +5,8 @@ use diesel::{
     PgConnection,
 };
 
-pub mod user;
+mod user;
+pub use self::user::*;
 
 pub type DatabasePool = Pool<ConnectionManager<PgConnection>>;
 pub type ConnectionPool = PooledConnection<ConnectionManager<PgConnection>>;

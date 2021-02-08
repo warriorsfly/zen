@@ -26,7 +26,7 @@ pub struct NewUser<'a> {
     pub avatar: &'a str,
 }
 
-pub fn register<'a>(conn: &'a ConnectionPool, entity: &'a NewUser) -> User {
+pub fn register<'a>(conn: &'a ConnectionPool, entity: NewUser) -> User {
     diesel::insert_into(users)
         .values(entity)
         .get_result::<User>(conn)

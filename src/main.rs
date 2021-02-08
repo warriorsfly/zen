@@ -5,9 +5,6 @@ extern crate diesel;
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
-extern crate validator_derive;
-
 // mod auth;
 use crate::server::serv;
 

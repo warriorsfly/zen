@@ -32,8 +32,7 @@ rayon = "1"
 serde = { version = "1", features = ["derive"] }
 slug = "0.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }
-validator = "0.12"
-validator_derive = "0.12"
+validator = { version = "0.12", features = ["derive"] }
 
 
 [features]

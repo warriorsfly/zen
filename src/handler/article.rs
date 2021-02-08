@@ -29,7 +29,6 @@ pub struct NewArticle {
 pub struct ArticleRequest {}
 pub async fn create_article(
     pool: Data<DatabasePool>,
-    // redis: Cache,
     claim: Claims,
     params: Json<NewArticle>,
 ) -> Result<Json<ArticleJson>, ServError> {

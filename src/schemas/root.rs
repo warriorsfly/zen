@@ -4,12 +4,12 @@ use super::{
 };
 use crate::{
     auth::hash,
-    database::user::{NewUser, User},
+    database::{register, NewUser, User},
     schema::users::{self, dsl::*},
 };
 use diesel::prelude::*;
 use juniper::{graphql_object, EmptySubscription, FieldResult, RootNode};
-
+use validator::Validate;
 pub struct Query;
 
 #[graphql_object(Context = DataSource)]
@@ -21,7 +21,7 @@ impl Query {
         Ok(urs)
     }
 
-    #[graphql(arguments(id(description = "id of the provider")))]
+    #[graphql(arguments(uid(description = "id of the user")))]
     fn user(ctx: &DataSource, uid: i32) -> FieldResult<User> {
         let conn = &ctx.database.get()?;
         let ur = users::table.find(uid).get_result::<User>(conn)?;
@@ -34,7 +34,8 @@ pub struct Mutation;
 #[graphql_object(Context = DataSource)]
 impl Mutation {
     #[graphql(description = "sign up a new user")]
-    fn register(ctx: &DataSource, entity: NewUserInput) -> FieldResult<User> {
+    fn register_account(ctx: &DataSource, entity: NewUserInput) -> FieldResult<User> {
+        entity.validate()?;
         let conn = &ctx.database.get()?;
         let psw = hash(&entity.password);
         let ur = NewUser {
@@ -44,10 +45,7 @@ impl Mutation {
             bio: &entity.bio.unwrap_or("".into()),
             avatar: &entity.avatar.unwrap_or("".into()),
         };
-        let ur = diesel::insert_into(users)
-            .values(ur)
-            .get_result::<User>(conn)
-            .expect("insert user error");
+        let ur = register(conn, ur);
         Ok(ur)
     }
 
