@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'peacock'",
+            "name": "Debug executable 'aspect'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=peacock",
-                    "--package=peacock"
+                    "--bin=aspect",
+                    "--package=aspect"
                 ],
                 "filter": {
-                    "name": "peacock",
+                    "name": "aspect",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'peacock'",
+            "name": "Debug unit tests in executable 'aspect'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=peacock",
-                    "--package=peacock"
+                    "--bin=aspect",
+                    "--package=aspect"
                 ],
                 "filter": {
-                    "name": "peacock",
+                    "name": "aspect",
                     "kind": "bin"
                 }
             },

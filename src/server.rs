@@ -3,8 +3,7 @@ use crate::{
     state::new_state,
 };
 
-use actix_cors::Cors;
-use actix_web::{http::header, middleware::Logger, App, HttpServer};
+use actix_web::{middleware::Logger, App, HttpServer};
 
 pub async fn serv() -> std::io::Result<()> {
     dotenv::dotenv().ok();
@@ -24,7 +23,7 @@ pub async fn serv() -> std::io::Result<()> {
             // .wrap(
             //     Cors::default()
             //         // .allowed_origin(&CONFIG.server)
-            //         .allowed_methods(vec!["POST", "GET"])
+            //         // .allowed_methods(vec!["POST", "GET"])
             //         .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
             //         .allowed_header(header::CONTENT_TYPE)
             //         .supports_credentials()

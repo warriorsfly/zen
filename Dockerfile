@@ -18,6 +18,6 @@ RUN cargo build --release
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=builder \
-    /home/rust/src/target/x86_64-unknown-linux-musl/release/peacock \
+    /home/rust/src/target/x86_64-unknown-linux-musl/release/aspect \
     /usr/local/bin/
-CMD /usr/local/bin/peacock
+CMD /usr/local/bin/aspect

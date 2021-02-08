@@ -11,8 +11,8 @@
 use dotenv::dotenv;
 use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
-pub struct Config {
-    pub auth_salt: String,
+pub struct ServConfig {
+    pub salt: String,
     pub database_url: String,
     pub jwt_expiration: i64,
     pub jwt_key: String,
@@ -20,24 +20,17 @@ pub struct Config {
     pub backtrace: u8,
     pub log: String,
     pub server: String,
-    pub session_key: String,
-    pub session_name: String,
-    pub session_secure: bool,
-    pub session_timeout: i64,
     pub wechat_appid: String,
     pub wechat_secret: String,
 }
 
-/// js toISOString() in test suit can't handle chrono's default precision
-pub const DATE_FORMAT: &str = "%Y-%m-%dT%H:%M:%S%.3fZ";
-
 lazy_static! {
-    pub static ref CONFIG: Config = get_config();
+    pub static ref CONFIG: ServConfig = get_config();
 }
 
-fn get_config() -> Config {
+fn get_config() -> ServConfig {
     dotenv().ok();
-    match envy::from_env::<Config>() {
+    match envy::from_env::<ServConfig>() {
         Ok(config) => config,
         Err(error) => panic!("Configuration Error:{:#?}", error),
     }

@@ -2,6 +2,7 @@ use super::DataSource;
 use crate::database::User;
 use juniper::{graphql_object, GraphQLInputObject};
 use validator::Validate;
+
 #[graphql_object(Context = DataSource)]
 impl User {
     pub fn id(&self) -> &i32 {

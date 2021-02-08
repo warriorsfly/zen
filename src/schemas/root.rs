@@ -4,11 +4,11 @@ use super::{
 };
 use crate::{
     auth::hash,
-    database::{register, NewUser, User},
+    database::{register_by_email, NewUser, User},
     schema::users::{self, dsl::*},
 };
 use diesel::prelude::*;
-use juniper::{graphql_object, EmptySubscription, FieldResult, RootNode};
+use juniper::{graphql_object, EmptySubscription, FieldError, FieldResult, RootNode};
 use validator::Validate;
 pub struct Query;
 
@@ -33,8 +33,8 @@ pub struct Mutation;
 
 #[graphql_object(Context = DataSource)]
 impl Mutation {
-    #[graphql(description = "sign up a new user")]
-    fn register_account(ctx: &DataSource, entity: NewUserInput) -> FieldResult<User> {
+    #[graphql(description = "sign up a new user by email")]
+    fn register_email(ctx: &DataSource, entity: NewUserInput) -> FieldResult<User> {
         entity.validate()?;
         let conn = &ctx.database.get()?;
         let psw = hash(&entity.password);
@@ -45,8 +45,7 @@ impl Mutation {
             bio: &entity.bio.unwrap_or("".into()),
             avatar: &entity.avatar.unwrap_or("".into()),
         };
-        let ur = register(conn, ur);
-        Ok(ur)
+        register_by_email(conn, ur).map_err(|err| FieldError::from(err.to_string()))
     }
 
     // #[graphql(description = "login into system")]

@@ -1,4 +1,7 @@
-use crate::schema::users::{self, dsl::*};
+use crate::{
+    errors::ServError,
+    schema::users::{self, dsl::*},
+};
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -26,11 +29,10 @@ pub struct NewUser<'a> {
     pub avatar: &'a str,
 }
 
-pub fn register<'a>(conn: &'a ConnectionPool, entity: NewUser) -> User {
+pub fn register_by_email<'a>(conn: &'a ConnectionPool, entity: NewUser) -> QueryResult<User> {
     diesel::insert_into(users)
         .values(entity)
         .get_result::<User>(conn)
-        .expect("insert user error")
 }
 
 #[derive(Debug, AsChangeset)]

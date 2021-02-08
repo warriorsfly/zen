@@ -41,7 +41,7 @@ pub fn decode_jwt(token: &str) -> Result<Claims, ServError> {
 /// Uses the argon2i algorithm.
 /// salt is environment-condigured.
 pub fn hash(password: &str) -> String {
-    argon2i_simple(&password, &CONFIG.auth_salt)
+    argon2i_simple(&password, &CONFIG.salt)
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect()
