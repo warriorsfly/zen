@@ -1,6 +1,5 @@
 use crate::config::CONFIG;
 use actix_web::web;
-use database::init_pool;
 
 mod user;
 pub use self::user::*;
