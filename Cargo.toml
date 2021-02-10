@@ -1,4 +1,5 @@
 [workspace]
 members = [
-   "aspect"
+   "ins/database",
+   "ins-web"
 ]

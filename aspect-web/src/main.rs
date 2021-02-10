@@ -18,6 +18,7 @@ mod errors;
 mod extractors;
 mod handlers;
 mod helpers;
+mod mail;
 mod middleware;
 // mod mdels;
 mod routes;

@@ -1,10 +1,10 @@
 use super::{
-    user::{NewUserInput, UpdateUserInput},
+    user::{NewUserInput, UpdateUserInput, UserLoginInput},
     DataSource,
 };
 use crate::{
     auth::hash,
-    database::{register_by_email, NewUser, User},
+    database::{find_by_email, register_by_email, NewUser, User},
     schema::users::{self, dsl::*},
 };
 use diesel::prelude::*;
@@ -48,15 +48,14 @@ impl Mutation {
         register_by_email(conn, ur).map_err(|err| FieldError::from(err.to_string()))
     }
 
-    // #[graphql(description = "login into system")]
-    // fn login(ctx: &DataSource, entity: NewUser) -> FieldResult<User> {
-    //     let conn = &ctx.database.get()?;
-    //     let ur = diesel::insert_into(users)
-    //         .values(entity)
-    //         .get_result::<User>(conn)
-    //         .expect("insert user error");
-    //     Ok(ur)
-    // }
+    #[graphql(description = "login into system")]
+    fn login(ctx: &DataSource, entity: UserLoginInput) -> FieldResult<User> {
+        entity.validate()?;
+        let hashed = hash(&entity.password);
+        let conn = &ctx.database.get()?;
+        let user = find_by_email(conn, &entity.email, &hashed)?;
+        Ok(user)
+    }
 }
 
 pub type Schema = RootNode<'static, Query, Mutation, EmptySubscription<DataSource>>;
