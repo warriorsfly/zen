@@ -1,5 +1,5 @@
 use actix_web::web;
-use ins_database::DatabasePool;
+use panda_database::DatabasePool;
 
 use self::root::init_schema;
 

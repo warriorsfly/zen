@@ -1,5 +1,5 @@
 [package]
-name = "ins-mail"
+name = "mail"
 version = "0.1.0"
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
@@ -8,6 +8,3 @@ edition = "2018"
 
 [dependencies]
 lettre = "0.10.0-alpha.5"
-tonic = "0.4"
-tokio= "1"
-

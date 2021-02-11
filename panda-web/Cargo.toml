@@ -1,5 +1,5 @@
 [package]
-name = "ins-web"
+name = "panda-web"
 version = "0.3.1" #完成一个模块+0.1,完成一个功能+0.0.1
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
@@ -13,7 +13,7 @@ actix-web-actors = "3"
 argon2rs = "0.2"
 chrono = {version = "0.4",features = ["serde"]}
 # casbin = "0.4"
-ins-database={path="../ins/database"}
+panda-database={path="../panda/database"}
 derive_more = "0.99"
 diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres", "r2d2", "uuid", "serde_json"]}
 dotenv = "0.15"

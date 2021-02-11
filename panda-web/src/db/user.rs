@@ -5,14 +5,14 @@ use crate::{
 };
 
 use crate::schema::users::{self, dsl::*};
-use diesel::{insert_into, prelude::*, update};
+use diesel::{pandaert_into, prelude::*, update};
 use uuid::Uuid;
 
 /// create user
 pub fn create_user(pool: &DatabasePool, item: &NewUser) -> Result<User, ServError> {
     // use crate::schema::users::{self, dsl::*};
     let conn = pool.get()?;
-    insert_into(users)
+    pandaert_into(users)
         .values(item)
         .get_result::<User>(&conn)
         .map_err(|err| ServError::DataBaseError(err.to_string()))

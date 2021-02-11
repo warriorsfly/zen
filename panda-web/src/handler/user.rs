@@ -92,7 +92,7 @@ pub mod tests {
     //     let params = Json(CreateUserRequest {
     //         first_name: "Satoshi".into(),
     //         last_name: "Nakamoto".into(),
-    //         email: "satoshi@nakamotoinstitute.org".into(),
+    //         email: "satoshi@nakamotopandatitute.org".into(),
     //         password: "123456".into(),
     //     });
     //     let response = create_user(get_data_pool(), Json(params.clone()))

@@ -1,5 +1,6 @@
 [workspace]
 members = [
-   "ins/database",
-   "ins-web"
+   "panda/database",
+   "panda/mail",
+   "panda-web"
 ]

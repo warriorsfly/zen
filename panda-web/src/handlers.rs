@@ -1,6 +1,6 @@
 use actix_web::{web, Error, HttpResponse};
 
-use ins_database::DatabasePool;
+use panda_database::DatabasePool;
 use juniper_actix::{
     graphiql_handler as gqli_handler, graphql_handler, playground_handler as play_handler,
 };

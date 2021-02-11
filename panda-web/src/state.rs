@@ -6,8 +6,8 @@ use std::sync::Mutex;
 pub type State<'a, T> = HashMap<&'a str, T>;
 pub type AppState<'a, T> = Data<Mutex<State<'a, T>>>;
 
-/// Create a new state instance and wrap in a mutex.
-/// Further wrap into an Actix Data instance.
+/// Create a new state pandatance and wrap in a mutex.
+/// Further wrap into an Actix Data pandatance.
 pub fn new_state<'a, T>() -> AppState<'a, T> {
     let state = State::<T>::new();
     Data::new(Mutex::new(state))
@@ -15,7 +15,7 @@ pub fn new_state<'a, T>() -> AppState<'a, T> {
 
 /// Sets an entry in the application state by key.
 /// Returns Some(T) only if the entry exists (update operation).
-/// Returns None if the entry did not alreay exist (insert operation).
+/// Returns None if the entry did not alreay exist (pandaert operation).
 #[allow(dead_code)]
 pub fn set<'a, T>(data: AppState<'a, T>, key: &'a str, value: T) -> Option<T> {
     let mut hashmap = data.lock().expect("Could not acquire lock");
