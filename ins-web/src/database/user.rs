@@ -1,6 +1,7 @@
 use crate::schema::users::{self, dsl::*};
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
+use ins_database::ConnectionPool;
 use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct User {

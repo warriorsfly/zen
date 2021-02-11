@@ -1,6 +1,5 @@
 use actix_web::web;
-
-use crate::database::DatabasePool;
+use ins_database::DatabasePool;
 
 use self::root::init_schema;
 

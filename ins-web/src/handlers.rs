@@ -1,13 +1,11 @@
 use actix_web::{web, Error, HttpResponse};
 
+use ins_database::DatabasePool;
 use juniper_actix::{
     graphiql_handler as gqli_handler, graphql_handler, playground_handler as play_handler,
 };
 
-use crate::{
-    database::DatabasePool,
-    schemas::{root::Schema, DataSource},
-};
+use crate::schemas::{root::Schema, DataSource};
 
 pub async fn graphiql_handler() -> Result<HttpResponse, Error> {
     gqli_handler("/", None).await
