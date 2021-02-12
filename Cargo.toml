@@ -1,5 +1,6 @@
 [workspace]
 members = [
+   "panda/cache",
    "panda/database",
    "panda/mail",
    "panda-web"
