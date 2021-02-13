@@ -38,7 +38,7 @@ pub fn create_comment(
         article_id: &article_id,
     };
 
-    let comment = diesel::pandaert_into(comments::table)
+    let comment = diesel::insert_into(comments::table)
         .values(comment)
         .get_result::<Comment>(&conn)?;
 

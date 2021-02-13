@@ -5,7 +5,7 @@ use crate::{
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
 };
-use diesel::{self, pandaert_into, prelude::*};
+use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -61,7 +61,7 @@ pub fn create_article(
         .get_result::<User>(&conn)
         .map_err(|err| ServError::DataBaseError(err.to_string()))?;
 
-    let new_article = pandaert_into(articles::table)
+    let new_article = insert_into(articles::table)
         .values(new_article)
         .get_result::<Article>(&conn)
         .map_err(|err| ServError::DataBaseError(err.to_string()))?;
@@ -220,7 +220,7 @@ pub fn favorite_article(
         let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
             .set(articles::favorites_count.eq(articles::favorites_count + 1))
             .get_result::<Article>(&conn)?;
-        diesel::pandaert_into(favorite_articles::table)
+        diesel::insert_into(favorite_articles::table)
             .values((
                 favorite_articles::user_id.eq(uid),
                 favorite_articles::article_id.eq(article.id),

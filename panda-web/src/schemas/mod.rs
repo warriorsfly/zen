@@ -3,6 +3,7 @@ use panda_database::DatabasePool;
 
 use self::root::init_schema;
 
+pub mod article;
 pub mod root;
 pub mod user;
 pub struct DataSource {
