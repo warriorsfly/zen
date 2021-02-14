@@ -6,8 +6,6 @@ use panda_database::ConnectionPool;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::Deserialize;
 
-use super::User;
-
 const SUFFIX_LEN: usize = 6;
 
 #[derive(Queryable)]

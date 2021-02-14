@@ -49,3 +49,7 @@ pub fn find_by_email<'a>(conn: &'a ConnectionPool, em: &'a str, pa: &'a str) -> 
         .limit(1)
         .get_result::<User>(conn)
 }
+
+pub fn find_user_by_id<'a>(conn: &'a ConnectionPool, uid: &'a i32) -> QueryResult<User> {
+    users::table.find(uid).get_result::<User>(conn)
+}

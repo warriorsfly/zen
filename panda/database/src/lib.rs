@@ -1,4 +1,3 @@
-use actix_web::web;
 use diesel::{
     r2d2::{ConnectionManager, Pool, PoolError, PooledConnection},
     PgConnection,
