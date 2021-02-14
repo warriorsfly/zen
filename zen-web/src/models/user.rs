@@ -1,17 +1,16 @@
 use crate::schema::users;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct User {
-    pub id: Uuid,
+    pub id: i32,
     pub username: String,
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
-    pub bio: Option<String>,
-    pub avatar: Option<String>,
+    pub bio: String,
+    pub avatar: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }

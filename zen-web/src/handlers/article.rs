@@ -143,7 +143,7 @@ pub async fn create_comment(
     body: String,
 ) -> Result<Json<CommentJson>, ServError> {
     let comment =
-        block(move || database::create_comment(&pool, claim.id, slug.as_ref(), body.as_ref()))
+        block(move || database::create_comment(&pool, &claim.id, slug.as_ref(), body.as_ref()))
             .await?;
     respond_json(comment)
 }
@@ -163,7 +163,14 @@ pub async fn delete_comment(
     slug: String,
     comment_id: String,
 ) -> Result<String, ServError> {
-    block(move || database::delete_comment(&pool, claim.id, slug.as_ref(), comment_id.as_ref()))
-        .await?;
+    block(move || {
+        database::delete_comment(
+            &pool,
+            &claim.id,
+            slug.as_ref(),
+            &comment_id.parse::<i32>().unwrap(),
+        )
+    })
+    .await?;
     Ok("success".to_string())
 }

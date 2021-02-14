@@ -16,7 +16,7 @@ const SUFFIX_LEN: usize = 6;
 #[derive(Debug, Insertable)]
 #[table_name = "articles"]
 struct NewArticle<'a> {
-    pub author_id: &'a Uuid,
+    pub author_id: &'a i32,
     pub slug: &'a str,
     pub title: &'a str,
     pub description: &'a str,
@@ -36,18 +36,18 @@ pub struct ArticleChange {
 #[derive(Debug, Insertable)]
 #[table_name = "favorite_articles"]
 pub struct NewFavoriteArticle {
-    pub user_id: Uuid,
-    pub article_id: Uuid,
+    pub user_id: i32,
+    pub article_id: i32,
 }
 
 /// 创建文章
-pub fn create_article(
-    pool: &DatabaseConnectionPool,
-    author: &Uuid,
-    title: &str,
-    description: &str,
-    body: &str,
-    tags: &Vec<String>,
+pub fn create_article<'a>(
+    pool: &'a DatabaseConnectionPool,
+    author: &'a i32,
+    title: &'a str,
+    description: &'a str,
+    body: &'a str,
+    tags: &'a Vec<String>,
 ) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     let new_article = NewArticle {
@@ -98,7 +98,7 @@ pub struct ArticleFindData {
 /// 查找文章
 pub fn search_articles(
     pool: &DatabaseConnectionPool,
-    uid: Option<Uuid>,
+    uid: Option<i32>,
     params: &ArticleFindData,
 ) -> Result<(Vec<ArticleJson>, i64), ServError> {
     let conn = pool.get()?;
@@ -159,7 +159,7 @@ pub fn search_articles(
 pub fn find_one_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
-    uid: &Uuid,
+    uid: &i32,
 ) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     let article = articles::table
@@ -180,7 +180,7 @@ pub struct FeedArticleData {
 pub fn feed_article(
     pool: &DatabaseConnectionPool,
     params: FeedArticleData,
-    uid: &Uuid,
+    uid: &i32,
 ) -> Result<Vec<ArticleJson>, ServError> {
     let conn = pool.get()?;
     let arts = articles::table
@@ -215,7 +215,7 @@ pub fn feed_article(
 pub fn favorite_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
-    uid: &Uuid,
+    uid: &i32,
 ) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     conn.transaction::<_, diesel::result::Error, _>(|| {
@@ -237,7 +237,7 @@ pub fn favorite_article(
 pub fn unfavorite_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
-    uid: &Uuid,
+    uid: &i32,
 ) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
     conn.transaction::<_, diesel::result::Error, _>(|| {
@@ -266,7 +266,7 @@ pub struct UpdateArticleData {
 pub fn update_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
-    uid: &Uuid,
+    uid: &i32,
     mut data: UpdateArticleData,
 ) -> Result<ArticleJson, ServError> {
     let conn = pool.get()?;
@@ -285,7 +285,7 @@ pub fn update_article(
 pub fn delete_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
-    uid: &Uuid,
+    uid: &i32,
 ) -> Result<usize, ServError> {
     let conn = pool.get()?;
     diesel::delete(articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))))
@@ -302,7 +302,7 @@ pub fn get_tags(pool: &DatabaseConnectionPool) -> Result<Vec<String>, ServError>
         .map_err(|err| ServError::DataBaseError(err.to_string()))
 }
 
-fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &Uuid) -> bool {
+fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &i32) -> bool {
     use diesel::dsl::exists;
     use diesel::select;
 

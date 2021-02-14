@@ -15,6 +15,6 @@ pub struct Follower {
 #[derive(Debug, Insertable)]
 #[table_name = "followers"]
 pub struct NewFollower {
-    pub user_id: Uuid,
-    pub follower_id: Uuid,
+    pub user_id: i32,
+    pub follower_id: i32,
 }

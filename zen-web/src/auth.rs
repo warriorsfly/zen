@@ -8,12 +8,12 @@ use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Claims {
-    pub id: Uuid,
+    pub id: i32,
     pub exp: i64,
 }
 
 impl Claims {
-    pub fn new(id: Uuid) -> Self {
+    pub fn new(id: i32) -> Self {
         Self {
             id,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
@@ -72,7 +72,7 @@ pub mod tests {
 
     #[test]
     fn it_creates_a_jwt() {
-        let id = Uuid::new_v4();
+        let id = 1;
         let private_claim = Claims::new(id);
         let jwt = create_jwt(private_claim);
         assert!(jwt.is_ok());
@@ -80,7 +80,7 @@ pub mod tests {
 
     #[test]
     fn it_decodes_a_jwt() {
-        let id = Uuid::new_v4();
+        let id = 1;
         let private_claim = Claims::new(id);
         let jwt = create_jwt(private_claim.clone()).unwrap();
         let decoded = decode_jwt(&jwt).unwrap();

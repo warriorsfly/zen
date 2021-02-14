@@ -6,8 +6,8 @@ use uuid::Uuid;
 
 #[derive(Queryable)]
 pub struct Article {
-    pub id: Uuid,
-    pub author_id: Uuid,
+    pub id: i32,
+    pub author_id: i32,
     pub slug: String,
     pub title: String,
     pub description: String,
@@ -38,7 +38,7 @@ impl Article {
 
 #[derive(Serialize)]
 pub struct ArticleJson {
-    pub id: Uuid,
+    pub id: i32,
     pub author: User,
     pub slug: String,
     pub title: String,

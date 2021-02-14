@@ -7,9 +7,9 @@ use crate::{config::DATE_FORMAT, schema::comments};
 
 #[derive(Debug, Deserialize, Queryable, Identifiable)]
 pub struct Comment {
-    pub id: Uuid,
-    pub article_id: Uuid,
-    pub author_id: Uuid,
+    pub id: i32,
+    pub article_id: i32,
+    pub author_id: i32,
     pub body: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -29,7 +29,7 @@ impl Comment {
 
 #[derive(Serialize)]
 pub struct CommentJson {
-    pub id: Uuid,
+    pub id: i32,
     pub body: String,
     pub author: User,
     pub created_at: String,

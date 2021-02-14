@@ -11,13 +11,13 @@ use zen_database::DatabaseConnectionPool;
 #[table_name = "comments"]
 struct NewComment<'a> {
     body: &'a str,
-    author_id: &'a Uuid,
-    article_id: &'a Uuid,
+    author_id: &'a i32,
+    article_id: &'a i32,
 }
 
 pub fn create_comment(
     pool: &DatabaseConnectionPool,
-    author: Uuid,
+    author: &i32,
     slug: &str,
     body: &str,
 ) -> Result<CommentJson, ServError> {
@@ -25,7 +25,7 @@ pub fn create_comment(
     let article_id = articles::table
         .select(articles::id)
         .filter(articles::slug.eq(slug))
-        .get_result::<Uuid>(&conn)
+        .get_result::<i32>(&conn)
         .map_err(|_| ServError::DataBaseError("Canot find the article".into()))?;
     let author = users::table
         .find(&author)
@@ -67,11 +67,11 @@ pub fn find_comments_by_slug(
     Ok(result)
 }
 
-pub fn delete_comment(
-    pool: &DatabaseConnectionPool,
-    author: Uuid,
-    slug: &str,
-    comment_id: &str,
+pub fn delete_comment<'a>(
+    pool: &'a DatabaseConnectionPool,
+    author: &'a i32,
+    slug: &'a str,
+    comment_id: &'a i32,
 ) -> Result<(), ServError> {
     use diesel::dsl::exists;
     use diesel::select;
@@ -82,7 +82,7 @@ pub fn delete_comment(
     .get_result::<bool>(&conn)
     .map_err(|err| ServError::DataBaseError(err.to_string()))?;
     if belongs_to_author_result {
-        let _result = diesel::delete(comments::table.find(Uuid::parse_str(comment_id).unwrap()))
+        let _result = diesel::delete(comments::table.find(comment_id))
             .execute(&conn)
             .map_err(|err| ServError::DataBaseError(err.to_string()))?;
     }
