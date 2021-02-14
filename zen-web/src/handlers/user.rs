@@ -1,10 +1,8 @@
-use crate::{
-    auth::Claims, database::ConnectionPool, db, errors::ServError, helpers::respond_json,
-    models::User,
-};
+use crate::{auth::Claims, database, errors::ServError, helpers::respond_json, models::User};
 use actix_web::web::{block, Data, Json};
 
 use serde::{Deserialize, Serialize};
+use zen_database::DatabaseConnectionPool;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UsersResponse(pub Vec<User>);
@@ -22,8 +20,11 @@ pub struct UpdateUserRequest {
 }
 
 /// Get a user
-pub async fn get_user(pool: Data<ConnectionPool>, claim: Claims) -> Result<Json<User>, ServError> {
-    let user = block(move || db::find_user_by_id(&pool, &claim.id)).await?;
+pub async fn get_user(
+    pool: Data<DatabaseConnectionPool>,
+    claim: Claims,
+) -> Result<Json<User>, ServError> {
+    let user = block(move || database::find_user_by_id(&pool, &claim.id)).await?;
     respond_json(user)
 }
 

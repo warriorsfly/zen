@@ -16,7 +16,6 @@ mod awc;
 mod config;
 mod constants;
 mod database;
-mod db;
 mod errors;
 mod extractors;
 pub mod handlers;

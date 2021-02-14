@@ -1,5 +1,5 @@
 [package]
-name = "mimosa-web"
+name = "zen-web"
 version = "0.3.1" #完成一个模块+0.1,完成一个功能+0.0.1
 authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
@@ -33,6 +33,7 @@ uuid = { version = "0.8", features = ["serde", "v4"] }
 validator = "0.12"
 validator_derive = "0.12"
 
+zen-database = { path = "../zen/database" }
 
 [features]
 default = ["random-suffix"]

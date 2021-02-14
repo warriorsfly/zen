@@ -4,7 +4,7 @@ pub mod tests {
     use crate::{
         config::CONFIG,
         constants,
-        database::{add_pool, init_pool, ConnectionPool},
+        database::add_pool,
         handlers::auth::{LoginData, LoginResponse},
         middleware,
         routes::routes,
@@ -12,6 +12,7 @@ pub mod tests {
     };
     use actix_web::{dev::ServiceResponse, test, web::Data, App};
     use serde::Serialize;
+    use zen_database::{init_pool, DatabaseConnectionPool};
 
     /// Helper for HTTP GET integration tests
     pub async fn test_get(route: &str) -> ServiceResponse {
@@ -100,12 +101,12 @@ pub mod tests {
     }
 
     // Mock applicate sql connection pool
-    pub fn get_pool() -> ConnectionPool {
-        init_pool(CONFIG.clone()).unwrap()
+    pub fn get_pool() -> DatabaseConnectionPool {
+        init_pool(&CONFIG.database_url).unwrap()
     }
 
     /// Returns a r2d2 Pooled Connection wrappedn in Actix Application Data
-    pub fn get_data_pool() -> Data<ConnectionPool> {
+    pub fn get_data_pool() -> Data<DatabaseConnectionPool> {
         Data::new(get_pool())
     }
 

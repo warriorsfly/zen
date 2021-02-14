@@ -1,4 +1,5 @@
 [workspace]
 members = [
-   "zen-web",
+   "zen/database",
+   "zen-web"
 ]

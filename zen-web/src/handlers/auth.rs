@@ -1,7 +1,6 @@
 use crate::{
     auth::{create_jwt, hash, Claims},
-    database::ConnectionPool,
-    db,
+    database,
     errors::ServError,
     helpers::respond_json,
     models::{NewUser, User},
@@ -9,6 +8,7 @@ use crate::{
 };
 use actix_web::web::{block, Data, Json};
 use serde::{Deserialize, Serialize};
+use zen_database::DatabaseConnectionPool;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct SignupData {
@@ -30,7 +30,7 @@ pub struct SignupData {
 
 /// 邮箱注册用户
 pub async fn signup(
-    pool: Data<ConnectionPool>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
 ) -> Result<Json<User>, ServError> {
     validate(&params)?;
@@ -42,7 +42,7 @@ pub async fn signup(
         bio: None,
         avatar: None,
     };
-    let user = block(move || db::create_user(&pool, &new_user)).await?;
+    let user = block(move || database::create_user(&pool, &new_user)).await?;
     respond_json(user)
 }
 
@@ -68,14 +68,14 @@ pub struct LoginResponse {
 /// Login a user
 /// Create and remember their JWT
 pub async fn login(
-    pool: Data<ConnectionPool>,
+    pool: Data<DatabaseConnectionPool>,
     params: Json<LoginData>,
 ) -> Result<Json<LoginResponse>, ServError> {
     validate(&params)?;
 
     // Validate that the email + hashed password matches
     let hashed = hash(&params.password);
-    let user = block(move || db::find_by_email(&pool, &params.email, &hashed)).await?;
+    let user = block(move || database::find_by_email(&pool, &params.email, &hashed)).await?;
 
     // Create a JWT
     let private_claim = Claims::new(user.id);

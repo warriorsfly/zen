@@ -1,5 +1,4 @@
 use crate::{
-    database::ConnectionPool,
     errors::ServError,
     models::{Comment, CommentJson, User},
     schema::{articles, comments, users},
@@ -7,6 +6,7 @@ use crate::{
 
 use diesel::{self, prelude::*};
 use uuid::Uuid;
+use zen_database::DatabaseConnectionPool;
 #[derive(Insertable)]
 #[table_name = "comments"]
 struct NewComment<'a> {
@@ -16,7 +16,7 @@ struct NewComment<'a> {
 }
 
 pub fn create_comment(
-    pool: &ConnectionPool,
+    pool: &DatabaseConnectionPool,
     author: Uuid,
     slug: &str,
     body: &str,
@@ -47,7 +47,7 @@ pub fn create_comment(
 
 //TODO 后续需要修改,要考虑分页的情况
 pub fn find_comments_by_slug(
-    pool: &ConnectionPool,
+    pool: &DatabaseConnectionPool,
     slug: &str,
 ) -> Result<Vec<CommentJson>, ServError> {
     let conn = pool.get()?;
@@ -68,7 +68,7 @@ pub fn find_comments_by_slug(
 }
 
 pub fn delete_comment(
-    pool: &ConnectionPool,
+    pool: &DatabaseConnectionPool,
     author: Uuid,
     slug: &str,
     comment_id: &str,
