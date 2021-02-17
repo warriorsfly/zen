@@ -15,7 +15,7 @@ impl Claims {
     pub fn new(id: i32) -> Self {
         Self {
             id,
-            exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
+            exp: (Utc::now() + Duration::minutes(CONFIG.jwt_expiration)).timestamp(),
         }
     }
 }
@@ -40,7 +40,7 @@ pub fn decode_jwt(token: &str) -> Result<Claims, ServError> {
 /// Uses the argon2i algorithm.
 /// salt is environment-condigured.
 pub fn hash(password: &str) -> String {
-    argon2i_simple(&password, &CONFIG.auth_salt)
+    argon2i_simple(&password, &CONFIG.salt)
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect()

@@ -12,7 +12,7 @@ use dotenv::dotenv;
 use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Config {
-    pub auth_salt: String,
+    pub salt: String,
     pub database_url: String,
     pub jwt_expiration: i64,
     pub jwt_key: String,
@@ -20,10 +20,10 @@ pub struct Config {
     pub backtrace: u8,
     pub log: String,
     pub server: String,
-    pub session_key: String,
-    pub session_name: String,
-    pub session_secure: bool,
-    pub session_timeout: i64,
+    // pub session_key: String,
+    // pub session_name: String,
+    // pub session_secure: bool,
+    // pub session_timeout: i64,
     pub wechat_appid: String,
     pub wechat_secret: String,
 }
