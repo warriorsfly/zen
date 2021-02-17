@@ -1,4 +1,4 @@
-use crate::auth::{decode_jwt, Claims};
+use crate::jwt::{decode_jwt, Claims};
 use crate::{constants, errors::ServError};
 use actix_web::{dev::Payload, web::HttpRequest, FromRequest};
 use futures::future::{err, ok, Ready};

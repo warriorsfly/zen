@@ -1,5 +1,5 @@
 use crate::{
-    auth::Claims,
+    jwt::Claims,
     database,
     // cache::Cache,
     errors::ServError,
@@ -14,6 +14,7 @@ use actix_web::{
 };
 use database::{ArticleFindData, FeedArticleData, UpdateArticleData};
 use serde::Deserialize;
+use validator::Validate;
 use zen_database::DatabaseConnectionPool;
 
 #[derive(Deserialize, Validate)]

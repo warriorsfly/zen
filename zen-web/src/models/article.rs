@@ -2,7 +2,6 @@ use super::User;
 use crate::config::DATE_FORMAT;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
-use uuid::Uuid;
 
 #[derive(Queryable)]
 pub struct Article {

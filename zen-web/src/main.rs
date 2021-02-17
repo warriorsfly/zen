@@ -5,13 +5,8 @@ extern crate diesel;
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
-extern crate validator_derive;
+use crate::server::serv;
 
-// mod auth;
-use crate::server::serve;
-
-mod auth;
 mod awc;
 mod config;
 mod constants;
@@ -20,6 +15,7 @@ mod errors;
 mod extractors;
 pub mod handlers;
 mod helpers;
+mod jwt;
 mod middleware;
 mod models;
 mod routes;
@@ -31,5 +27,5 @@ mod validate;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    serve().await
+    serv().await
 }

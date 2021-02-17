@@ -5,8 +5,7 @@ use crate::{
 };
 use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
+use serde::Deserialize;
 use zen_database::{
     pagination::{self, Paginate},
     DatabaseConnectionPool,

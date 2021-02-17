@@ -2,7 +2,7 @@ use crate::{awc::add_awc, config::CONFIG, database::add_pool, routes::routes, st
 use actix_cors::Cors;
 use actix_web::{http::header, middleware::Logger, App, HttpServer};
 
-pub async fn serve() -> std::io::Result<()> {
+pub async fn serv() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 

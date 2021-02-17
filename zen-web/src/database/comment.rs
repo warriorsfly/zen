@@ -5,7 +5,6 @@ use crate::{
 };
 
 use diesel::{self, prelude::*};
-use uuid::Uuid;
 use zen_database::DatabaseConnectionPool;
 #[derive(Insertable)]
 #[table_name = "comments"]

@@ -1,4 +1,4 @@
-use crate::{auth::decode_jwt, constants};
+use crate::{jwt::decode_jwt, constants};
 
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},

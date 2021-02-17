@@ -1,5 +1,5 @@
 use crate::{
-    auth::{create_jwt, hash, Claims},
+    jwt::{create_jwt, hash, Claims},
     database,
     errors::ServError,
     helpers::respond_json,
@@ -8,6 +8,7 @@ use crate::{
 };
 use actix_web::web::{block, Data, Json};
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 use zen_database::DatabaseConnectionPool;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]

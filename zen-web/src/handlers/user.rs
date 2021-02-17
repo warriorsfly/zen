@@ -1,9 +1,9 @@
-use crate::{auth::Claims, database, errors::ServError, helpers::respond_json, models::User};
+use crate::{database, errors::ServError, helpers::respond_json, jwt::Claims, models::User};
 use actix_web::web::{block, Data, Json};
 
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 use zen_database::DatabaseConnectionPool;
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UsersResponse(pub Vec<User>);
 
