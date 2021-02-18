@@ -5,7 +5,7 @@ pub mod tests {
         config::CONFIG,
         constants,
         database::add_pool,
-        // handlers::auth::{LoginData, LoginResponse},
+        handlers::auth::{LoginData, LoginResponse},
         routes::routes,
         state::{new_state, AppState},
     };
@@ -44,7 +44,7 @@ pub mod tests {
         test::call_service(
             &mut app,
             test::TestRequest::get()
-                .header(constants::AUTHORIZATION, json.token)
+                // .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )
@@ -80,7 +80,7 @@ pub mod tests {
             &mut app,
             test::TestRequest::post()
                 .set_json(&params)
-                .header(constants::AUTHORIZATION, json.token)
+                // .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )

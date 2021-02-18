@@ -24,7 +24,7 @@ pub async fn get_user(
     pool: Data<DatabaseConnectionPool>,
     claim: Claims,
 ) -> Result<Json<User>, ServError> {
-    let user = block(move || database::find_user_by_id(&pool, &claim.id)).await?;
+    let user = block(move || database::find_user_by_id(&pool, &claim.id)).await??;
     respond_json(user)
 }
 

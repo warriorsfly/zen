@@ -5,7 +5,7 @@ use actix_web::{
 };
 use derive_more::Display;
 use diesel::{
-    r2d2::Error as PoolError,
+    r2d2::PoolError,
     result::{DatabaseErrorKind, Error as DBError},
 };
 use serde::{Deserialize, Serialize};

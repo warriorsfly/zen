@@ -1,4 +1,4 @@
-use crate::{database, helpers::respond_json};
+use crate::{database, errors::ServError, helpers::respond_json};
 use actix_web::web::{block, Data, Json};
 use zen_database::DatabaseConnectionPool;
 
