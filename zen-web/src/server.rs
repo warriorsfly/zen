@@ -1,12 +1,11 @@
-use crate::{awc::add_awc, config::CONFIG, database::add_pool, routes::routes, state::new_state};
+use crate::{awc::add_awc, config::CONFIG, database::add_pool, routes::routes};
+// use crate::{awc::add_awc, config::CONFIG, database::add_pool, routes::routes, state::new_state};
 // use actix_cors::Cors;
 use actix_web::{http::header, middleware::Logger, App, HttpServer};
 
 pub async fn serv() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
-
-    let data = new_state::<String>();
 
     let server = HttpServer::new(move || {
         App::new()
@@ -29,7 +28,7 @@ pub async fn serv() -> std::io::Result<()> {
             // 连接数据库
             .configure(add_pool)
             // 添加状态
-            .app_data(data.clone())
+            // .app_data(data.clone())
             // 注册路由
             .configure(routes)
     });

@@ -5,7 +5,7 @@ pub mod tests {
         config::CONFIG,
         constants,
         database::add_pool,
-        handlers::auth::{LoginData, LoginResponse},
+        // handlers::auth::{LoginData, LoginResponse},
         routes::routes,
         state::{new_state, AppState},
     };
@@ -22,7 +22,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(middleware::Authentication)
+                // .wrap(middleware::Authentication)
                 // .configure(add_cache)
                 .app_data(app_state())
                 .configure(add_pool)
@@ -117,7 +117,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(middleware::Authentication)
+                // .wrap(middleware::Authentication)
                 .configure(add_pool)
                 .configure(routes),
         )

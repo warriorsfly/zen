@@ -5,7 +5,7 @@ use actix_web::{
 };
 use derive_more::Display;
 use diesel::{
-    r2d2::PoolError,
+    r2d2::Error as PoolError,
     result::{DatabaseErrorKind, Error as DBError},
 };
 use serde::{Deserialize, Serialize};
@@ -110,7 +110,7 @@ impl From<UuidError> for ServError {
     }
 }
 
-/// Convert ParseErrors to ServiceErrors
+/// Convert BlockingError to ServiceErrors
 impl From<BlockingError> for ServError {
     fn from(error: BlockingError) -> ServError {
         ServError::BlockingError(error.to_string())

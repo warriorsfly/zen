@@ -78,8 +78,7 @@ pub async fn favorite_article(
     claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article =
-        block(move || Ok(database::favorite_article(&pool, &slug, &claim.id).unwrap())).await??;
+    let article = block(move || database::favorite_article(&pool, &slug, &claim.id)).await??;
 
     respond_json(article)
 }
@@ -90,8 +89,7 @@ pub async fn unfavorite_article(
     claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article =
-        block(move || Ok(database::unfavorite_article(&pool, &slug, &claim.id).unwrap())).await??;
+    let article = block(move || database::unfavorite_article(&pool, &slug, &claim.id)).await??;
 
     respond_json(article)
 }
@@ -103,7 +101,7 @@ pub async fn feed_articles(
     slug: Form<FeedArticleData>,
 ) -> Result<Json<Vec<ArticleJson>>, ServError> {
     let articles =
-        block(move || Ok(database::feed_article(&pool, slug.into_inner(), &claim.id))).await??;
+        block(move || database::feed_article(&pool, slug.into_inner(), &claim.id)).await??;
 
     respond_json(articles)
 }
@@ -117,9 +115,9 @@ pub async fn update_article(
 ) -> Result<Json<ArticleJson>, ServError> {
     // validate(&params)?;
     let article = block(move || {
-        Ok(database::update_article(&pool, slug.as_ref(), &claim.id, params.into_inner()).unwrap())
+        database::update_article(&pool, slug.as_ref(), &claim.id, params.into_inner())
     })
-    .await?;
+    .await??;
 
     respond_json(article)
 }
@@ -144,7 +142,7 @@ pub async fn create_comment(
 ) -> Result<Json<CommentJson>, ServError> {
     let comment =
         block(move || database::create_comment(&pool, &claim.id, slug.as_ref(), body.as_ref()))
-            .await?;
+            .await??;
     respond_json(comment)
 }
 
@@ -153,7 +151,7 @@ pub async fn find_comments_by_slug(
     claim: Claims,
     slug: String,
 ) -> Result<Json<Vec<CommentJson>>, ServError> {
-    let comments = block(move || database::find_comments_by_slug(&pool, slug.as_ref())).await?;
+    let comments = block(move || database::find_comments_by_slug(&pool, slug.as_ref())).await??;
     respond_json(comments)
 }
 

@@ -1,8 +1,7 @@
-mod article;
-mod comment;
 mod user;
 
-pub use self::{article::*, comment::*, user::*};
+pub use self::user::*;
+// pub use self::{article::*, comment::*, user::*};
 use crate::config::CONFIG;
 use actix_web::web;
 use zen_database::init_pool;
