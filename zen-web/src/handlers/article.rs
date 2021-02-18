@@ -129,7 +129,7 @@ pub async fn delete_article(
     slug: Path<String>,
 ) -> Result<HttpResponse, ServError> {
     // validate(&params)?;
-    block(move || database::delete_article(&pool, slug.as_ref(), &claim.id)).await?;
+    block(move || database::delete_article(&pool, slug.as_ref(), &claim.id)).await??;
 
     respond_ok()
 }
@@ -169,6 +169,6 @@ pub async fn delete_comment(
             &comment_id.parse::<i32>().unwrap(),
         )
     })
-    .await?;
+    .await??;
     Ok("success".to_string())
 }

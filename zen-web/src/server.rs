@@ -12,7 +12,7 @@ pub async fn serv() -> std::io::Result<()> {
             // 添加缓存
             // .configure(add_cache)
             // 添加awc
-            .configure(add_awc)
+            // .configure(add_awc)
             // 添加跨域
             // .wrap(
             //     Cors::default()
