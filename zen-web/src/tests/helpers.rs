@@ -6,7 +6,6 @@ pub mod tests {
         constants,
         database::add_pool,
         handlers::auth::{LoginData, LoginResponse},
-        middleware,
         routes::routes,
         state::{new_state, AppState},
     };
@@ -23,7 +22,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(middleware::Authentication)
+                // .wrap(middleware::Authentication)
                 // .configure(add_cache)
                 .app_data(app_state())
                 .configure(add_pool)
@@ -45,7 +44,7 @@ pub mod tests {
         test::call_service(
             &mut app,
             test::TestRequest::get()
-                .header(constants::AUTHORIZATION, json.token)
+                // .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )
@@ -81,7 +80,7 @@ pub mod tests {
             &mut app,
             test::TestRequest::post()
                 .set_json(&params)
-                .header(constants::AUTHORIZATION, json.token)
+                // .header(constants::AUTHORIZATION, json.token)
                 .uri(route)
                 .to_request(),
         )
@@ -118,7 +117,7 @@ pub mod tests {
 
         let mut app = test::init_service(
             App::new()
-                .wrap(middleware::Authentication)
+                // .wrap(middleware::Authentication)
                 .configure(add_pool)
                 .configure(routes),
         )

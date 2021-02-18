@@ -9,6 +9,7 @@ use diesel::{
     result::{DatabaseErrorKind, Error as DBError},
 };
 use serde::{Deserialize, Serialize};
+use std::ops::Deref;
 use uuid::Error as UuidError;
 
 #[derive(Debug, Display, PartialEq)]
@@ -29,8 +30,16 @@ pub enum ServError {
 
 /// User-friendly error messages
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ErrorResponse {
-    errors: Vec<String>,
+pub struct ErrorResponse<T> {
+    errors: Vec<T>,
+}
+
+impl<String> Deref for ErrorResponse<String> {
+    type Target = Vec<String>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.errors
+    }
 }
 
 /// 自定义错误
@@ -38,16 +47,15 @@ impl ResponseError for ServError {
     fn error_response(&self) -> HttpResponse {
         match self {
             ServError::BadRequest(error) => {
-                HttpResponse::BadRequest().json::<ErrorResponse>(error.into())
+                HttpResponse::BadRequest().json::<ErrorResponse<String>>(error.into())
             }
             ServError::NotFound(message) => {
-                HttpResponse::NotFound().json::<ErrorResponse>(message.into())
+                HttpResponse::NotFound().json::<ErrorResponse<String>>(message.into())
             }
-            ServError::ValidationError(errors) => {
-                HttpResponse::UnprocessableEntity().json::<ErrorResponse>(errors.to_vec().into())
-            }
+            ServError::ValidationError(errors) => HttpResponse::UnprocessableEntity()
+                .json::<ErrorResponse<String>>(errors.to_vec().into()),
             ServError::Unauthorized(error) => {
-                HttpResponse::Unauthorized().json::<ErrorResponse>(error.into())
+                HttpResponse::Unauthorized().json::<ErrorResponse<String>>(error.into())
             }
             _ => HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR),
         }
@@ -55,7 +63,7 @@ impl ResponseError for ServError {
 }
 
 /// 将String转化为ErrorResponse
-impl From<&String> for ErrorResponse {
+impl From<&String> for ErrorResponse<String> {
     fn from(error: &String) -> Self {
         ErrorResponse {
             errors: vec![error.into()],
@@ -64,7 +72,7 @@ impl From<&String> for ErrorResponse {
 }
 
 /// 将Vec<String>转化为ErrorResponse
-impl From<Vec<String>> for ErrorResponse {
+impl From<Vec<String>> for ErrorResponse<String> {
     fn from(errors: Vec<String>) -> Self {
         ErrorResponse { errors }
     }
@@ -102,12 +110,9 @@ impl From<UuidError> for ServError {
     }
 }
 
-/// Convert Thread BlockingErrors to ServiceErrors
-impl From<BlockingError<ServError>> for ServError {
-    fn from(error: BlockingError<ServError>) -> ServError {
-        match error {
-            BlockingError::Error(api_error) => api_error,
-            BlockingError::Canceled => ServError::BlockingError("Thread blocking error".into()),
-        }
+/// Convert BlockingError to ServiceErrors
+impl From<BlockingError> for ServError {
+    fn from(error: BlockingError) -> ServError {
+        ServError::BlockingError(error.to_string())
     }
 }

@@ -1,4 +1,5 @@
-use crate::handlers::{article, auth, tag, user};
+use crate::handlers::user;
+use crate::handlers::{article, auth, tag};
 use actix_web::web;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
