@@ -1,9 +1,10 @@
-use crate::errors::ServError;
 use actix_web::{
     body::Body,
     web::{HttpResponse, Json},
 };
 use serde::Serialize;
+
+use crate::errors::ServError;
 /// 快速组装Ok/Json response
 pub fn respond_json<T>(data: T) -> Result<Json<T>, ServError>
 where

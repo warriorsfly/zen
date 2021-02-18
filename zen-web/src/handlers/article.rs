@@ -1,9 +1,8 @@
 use crate::{
-    jwt::Claims,
     database,
-    // cache::Cache,
     errors::ServError,
     helpers::{respond_json, respond_ok},
+    jwt::Claims,
     models::ArticleJson,
     models::CommentJson,
     validate::validate,
@@ -45,7 +44,7 @@ pub async fn create_article(
             &params.tags,
         )
     })
-    .await?;
+    .await??;
     respond_json(new_article)
 }
 
@@ -58,7 +57,7 @@ pub async fn search_articles(
     // validate(&params)?;
     let articles =
         block(move || database::search_articles(&pool.into_inner(), Some(claim.id), &params))
-            .await?;
+            .await??;
     respond_json(articles)
 }
 
@@ -68,7 +67,7 @@ pub async fn get_one_article(
     claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article = block(move || database::find_one_article(&pool, &slug, &claim.id)).await?;
+    let article = block(move || database::find_one_article(&pool, &slug, &claim.id)).await??;
 
     respond_json(article)
 }
@@ -80,7 +79,7 @@ pub async fn favorite_article(
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
     let article =
-        block(move || Ok(database::favorite_article(&pool, &slug, &claim.id).unwrap())).await?;
+        block(move || Ok(database::favorite_article(&pool, &slug, &claim.id).unwrap())).await??;
 
     respond_json(article)
 }
@@ -92,7 +91,7 @@ pub async fn unfavorite_article(
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
     let article =
-        block(move || Ok(database::unfavorite_article(&pool, &slug, &claim.id).unwrap())).await?;
+        block(move || Ok(database::unfavorite_article(&pool, &slug, &claim.id).unwrap())).await??;
 
     respond_json(article)
 }

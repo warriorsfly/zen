@@ -16,7 +16,6 @@ mod extractors;
 pub mod handlers;
 mod helpers;
 mod jwt;
-mod middleware;
 mod models;
 mod routes;
 mod schema;

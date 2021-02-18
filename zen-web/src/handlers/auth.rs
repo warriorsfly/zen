@@ -1,12 +1,14 @@
 use crate::{
-    jwt::{create_jwt, hash, Claims},
     database,
-    errors::ServError,
     helpers::respond_json,
+    jwt::{create_jwt, hash, Claims},
     models::{NewUser, User},
     validate::validate,
 };
-use actix_web::web::{block, Data, Json};
+use actix_web::{
+    web::{block, Data, Json},
+    Error,
+};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 use zen_database::DatabaseConnectionPool;
@@ -33,7 +35,7 @@ pub struct SignupData {
 pub async fn signup(
     pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
-) -> Result<Json<User>, ServError> {
+) -> Result<Json<User>, Error> {
     validate(&params)?;
     let pass = hash(&params.password);
     let new_user = NewUser {
@@ -43,7 +45,8 @@ pub async fn signup(
         bio: None,
         avatar: None,
     };
-    let user = block(move || database::create_user(&pool, &new_user)).await?;
+    let conn = &pool.get()?;
+    let user = block(move || database::create_user(conn, &new_user)).await?;
     respond_json(user)
 }
 

@@ -6,7 +6,6 @@ pub mod tests {
         constants,
         database::add_pool,
         handlers::auth::{LoginData, LoginResponse},
-        middleware,
         routes::routes,
         state::{new_state, AppState},
     };

@@ -1,4 +1,4 @@
-use crate::{database, errors::ServError, helpers::respond_json, jwt::Claims, models::User};
+use crate::{database, helpers::respond_json, jwt::Claims, models::User};
 use actix_web::web::{block, Data, Json};
 
 use serde::{Deserialize, Serialize};
@@ -24,7 +24,8 @@ pub async fn get_user(
     pool: Data<DatabaseConnectionPool>,
     claim: Claims,
 ) -> Result<Json<User>, ServError> {
-    let user = block(move || database::find_user_by_id(&pool, &claim.id)).await?;
+    let conn = &pool.get()?;
+    let user = block(move || database::find_user_by_id(conn, &claim.id)).await?;
     respond_json(user)
 }
 
