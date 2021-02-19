@@ -1,5 +1,9 @@
 [workspace]
 members = [
+   # tools
    "zen/database",
-   "zen-web"
+   # app services
+   "zen/app/identity"
+   # application
+   # "zen-web"
 ]

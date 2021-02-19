@@ -2,7 +2,6 @@ use crate::{
     database,
     errors::ServError,
     helpers::{respond_json, respond_ok},
-    jwt::Claims,
     models::ArticleJson,
     models::CommentJson,
     validate::validate,
@@ -29,15 +28,14 @@ pub struct NewArticle {
 pub struct ArticleRequest {}
 pub async fn create_article(
     pool: Data<DatabaseConnectionPool>,
-    // redis: Cache,
-    claim: Claims,
     params: Json<NewArticle>,
 ) -> Result<Json<ArticleJson>, ServError> {
     validate(&params)?;
     let new_article = block(move || {
         database::create_article(
             &pool,
-            &claim.id,
+            &1,
+            // &1,
             &params.title,
             &params.description,
             &params.body,
@@ -50,46 +48,37 @@ pub async fn create_article(
 
 pub async fn search_articles(
     pool: Data<DatabaseConnectionPool>,
-    // redis: Cache,
-    claim: Claims,
     params: Form<ArticleFindData>,
 ) -> Result<Json<(Vec<ArticleJson>, i64)>, ServError> {
     // validate(&params)?;
     let articles =
-        block(move || database::search_articles(&pool.into_inner(), Some(claim.id), &params))
-            .await??;
+        block(move || database::search_articles(&pool.into_inner(), Some(1), &params)).await??;
     respond_json(articles)
 }
 
 pub async fn get_one_article(
     pool: Data<DatabaseConnectionPool>,
-    // redis: Cache,
-    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article = block(move || database::find_one_article(&pool, &slug, &claim.id)).await??;
+    let article = block(move || database::find_one_article(&pool, &slug, &1)).await??;
 
     respond_json(article)
 }
 
 pub async fn favorite_article(
     pool: Data<DatabaseConnectionPool>,
-    // redis: Cache,
-    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article = block(move || database::favorite_article(&pool, &slug, &claim.id)).await??;
+    let article = block(move || database::favorite_article(&pool, &slug, &1)).await??;
 
     respond_json(article)
 }
 
 pub async fn unfavorite_article(
     pool: Data<DatabaseConnectionPool>,
-    // redis: Cache,
-    claim: Claims,
     slug: Path<String>,
 ) -> Result<Json<ArticleJson>, ServError> {
-    let article = block(move || database::unfavorite_article(&pool, &slug, &claim.id)).await??;
+    let article = block(move || database::unfavorite_article(&pool, &slug, &1)).await??;
 
     respond_json(article)
 }
@@ -97,11 +86,10 @@ pub async fn unfavorite_article(
 pub async fn feed_articles(
     pool: Data<DatabaseConnectionPool>,
     // redis: Cache,
-    claim: Claims,
+    // claim: Claims,
     slug: Form<FeedArticleData>,
 ) -> Result<Json<Vec<ArticleJson>>, ServError> {
-    let articles =
-        block(move || database::feed_article(&pool, slug.into_inner(), &claim.id)).await??;
+    let articles = block(move || database::feed_article(&pool, slug.into_inner(), &1)).await??;
 
     respond_json(articles)
 }
@@ -109,15 +97,14 @@ pub async fn feed_articles(
 pub async fn update_article(
     pool: Data<DatabaseConnectionPool>,
     // redis: Cache,
-    claim: Claims,
+    // claim: Claims,
     slug: Path<String>,
     params: Json<UpdateArticleData>,
 ) -> Result<Json<ArticleJson>, ServError> {
     // validate(&params)?;
-    let article = block(move || {
-        database::update_article(&pool, slug.as_ref(), &claim.id, params.into_inner())
-    })
-    .await??;
+    let article =
+        block(move || database::update_article(&pool, slug.as_ref(), &1, params.into_inner()))
+            .await??;
 
     respond_json(article)
 }
@@ -125,30 +112,29 @@ pub async fn update_article(
 pub async fn delete_article(
     pool: Data<DatabaseConnectionPool>,
     // redis: Cache,
-    claim: Claims,
+    // claim: Claims,
     slug: Path<String>,
 ) -> Result<HttpResponse, ServError> {
     // validate(&params)?;
-    block(move || database::delete_article(&pool, slug.as_ref(), &claim.id)).await??;
+    block(move || database::delete_article(&pool, slug.as_ref(), &1)).await??;
 
     respond_ok()
 }
 
 pub async fn create_comment(
     pool: Data<DatabaseConnectionPool>,
-    claim: Claims,
+    // claim: Claims,
     slug: String,
     body: String,
 ) -> Result<Json<CommentJson>, ServError> {
     let comment =
-        block(move || database::create_comment(&pool, &claim.id, slug.as_ref(), body.as_ref()))
-            .await??;
+        block(move || database::create_comment(&pool, &1, slug.as_ref(), body.as_ref())).await??;
     respond_json(comment)
 }
 
 pub async fn find_comments_by_slug(
     pool: Data<DatabaseConnectionPool>,
-    claim: Claims,
+    // claim: Claims,
     slug: String,
 ) -> Result<Json<Vec<CommentJson>>, ServError> {
     let comments = block(move || database::find_comments_by_slug(&pool, slug.as_ref())).await??;
@@ -157,14 +143,14 @@ pub async fn find_comments_by_slug(
 
 pub async fn delete_comment(
     pool: Data<DatabaseConnectionPool>,
-    claim: Claims,
+    // claim: Claims,
     slug: String,
     comment_id: String,
 ) -> Result<String, ServError> {
     block(move || {
         database::delete_comment(
             &pool,
-            &claim.id,
+            &1,
             slug.as_ref(),
             &comment_id.parse::<i32>().unwrap(),
         )
