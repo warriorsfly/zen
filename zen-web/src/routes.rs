@@ -1,15 +1,15 @@
 use crate::handlers::user;
-use crate::handlers::{article, auth, tag};
+use crate::handlers::{article, tag};
 use actix_web::web;
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/api")
-            .service(
-                web::scope("/auth")
-                    .route("signup", web::post().to(auth::signup))
-                    .route("login", web::post().to(auth::login)),
-            )
+            // .service(
+            //     web::scope("/auth")
+            //         .route("signup", web::post().to(auth::signup))
+            //         .route("login", web::post().to(auth::login)),
+            // )
             .service(
                 web::scope("/users").route("/{id}", web::get().to(user::get_user)), // .route("", web::get().to(get_users))
             )

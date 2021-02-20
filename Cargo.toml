@@ -2,8 +2,6 @@
 members = [
    # tools
    "zen/database",
-   # app services
-   "zen/app/identity"
    # application
-   # "zen-web"
+   "zen-web"
 ]

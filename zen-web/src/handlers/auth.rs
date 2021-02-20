@@ -2,7 +2,7 @@ use crate::{
     database,
     errors::ServError,
     helpers::respond_json,
-    jwt::{create_jwt, hash, Claims},
+    jwt::{create_jwt, hash},
     models::{NewUser, User},
     validate::validate,
 };

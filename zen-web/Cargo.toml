@@ -13,7 +13,6 @@ actix-web-actors = "4.0.0-beta.2"
 
 argon2rs = "0.2"
 chrono ={version = "0.4",features = ["serde"]}
-# casbin = "0.4"
 derive_more = "0.99"
 diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres", "r2d2", "uuid", "serde_json"]}
 dotenv = "0.15"
@@ -22,13 +21,10 @@ env_logger = "0.8"
 futures = "0.3"
 jsonwebtoken = "7"
 lazy_static = "1"
-# listenfd = "0.3"
 log = "0.4"
-# openssl = "*"
 openssl = "0.10"
 rand="0.8"
 rayon = "1"
-# r2d2 = "0.8"
 serde = { version = "1", features = ["derive"] }
 slug="0.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }

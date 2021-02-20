@@ -5,7 +5,7 @@ pub mod tests {
         config::CONFIG,
         constants,
         database::add_pool,
-        handlers::auth::{LoginData, LoginResponse},
+        // handlers::auth::{LoginData, LoginResponse},
         routes::routes,
         state::{new_state, AppState},
     };
@@ -15,10 +15,10 @@ pub mod tests {
 
     /// Helper for HTTP GET integration tests
     pub async fn test_get(route: &str) -> ServiceResponse {
-        let login_request = LoginData {
-            email: "warriorsfly@gmail.com".into(),
-            password: "123456".into(),
-        };
+        // let login_request = LoginData {
+        //     email: "warriorsfly@gmail.com".into(),
+        //     password: "123456".into(),
+        // };
 
         let mut app = test::init_service(
             App::new()
@@ -30,14 +30,14 @@ pub mod tests {
         )
         .await;
 
-        let json: LoginResponse = test::read_response_json(
-            &mut app,
-            test::TestRequest::post()
-                .set_json(&login_request)
-                .uri("/api/auth/login")
-                .to_request(),
-        )
-        .await;
+        // let json: LoginResponse = test::read_response_json(
+        //     &mut app,
+        //     test::TestRequest::post()
+        //         .set_json(&login_request)
+        //         .uri("/api/auth/login")
+        //         .to_request(),
+        // )
+        // .await;
 
         // let cookie = response.response().headers().get(constants::AUTHORIZATION);
 
@@ -53,10 +53,10 @@ pub mod tests {
 
     /// Helper for HTTP GET integration tests
     pub async fn test_post<T: Serialize>(route: &str, params: T) -> ServiceResponse {
-        let login_request = LoginData {
-            email: "warriorsfly@gmail.com".into(),
-            password: "123456".into(),
-        };
+        // let login_request = LoginData {
+        //     email: "warriorsfly@gmail.com".into(),
+        //     password: "123456".into(),
+        // };
 
         let mut app = test::init_service(
             App::new()
@@ -67,14 +67,14 @@ pub mod tests {
         )
         .await;
 
-        let json: LoginResponse = test::read_response_json(
-            &mut app,
-            test::TestRequest::post()
-                .set_json(&login_request)
-                .uri("/api/auth/login")
-                .to_request(),
-        )
-        .await;
+        // let json: LoginResponse = test::read_response_json(
+        //     &mut app,
+        //     test::TestRequest::post()
+        //         .set_json(&login_request)
+        //         .uri("/api/auth/login")
+        //         .to_request(),
+        // )
+        // .await;
 
         test::call_service(
             &mut app,
@@ -110,10 +110,10 @@ pub mod tests {
     }
 
     pub async fn login() -> ServiceResponse {
-        let login_request = LoginData {
-            email: "warriorsfly@gmail.com".into(),
-            password: "123456".into(),
-        };
+        // let login_request = LoginData {
+        //     email: "warriorsfly@gmail.com".into(),
+        //     password: "123456".into(),
+        // };
 
         let mut app = test::init_service(
             App::new()
@@ -126,7 +126,7 @@ pub mod tests {
         test::call_service(
             &mut app,
             test::TestRequest::post()
-                .set_json(&login_request)
+                // .set_json(&login_request)
                 .uri("api/auth/login")
                 .to_request(),
         )
