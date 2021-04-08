@@ -5,11 +5,11 @@ authors = ["walker <warriorsfly@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-actix = "0.11.0-beta.2"
-# actix-cors ="0.5"
-actix-web = "4.0.0-beta.3"
-actix-web-actors = "4.0.0-beta.2"
-# actix-web-httpauth = {git = "https://github.com/warriorsfly/actix-extras"}
+actix = "0.11"
+actix-cors ="0.6.0-beta.1"
+actix-web = "4.0.0-beta.5"
+actix-web-actors = "4.0.0-beta.4"
+actix-web-httpauth = "0.6.0-beta.1"
 
 argon2rs = "0.2"
 chrono ={version = "0.4",features = ["serde"]}
@@ -24,11 +24,11 @@ lazy_static = "1"
 log = "0.4"
 openssl = "0.10"
 rand="0.8"
-rayon = "1"
+# rayon = "1"
 serde = { version = "1", features = ["derive"] }
 slug="0.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }
-validator = { version = "0.12", features = ["derive"] }
+validator = { version = "0.13", features = ["derive"] }
 
 zen-database = { path = "../zen/database" }
 

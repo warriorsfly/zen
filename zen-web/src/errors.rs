@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use uuid::Error as UuidError;
 
-#[derive(Debug, Display, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Display, PartialEq, Serialize)]
 pub enum ServError {
     BadRequest(String),
     BlockingError(String),
