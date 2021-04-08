@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use uuid::Error as UuidError;
 
-#[derive(Debug, Display, PartialEq)]
+#[derive(Debug, Display, PartialEq, Deserialize, Serialize)]
 pub enum ServError {
     BadRequest(String),
     BlockingError(String),
@@ -23,6 +23,7 @@ pub enum ServError {
     NotFound(String),
     UuidError(String),
     DataBaseError(String),
+
     #[display(fmt = "")]
     ValidationError(Vec<String>),
     Unauthorized(String),
@@ -47,15 +48,15 @@ impl ResponseError for ServError {
     fn error_response(&self) -> HttpResponse {
         match self {
             ServError::BadRequest(error) => {
-                HttpResponse::BadRequest().json::<ErrorResponse<String>>(error.into())
+                HttpResponse::BadRequest().json(ServError::BadRequest(error.to_owned()))
             }
             ServError::NotFound(message) => {
-                HttpResponse::NotFound().json::<ErrorResponse<String>>(message.into())
+                HttpResponse::NotFound().json(ServError::NotFound(message.to_owned()))
             }
             ServError::ValidationError(errors) => HttpResponse::UnprocessableEntity()
-                .json::<ErrorResponse<String>>(errors.to_vec().into()),
+                .json(ServError::ValidationError(errors.to_owned())),
             ServError::Unauthorized(error) => {
-                HttpResponse::Unauthorized().json::<ErrorResponse<String>>(error.into())
+                HttpResponse::Unauthorized().json(ServError::Unauthorized(error.to_owned()))
             }
             _ => HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR),
         }
