@@ -8,13 +8,13 @@ services:
     env_file:
       - .env.docker
     environment:
-      - DATABASE_URL=postgres://database/postgres
+      - DATABASE_URL=postgres://zen:zen@db/postgres
     depends_on:
-      - database
+      - db
 
-  database:
+  db:
     image: postgres:alpine
-    container_name: database
+    container_name: postgres
     environment:
       - POSTGRES_USER=zen
       - POSTGRES_PASSWORD=zen
