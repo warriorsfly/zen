@@ -1,32 +1,23 @@
-version: "3"
+version: "3.8"
 services:
-  # nginx:
-  #   image: nginx:alpine
-  #   container_name: nginx-alpine
-  #   volumes:
-  #     - "./default.conf:/etc/nginx/conf.d/default.conf"
-  #   environment:
-  #     - NGINX_HOST=walking.com
-  #     - NGINX_PORT=80
   zen:
     image: warriorsfly/zen
-    container_name: zen-server
+    container_name: zen
     ports:
       - "3000:3000"
     env_file:
       - .env.docker
     environment:
-      - DATABASE_URL=postgres://zen:zen@db/postgres
+      - DATABASE_URL=postgres://database/postgres
     depends_on:
-      - db
-  #  - redis
+      - database
 
-  db:
+  database:
     image: postgres:alpine
-    container_name: postgres
+    container_name: database
     environment:
       - POSTGRES_USER=zen
-      - POSTGRES_PASSWORD=room
+      - POSTGRES_PASSWORD=zen
       - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
