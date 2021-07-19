@@ -1,15 +1,15 @@
 use crate::{
-    errors::ServError,
+    errors::ZenError,
+    database::{
+        pagination::{self, Paginate},
+        DatabaseConnectionPool,
+    },
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
 };
 use diesel::{self, insert_into, prelude::*};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::Deserialize;
-use zen_database::{
-    pagination::{self, Paginate},
-    DatabaseConnectionPool,
-};
 
 const SUFFIX_LEN: usize = 6;
 #[derive(Debug, Insertable)]
@@ -47,8 +47,8 @@ pub fn create_article<'a>(
     description: &'a str,
     body: &'a str,
     tags: &'a Vec<String>,
-) -> Result<ArticleJson, ServError> {
-    let conn = pool.get()?;
+) -> Result<ArticleJson, ZenError> {
+    let conn = &mut pool.get()?;
     let new_article = NewArticle {
         author_id: author,
         slug: &slugify(title),
@@ -59,13 +59,13 @@ pub fn create_article<'a>(
     };
     let author = users::table
         .find(author)
-        .get_result::<User>(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
+        .get_result::<User>(conn)
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
 
     let new_article = insert_into(articles::table)
         .values(new_article)
-        .get_result::<Article>(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
+        .get_result::<Article>(conn)
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
 
     Ok(new_article.attach(author, false))
 }
@@ -99,8 +99,8 @@ pub fn search_articles(
     pool: &DatabaseConnectionPool,
     uid: Option<i32>,
     params: &ArticleFindData,
-) -> Result<(Vec<ArticleJson>, i64), ServError> {
-    let conn = pool.get()?;
+) -> Result<(Vec<ArticleJson>, i64), ZenError> {
+    let conn = &mut pool.get()?;
     let mut query = articles::table
         .inner_join(users::table)
         .left_join(
@@ -128,7 +128,7 @@ pub fn search_articles(
     //     let result = users::table
     //         .select(users::id)
     //         .filter(users::username.eq(favorited))
-    //         .get_result::<Uuid>(&conn)?;
+    //         .get_result::<Uuid>(conn)?;
 
     //     // query = query.filter(
     //     //     diesel
@@ -143,7 +143,7 @@ pub fn search_articles(
         .paginate(params.offset.unwrap_or_default())
         // .offset(params.offset.unwrap_or_default())
         // .limit(params.limit.unwrap_or(c))
-        .load_and_count_pages::<(Article, User, bool)>(&conn)
+        .load_and_count_pages::<(Article, User, bool)>(conn)
         .map(|(res, count)| {
             (
                 res.into_iter()
@@ -152,22 +152,22 @@ pub fn search_articles(
                 count,
             )
         })
-        .map_err(|err| ServError::DataBaseError(err.to_string()))
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))
 }
 
 pub fn find_one_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
     uid: &i32,
-) -> Result<ArticleJson, ServError> {
-    let conn = pool.get()?;
+) -> Result<ArticleJson, ZenError> {
+    let conn = &mut pool.get()?;
     let article = articles::table
         .filter(articles::slug.eq(slug))
-        .first::<Article>(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
-    let favorited = is_favorite_article(&conn, &article, &uid);
+        .first::<Article>(conn)
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+    let favorited = is_favorite_article(conn, &article, &uid);
 
-    Ok(populate_article(&conn, article, favorited))
+    Ok(populate_article(conn, article, favorited))
 }
 
 #[derive(Deserialize, Default)]
@@ -180,8 +180,8 @@ pub fn feed_article(
     pool: &DatabaseConnectionPool,
     params: FeedArticleData,
     uid: &i32,
-) -> Result<Vec<ArticleJson>, ServError> {
-    let conn = pool.get()?;
+) -> Result<Vec<ArticleJson>, ZenError> {
+    let conn = &mut pool.get()?;
     let arts = articles::table
         .filter(
             articles::author_id.eq_any(
@@ -203,7 +203,7 @@ pub fn feed_article(
         ))
         .limit(params.limit.unwrap_or(pagination::DEFAULT_PAGE_SIZE))
         .offset(params.offset.unwrap_or(0))
-        .load::<(Article, User, bool)>(&conn)
+        .load::<(Article, User, bool)>(conn)
         .expect("Cannot load feed")
         .into_iter()
         .map(|(article, author, favorited)| article.attach(author, favorited))
@@ -211,45 +211,49 @@ pub fn feed_article(
     Ok(arts)
 }
 
-pub fn favorite_article(
-    pool: &DatabaseConnectionPool,
-    slug: &str,
-    uid: &i32,
-) -> Result<ArticleJson, ServError> {
-    let conn = pool.get()?;
-    conn.transaction::<_, diesel::result::Error, _>(|| {
-        let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
-            .set(articles::favorites_count.eq(articles::favorites_count + 1))
-            .get_result::<Article>(&conn)?;
-        diesel::insert_into(favorite_articles::table)
-            .values((
-                favorite_articles::user_id.eq(uid),
-                favorite_articles::article_id.eq(article.id),
-            ))
-            .execute(&conn)?;
+// pub fn favorite_article(
+//     pool: &DatabaseConnectionPool,
+//     slug: &str,
+//     uid: &i32,
+// ) -> Result<ArticleJson, ServError> {
+//     let conn = &mut pool.get()?;
+//     conn.transaction::<_, diesel::result::Error, _>(
+//         conn || {
+//             let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+//                 .set(articles::favorites_count.eq(articles::favorites_count + 1))
+//                 .get_result::<Article>(conn)?;
+//             diesel::insert_into(favorite_articles::table)
+//                 .values((
+//                     favorite_articles::user_id.eq(uid),
+//                     favorite_articles::article_id.eq(article.id),
+//                 ))
+//                 .execute(conn)?;
 
-        Ok(populate_article(&conn, article, true))
-    })
-    .map_err(|err| ServError::DataBaseError(err.to_string()))
-}
+//             Ok(populate_article(conn, article, true))
+//         },
+//     )
+//     .map_err(|err| ServError::DataBaseError(err.to_string()))
+// }
 
-pub fn unfavorite_article(
-    pool: &DatabaseConnectionPool,
-    slug: &str,
-    uid: &i32,
-) -> Result<ArticleJson, ServError> {
-    let conn = pool.get()?;
-    conn.transaction::<_, diesel::result::Error, _>(|| {
-        let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
-            .set(articles::favorites_count.eq(articles::favorites_count - 1))
-            .get_result::<Article>(&conn)?;
+// pub fn unfavorite_article(
+//     pool: &DatabaseConnectionPool,
+//     slug: &str,
+//     uid: &i32,
+// ) -> Result<ArticleJson, ServError> {
+//     let conn = &mut pool.get()?;
+//     conn.transaction::<_, diesel::result::Error, _>(
+//         conn || {
+//             let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+//                 .set(articles::favorites_count.eq(articles::favorites_count - 1))
+//                 .get_result::<Article>(conn)?;
 
-        diesel::delete(favorite_articles::table.find((uid, article.id))).execute(&conn)?;
+//             diesel::delete(favorite_articles::table.find((uid, article.id))).execute(conn)?;
 
-        Ok(populate_article(&conn, article, false))
-    })
-    .map_err(|err| ServError::DataBaseError(err.to_string()))
-}
+//             Ok(populate_article(conn, article, false))
+//         },
+//     )
+//     .map_err(|err| ServError::DataBaseError(err.to_string()))
+// }
 
 #[derive(Deserialize, AsChangeset, Default, Clone)]
 #[table_name = "articles"]
@@ -267,41 +271,43 @@ pub fn update_article(
     slug: &str,
     uid: &i32,
     mut data: UpdateArticleData,
-) -> Result<ArticleJson, ServError> {
-    let conn = pool.get()?;
+) -> Result<ArticleJson, ZenError> {
+    let conn = &mut pool.get()?;
     if let Some(ref title) = data.title {
         data.slug = Some(slugify(&title));
     }
     // TODO: check for not_found
     let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
         .set(&data)
-        .get_result(&conn)?;
+        .get_result(conn)?;
 
-    let favorited = is_favorite_article(&conn, &article, uid);
-    Ok(populate_article(&conn, article, favorited))
+    let favorited = is_favorite_article(conn, &article, uid);
+    Ok(populate_article(conn, article, favorited))
 }
 
 pub fn delete_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
     uid: &i32,
-) -> Result<usize, ServError> {
-    let conn = pool.get()?;
+) -> Result<usize, ZenError> {
+    let conn = &mut pool.get()?;
     diesel::delete(articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))))
-        .execute(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))
+        .execute(conn)
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))
     //
 }
 
-pub fn get_tags(pool: &DatabaseConnectionPool) -> Result<Vec<String>, ServError> {
-    let conn = pool.get()?;
-    articles::table
-        .select(diesel::dsl::sql("distinct unnest(tag_list)"))
-        .load::<String>(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))
-}
+// pub fn get_tags(pool: &DatabaseConnectionPool) -> Result<Vec<String>, ServError> {
+//     use crate::schema::articles::dsl::*;
+//     let conn = &mut pool.get()?;
+//     articles
+//         .select(tag_list)
+//         .distinct()
+//         .load(conn)
+//         .map_err(|err| ServError::DataBaseError(err.to_string()))
+// }
 
-fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &i32) -> bool {
+fn is_favorite_article(conn: &mut PgConnection, article: &Article, uid: &i32) -> bool {
     use diesel::dsl::exists;
     use diesel::select;
 
@@ -310,7 +316,7 @@ fn is_favorite_article(conn: &PgConnection, article: &Article, uid: &i32) -> boo
         .unwrap_or(false)
 }
 
-fn populate_article(conn: &PgConnection, article: Article, favorited: bool) -> ArticleJson {
+fn populate_article(conn: &mut PgConnection, article: Article, favorited: bool) -> ArticleJson {
     let author = users::table
         .find(article.author_id)
         .get_result::<User>(conn)

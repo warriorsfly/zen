@@ -1,15 +1,15 @@
 use actix_web::web::Json;
 use validator::{Validate, ValidationErrors};
 
-use crate::errors::ServError;
+use crate::errors::ZenError;
 
-pub fn validate<T>(params: &Json<T>) -> Result<(), ServError>
+pub fn validate<T>(params: &Json<T>) -> Result<(), ZenError>
 where
     T: Validate,
 {
     match params.validate() {
         Ok(()) => Ok(()),
-        Err(error) => Err(ServError::ValidationError(collect_errors(error))),
+        Err(error) => Err(ZenError::ValidationError(collect_errors(error))),
     }
 }
 

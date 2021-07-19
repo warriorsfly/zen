@@ -1,18 +1,14 @@
 use crate::{
-    database,
-    errors::ServError,
+    database::{self, DatabaseConnectionPool},
+    errors::ZenError,
     helpers::respond_json,
-    jwt::{create_jwt, hash},
     models::{NewUser, User},
+    security::{create_jwt, hash, Claims},
     validate::validate,
 };
-use actix_web::{
-    web::{block, Data, Json},
-    Error,
-};
+use actix_web::web::{block, Data, Json};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
-use zen_database::DatabaseConnectionPool;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Validate)]
 pub struct SignupData {
@@ -36,7 +32,7 @@ pub struct SignupData {
 pub async fn signup(
     pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
-) -> Result<Json<User>, ServError> {
+) -> Result<Json<User>, ZenError> {
     validate(&params)?;
     let pass = hash(&params.password);
     let new_user = NewUser {
@@ -74,7 +70,7 @@ pub struct LoginResponse {
 pub async fn login(
     pool: Data<DatabaseConnectionPool>,
     params: Json<LoginData>,
-) -> Result<Json<LoginResponse>, ServError> {
+) -> Result<Json<LoginResponse>, ZenError> {
     validate(&params)?;
 
     // Validate that the email + hashed password matches
@@ -82,7 +78,7 @@ pub async fn login(
     let user = block(move || database::find_by_email(&pool, &params.email, &hashed)).await??;
 
     // Create a JWT
-    let private_claim = Claims::new(user.id);
+    let private_claim = Claims::new(user.id, user.email.clone());
     let jwt = create_jwt(private_claim)?;
     let response = LoginResponse { user, token: jwt };
     respond_json(response)
@@ -95,8 +91,9 @@ pub mod tests {
     use actix_web::{test, FromRequest};
 
     // async fn get_private_claim() -> Claims {
-    //     let (request, mut payload) =
-    //         test::TestRequest::("content-type", "application/json").to_http_parts();
+    //     let (request, mut payload) = test::TestRequest::default()
+    //         .insert_header(("content-type", "application/json"))
+    //         .to_http_parts();
 
     //     let claim = Option::<Claims>::from_request(&request, &mut payload)
     //         .await
@@ -105,17 +102,17 @@ pub mod tests {
     //     claim
     // }
 
-    // async fn login_user() -> Result<Json<LoginResponse>, ServError> {
-    //     let params = LoginData {
-    //         email: "warriorsfly@gmail.com".into(),
-    //         password: "123456".into(),
-    //     };
-    //     login(get_data_pool(), Json(params)).await
-    // }
+    async fn login_user() -> Result<Json<LoginResponse>, ZenError> {
+        let params = LoginData {
+            email: "warriorsfly@gmail.com".into(),
+            password: "123456".into(),
+        };
+        login(get_data_pool(), Json(params)).await
+    }
 
-    // #[actix_rt::test]
-    // async fn it_logs_a_user_in() {
-    //     let response = login_user().await;
-    //     assert!(response.is_ok());
-    // }
+    #[actix_rt::test]
+    async fn it_logs_a_user_in() {
+        let response = login_user().await;
+        assert!(response.is_ok());
+    }
 }

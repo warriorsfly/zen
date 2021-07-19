@@ -1,7 +1,38 @@
-[workspace]
-members = [
-   # tools
-   "zen/database",
-   # application
-   "zen-web"
-]
+[package]
+name = "zen"
+version = "0.0.2" #完成一个模块+0.1,完成一个功能+0.0.1
+authors = ["walker <warriorsfly@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+# actix = "0.12"
+actix-cors ="0.6.0-beta.2"
+actix-web = "4.0.0-beta.8"
+actix-web-actors = "4.0.0-beta.6"
+actix-web-httpauth = "0.6.0-beta.2"
+
+argon2rs = "0.2"
+chrono ={version = "0.4",features = ["serde"]}
+derive_more = "0.99"
+diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres", "r2d2", "serde_json"]}
+dotenv = "0.15"
+envy = "0.4"
+env_logger = "0.9"
+futures = "0.3"
+jsonwebtoken = "7"
+lazy_static = "1"
+log = "0.4"
+openssl = "0.10"
+rand="0.8"
+# rayon = "1"
+serde = { version = "1", features = ["derive"] }
+slug="0.1"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+validator = { version = "0.14", features = ["derive"] }
+[features]
+default = ["random-suffix"]
+random-suffix = []
+
+[dev-dependencies]
+actix-rt = "2"
+serde_json = "1"

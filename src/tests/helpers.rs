@@ -1,17 +1,9 @@
 #[cfg(test)]
 pub mod tests {
 
-    use crate::{
-        config::CONFIG,
-        constants,
-        database::add_pool,
-        // handlers::auth::{LoginData, LoginResponse},
-        routes::routes,
-        state::{new_state, AppState},
-    };
+    use crate::{config::CONFIG, database::{DatabaseConnectionPool, add_pool, init_pool}, routes::routes, state::{new_state, AppState}};
     use actix_web::{dev::ServiceResponse, test, web::Data, App};
     use serde::Serialize;
-    use zen_database::{init_pool, DatabaseConnectionPool};
 
     /// Helper for HTTP GET integration tests
     pub async fn test_get(route: &str) -> ServiceResponse {

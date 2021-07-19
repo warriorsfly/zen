@@ -17,6 +17,7 @@ mod helpers;
 mod models;
 mod routes;
 mod schema;
+mod security;
 mod server;
 mod state;
 mod tests;

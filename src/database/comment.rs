@@ -1,11 +1,11 @@
 use crate::{
-    errors::ServError,
+    database::DatabaseConnectionPool,
+    errors::ZenError,
     models::{Comment, CommentJson, User},
     schema::{articles, comments, users},
 };
 
 use diesel::{self, prelude::*};
-use zen_database::DatabaseConnectionPool;
 #[derive(Insertable)]
 #[table_name = "comments"]
 struct NewComment<'a> {
@@ -19,17 +19,17 @@ pub fn create_comment(
     author: &i32,
     slug: &str,
     body: &str,
-) -> Result<CommentJson, ServError> {
-    let conn = pool.get()?;
+) -> Result<CommentJson, ZenError> {
+    let conn = &mut pool.get()?;
     let article_id = articles::table
         .select(articles::id)
         .filter(articles::slug.eq(slug))
-        .get_result::<i32>(&conn)
-        .map_err(|_| ServError::DataBaseError("Canot find the article".into()))?;
+        .get_result::<i32>(conn)
+        .map_err(|_| ZenError::DataBaseError("Canot find the article".into()))?;
     let author = users::table
         .find(&author)
-        .get_result::<User>(&conn)
-        .map_err(|err| ServError::DataBaseError(err.to_string()))?;
+        .get_result::<User>(conn)
+        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
 
     let comment = NewComment {
         body,
@@ -39,7 +39,7 @@ pub fn create_comment(
 
     let comment = diesel::insert_into(comments::table)
         .values(comment)
-        .get_result::<Comment>(&conn)?;
+        .get_result::<Comment>(conn)?;
 
     Ok(comment.attach(author))
 }
@@ -48,14 +48,14 @@ pub fn create_comment(
 pub fn find_comments_by_slug(
     pool: &DatabaseConnectionPool,
     slug: &str,
-) -> Result<Vec<CommentJson>, ServError> {
-    let conn = pool.get()?;
+) -> Result<Vec<CommentJson>, ZenError> {
+    let conn = &mut pool.get()?;
     let result = comments::table
         .inner_join(articles::table)
         .inner_join(users::table)
         .select((comments::all_columns, users::all_columns))
         .filter(articles::slug.eq(slug))
-        .get_results::<(Comment, User)>(&conn)
+        .get_results::<(Comment, User)>(conn)
         .expect("Cannot load comments");
 
     let result = result
@@ -71,19 +71,19 @@ pub fn delete_comment<'a>(
     author: &'a i32,
     slug: &'a str,
     comment_id: &'a i32,
-) -> Result<(), ServError> {
+) -> Result<(), ZenError> {
     use diesel::dsl::exists;
     use diesel::select;
-    let conn = pool.get()?;
+    let conn = &mut pool.get()?;
     let belongs_to_author_result = select(exists(
         articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(author))),
     ))
-    .get_result::<bool>(&conn)
-    .map_err(|err| ServError::DataBaseError(err.to_string()))?;
+    .get_result::<bool>(conn)
+    .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
     if belongs_to_author_result {
         let _result = diesel::delete(comments::table.find(comment_id))
-            .execute(&conn)
-            .map_err(|err| ServError::DataBaseError(err.to_string()))?;
+            .execute(conn)
+            .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
     }
 
     Ok(())
