@@ -90,17 +90,17 @@ pub mod tests {
     use crate::tests::helpers::tests::get_data_pool;
     use actix_web::{test, FromRequest};
 
-    // async fn get_private_claim() -> Claims {
-    //     let (request, mut payload) = test::TestRequest::default()
-    //         .insert_header(("content-type", "application/json"))
-    //         .to_http_parts();
+    async fn get_private_claim() -> Claims {
+        let (request, mut payload) = test::TestRequest::default()
+            .insert_header(("content-type", "application/json"))
+            .to_http_parts();
 
-    //     let claim = Option::<Claims>::from_request(&request, &mut payload)
-    //         .await
-    //         .unwrap()
-    //         .unwrap();
-    //     claim
-    // }
+        let claim = Option::<Claims>::from_request(&request, &mut payload)
+            .await
+            .unwrap()
+            .unwrap();
+        claim
+    }
 
     async fn login_user() -> Result<Json<LoginResponse>, ZenError> {
         let params = LoginData {

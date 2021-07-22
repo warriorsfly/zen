@@ -1,7 +1,7 @@
-use actix_web::{Error, FromRequest};
+use actix_web::FromRequest;
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
-use futures::future::Ready;
+use futures::future::{err, ok, Ready};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
@@ -24,15 +24,32 @@ impl Claims {
     }
 }
 
-// impl FromRequest for Claims {
-//     type Error = Error;
-//     type Future = Ready<Result<Self, Self::Error>>;
-//     type Config = ();
+impl FromRequest for Claims {
+    type Error = ZenError;
+    type Future = Ready<Result<Self, Self::Error>>;
+    type Config = ();
 
-//     fn from_request(req: &actix_web::HttpRequest, payload: &mut actix_web::dev::Payload) -> Self::Future {
-//         todo!()
-//     }
-// }
+    fn from_request(
+        _req: &actix_web::HttpRequest,
+        _payload: &mut actix_web::dev::Payload,
+    ) -> Self::Future {
+        let _auth = _req.headers().get("Authorization");
+
+        match _auth {
+            Some(_) => {
+                let _split: Vec<&str> = _auth.unwrap().to_str().unwrap().split("Bearer").collect();
+                let token = _split[1].trim();
+                match decode_jwt(token) {
+                    Ok(claims) => ok(claims),
+                    Err(e) => err(e),
+                }
+            }
+            None => err(ZenError::Unauthorized(
+                "no authorization in headers".to_string(),
+            )),
+        }
+    }
+}
 
 pub(crate) fn create_jwt(claim: Claims) -> Result<String, ZenError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
@@ -41,14 +58,14 @@ pub(crate) fn create_jwt(claim: Claims) -> Result<String, ZenError> {
 }
 
 /// Decode a json web token (JWT)
-pub fn decode_jwt(token: &str) -> Result<Claims, ZenError> {
+pub(crate) fn decode_jwt(token: &str) -> Result<Claims, ZenError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     decode::<Claims>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
         .map_err(|e| ZenError::CannotDecodeTokenError(e.to_string()))
 }
 
-pub fn hash(password: &str) -> String {
+pub(crate) fn hash(password: &str) -> String {
     argon2i_simple(&password, &CONFIG.salt)
         .iter()
         .map(|b| format!("{:02x}", b))

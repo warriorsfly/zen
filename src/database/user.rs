@@ -20,14 +20,6 @@ pub fn create_user<'a>(
         .map_err(|err| ZenError::DataBaseError(err.to_string()))
 }
 
-// pub fn find_users(pool: &PoolType) -> Result<Vec<User>, ServiceError> {
-//     // use crate::schema::users::{self, dsl::*};
-//     let conn = pool.get()?;
-//     users.
-//         .get_result::<User>(conn)
-//         .map_err(|err| ServiceError::DataBaseError(err.to_string()))
-// }
-
 pub fn find_user_by_id<'a>(
     pool: &'a DatabaseConnectionPool,
     uid: &'a i32,
