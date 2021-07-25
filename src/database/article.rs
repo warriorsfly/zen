@@ -1,9 +1,9 @@
 use crate::{
-    errors::ZenError,
     database::{
         pagination::{self, Paginate},
         DatabaseConnectionPool,
     },
+    errors::ZenError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
 };
@@ -215,24 +215,24 @@ pub fn feed_article(
 //     pool: &DatabaseConnectionPool,
 //     slug: &str,
 //     uid: &i32,
-// ) -> Result<ArticleJson, ServError> {
-//     let conn = &mut pool.get()?;
-//     conn.transaction::<_, diesel::result::Error, _>(
-//         conn || {
-//             let article = diesel::update(articles::table.filter(articles::slug.eq(slug)))
+// ) -> Result<ArticleJson, ZenError> {
+//     let cn = &mut pool.get()?;
+//     cn.transaction::<_, _, _>(
+//         cn || {
+//             let article = diesel::update(articles::table.find(articles::slug.eq(slug)))
 //                 .set(articles::favorites_count.eq(articles::favorites_count + 1))
-//                 .get_result::<Article>(conn)?;
+//                 .get_result::<Article>(cn)?;
 //             diesel::insert_into(favorite_articles::table)
 //                 .values((
 //                     favorite_articles::user_id.eq(uid),
 //                     favorite_articles::article_id.eq(article.id),
 //                 ))
-//                 .execute(conn)?;
+//                 .execute(cn)?;
 
-//             Ok(populate_article(conn, article, true))
-//         },
+//             Ok(populate_article(cn, article, true))
+//         }
 //     )
-//     .map_err(|err| ServError::DataBaseError(err.to_string()))
+//     .map_err(|err| ZenError::DataBaseError(err.to_string()))
 // }
 
 // pub fn unfavorite_article(
@@ -297,14 +297,14 @@ pub fn delete_article(
     //
 }
 
-// pub fn get_tags(pool: &DatabaseConnectionPool) -> Result<Vec<String>, ServError> {
+// pub fn get_tags(pool: &DatabaseConnectionPool) -> Result<Vec<Option<String>>, ZenError> {
 //     use crate::schema::articles::dsl::*;
 //     let conn = &mut pool.get()?;
 //     articles
 //         .select(tag_list)
 //         .distinct()
 //         .load(conn)
-//         .map_err(|err| ServError::DataBaseError(err.to_string()))
+//         .map_err(|err| ZenError::DataBaseError(err.to_string()))
 // }
 
 fn is_favorite_article(conn: &mut PgConnection, article: &Article, uid: &i32) -> bool {

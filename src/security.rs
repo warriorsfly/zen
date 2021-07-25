@@ -1,4 +1,8 @@
-use actix_web::FromRequest;
+use actix_web::{dev::ServiceRequest, Error, FromRequest};
+use actix_web_httpauth::extractors::{
+    bearer::{BearerAuth, Config},
+    AuthenticationError,
+};
 use argon2rs::argon2i_simple;
 use chrono::{Duration, Utc};
 use futures::future::{err, ok, Ready};
@@ -70,4 +74,21 @@ pub(crate) fn hash(password: &str) -> String {
         .iter()
         .map(|b| format!("{:02x}", b))
         .collect()
+}
+
+pub(crate) async fn bearer_validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -> Result<ServiceRequest, Error> {
+    if let Ok(_claims) = decode_jwt(credentials.token()) {
+        Ok(req)
+    } else {
+        let config = req
+            .app_data::<Config>()
+            .map(|data| data.clone())
+            .unwrap_or_else(Default::default)
+            .scope("urn:example:channel=HBO&urn:example:rating=G,PG-13");
+
+        Err(AuthenticationError::from(config).into())
+    }
 }

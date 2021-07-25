@@ -11,7 +11,6 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
-use uuid::Error as UuidError;
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum ZenError {
@@ -22,7 +21,6 @@ pub enum ZenError {
     CannotEncodeTokenError(String),
     InternalServerError(String),
     NotFound(String),
-    UuidError(String),
     DataBaseError(String),
 
     #[display(fmt = "")]
@@ -100,13 +98,6 @@ impl From<DBError> for ZenError {
 impl From<PoolError> for ZenError {
     fn from(error: PoolError) -> ZenError {
         ZenError::DataBaseError(error.to_string())
-    }
-}
-
-/// Convert ParseErrors to ServiceErrors
-impl From<UuidError> for ZenError {
-    fn from(error: UuidError) -> ZenError {
-        ZenError::UuidError(error.to_string())
     }
 }
 
