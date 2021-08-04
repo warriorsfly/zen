@@ -7,7 +7,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
         web::scope("/api")
         
             .service(
-                web::scope("/auth")
+                web::scope("/account")
                     .route("signup", web::post().to(security::signup))
                     .route("login", web::post().to(security::login)),
             )

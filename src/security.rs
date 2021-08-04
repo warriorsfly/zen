@@ -58,7 +58,7 @@ impl FromRequest for Claims {
 pub(crate) fn create_jwt(claim: Claims) -> Result<String, ZenError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     encode(&Header::default(), &claim, &encoding_key)
-        .map_err(|e| ZenError::CannotEncodeTokenError(e.to_string()))
+        .map_err(|e| ZenError::InternalServerError(e.to_string()))
 }
 
 /// Decode a json web token (JWT)
@@ -66,7 +66,7 @@ pub(crate) fn decode_jwt(token: &str) -> Result<Claims, ZenError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     decode::<Claims>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
-        .map_err(|e| ZenError::CannotDecodeTokenError(e.to_string()))
+        .map_err(|e| ZenError::InternalServerError(e.to_string()))
 }
 
 pub(crate) fn hash(password: &str) -> String {
