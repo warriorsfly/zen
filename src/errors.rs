@@ -17,8 +17,6 @@ pub enum ZenError {
     BadRequest(String),
     BlockingError(String),
     CacheError(String),
-    CannotDecodeTokenError(String),
-    CannotEncodeTokenError(String),
     InternalServerError(String),
     NotFound(String),
     DataBaseError(String),
