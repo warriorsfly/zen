@@ -9,7 +9,7 @@ use futures::future::{err, ok, Ready};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
-use crate::{config::CONFIG, errors::ZenError};
+use crate::{config::CONFIG, errors::ZnError};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Claims {
@@ -29,7 +29,7 @@ impl Claims {
 }
 
 impl FromRequest for Claims {
-    type Error = ZenError;
+    type Error = ZnError;
     type Future = Ready<Result<Self, Self::Error>>;
     type Config = ();
 
@@ -48,25 +48,25 @@ impl FromRequest for Claims {
                     Err(e) => err(e),
                 }
             }
-            None => err(ZenError::Unauthorized(
+            None => err(ZnError::Unauthorized(
                 "no authorization in headers".to_string(),
             )),
         }
     }
 }
 
-pub(crate) fn create_jwt(claim: Claims) -> Result<String, ZenError> {
+pub(crate) fn create_jwt(claim: Claims) -> Result<String, ZnError> {
     let encoding_key = EncodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     encode(&Header::default(), &claim, &encoding_key)
-        .map_err(|e| ZenError::InternalServerError(e.to_string()))
+        .map_err(|e| ZnError::InternalServerError(e.to_string()))
 }
 
 /// Decode a json web token (JWT)
-pub(crate) fn decode_jwt(token: &str) -> Result<Claims, ZenError> {
+pub(crate) fn decode_jwt(token: &str) -> Result<Claims, ZnError> {
     let decoding_key = DecodingKey::from_secret(&CONFIG.jwt_key.as_ref());
     decode::<Claims>(token, &decoding_key, &Validation::default())
         .map(|data| data.claims)
-        .map_err(|e| ZenError::InternalServerError(e.to_string()))
+        .map_err(|e| ZnError::InternalServerError(e.to_string()))
 }
 
 pub(crate) fn hash(password: &str) -> String {

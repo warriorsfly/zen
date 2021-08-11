@@ -1,6 +1,6 @@
 use crate::{
     database::DatabaseConnectionPool,
-    errors::ZenError,
+    errors::ZnError,
     models::{Comment, CommentJson, User},
     schema::{articles, comments, users},
 };
@@ -19,17 +19,17 @@ pub fn create_comment(
     author: &i32,
     slug: &str,
     body: &str,
-) -> Result<CommentJson, ZenError> {
+) -> Result<CommentJson, ZnError> {
     let conn = &mut pool.get()?;
     let article_id = articles::table
         .select(articles::id)
         .filter(articles::slug.eq(slug))
         .get_result::<i32>(conn)
-        .map_err(|_| ZenError::DataBaseError("Canot find the article".into()))?;
+        .map_err(|_| ZnError::DataBaseError("Canot find the article".into()))?;
     let author = users::table
         .find(&author)
         .get_result::<User>(conn)
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
 
     let comment = NewComment {
         body,
@@ -48,7 +48,7 @@ pub fn create_comment(
 pub fn find_comments_by_slug(
     pool: &DatabaseConnectionPool,
     slug: &str,
-) -> Result<Vec<CommentJson>, ZenError> {
+) -> Result<Vec<CommentJson>, ZnError> {
     let conn = &mut pool.get()?;
     let result = comments::table
         .inner_join(articles::table)
@@ -71,7 +71,7 @@ pub fn delete_comment<'a>(
     author: &'a i32,
     slug: &'a str,
     comment_id: &'a i32,
-) -> Result<(), ZenError> {
+) -> Result<(), ZnError> {
     use diesel::dsl::exists;
     use diesel::select;
     let conn = &mut pool.get()?;
@@ -79,11 +79,11 @@ pub fn delete_comment<'a>(
         articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(author))),
     ))
     .get_result::<bool>(conn)
-    .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+    .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
     if belongs_to_author_result {
         let _result = diesel::delete(comments::table.find(comment_id))
             .execute(conn)
-            .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+            .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
     }
 
     Ok(())

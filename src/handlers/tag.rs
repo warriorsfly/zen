@@ -1,4 +1,4 @@
-use crate::{database::{self, DatabaseConnectionPool}, errors::ZenError, helpers::respond_json};
+use crate::{database::{self, DatabaseConnectionPool}, errors::ZnError, helpers::respond_json};
 use actix_web::web::{block, Data, Json};
 
 // pub async fn get_tags(pool: &DatabaseConnectionPool,) -> Result<Json<Vec<String>>, ZenError> {

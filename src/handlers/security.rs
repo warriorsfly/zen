@@ -1,6 +1,6 @@
 use crate::{
     database::{self, DatabaseConnectionPool},
-    errors::ZenError,
+    errors::ZnError,
     helpers::respond_json,
     models::{NewUser, User},
     security::{create_jwt, hash, Claims},
@@ -32,7 +32,7 @@ pub struct SignupData {
 pub async fn signup(
     pool: Data<DatabaseConnectionPool>,
     params: Json<SignupData>,
-) -> Result<Json<User>, ZenError> {
+) -> Result<Json<User>, ZnError> {
     validate(&params)?;
     let pass = hash(&params.password);
     let new_user = NewUser {
@@ -70,7 +70,7 @@ pub struct LoginResponse {
 pub async fn login(
     pool: Data<DatabaseConnectionPool>,
     params: Json<LoginData>,
-) -> Result<Json<LoginResponse>, ZenError> {
+) -> Result<Json<LoginResponse>, ZnError> {
     validate(&params)?;
 
     // Validate that the email + hashed password matches
@@ -102,7 +102,7 @@ pub mod tests {
         claim
     }
 
-    async fn login_user() -> Result<Json<LoginResponse>, ZenError> {
+    async fn login_user() -> Result<Json<LoginResponse>, ZnError> {
         let params = LoginData {
             email: "warriorsfly@gmail.com".into(),
             password: "123456".into(),

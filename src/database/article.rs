@@ -3,7 +3,7 @@ use crate::{
         pagination::{self, Paginate},
         DatabaseConnectionPool,
     },
-    errors::ZenError,
+    errors::ZnError,
     models::{Article, ArticleJson, User},
     schema::{articles, favorite_articles, followers, users},
 };
@@ -47,7 +47,7 @@ pub fn create_article<'a>(
     description: &'a str,
     body: &'a str,
     tags: &'a Vec<String>,
-) -> Result<ArticleJson, ZenError> {
+) -> Result<ArticleJson, ZnError> {
     let conn = &mut pool.get()?;
     let new_article = NewArticle {
         author_id: author,
@@ -60,12 +60,12 @@ pub fn create_article<'a>(
     let author = users::table
         .find(author)
         .get_result::<User>(conn)
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
 
     let new_article = insert_into(articles::table)
         .values(new_article)
         .get_result::<Article>(conn)
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
 
     Ok(new_article.attach(author, false))
 }
@@ -99,7 +99,7 @@ pub fn search_articles(
     pool: &DatabaseConnectionPool,
     uid: Option<i32>,
     params: &ArticleFindData,
-) -> Result<(Vec<ArticleJson>, i64), ZenError> {
+) -> Result<(Vec<ArticleJson>, i64), ZnError> {
     let conn = &mut pool.get()?;
     let mut query = articles::table
         .inner_join(users::table)
@@ -152,19 +152,19 @@ pub fn search_articles(
                 count,
             )
         })
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))
 }
 
 pub fn find_one_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
     uid: &i32,
-) -> Result<ArticleJson, ZenError> {
+) -> Result<ArticleJson, ZnError> {
     let conn = &mut pool.get()?;
     let article = articles::table
         .filter(articles::slug.eq(slug))
         .first::<Article>(conn)
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))?;
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))?;
     let favorited = is_favorite_article(conn, &article, &uid);
 
     Ok(populate_article(conn, article, favorited))
@@ -180,7 +180,7 @@ pub fn feed_article(
     pool: &DatabaseConnectionPool,
     params: FeedArticleData,
     uid: &i32,
-) -> Result<Vec<ArticleJson>, ZenError> {
+) -> Result<Vec<ArticleJson>, ZnError> {
     let conn = &mut pool.get()?;
     let arts = articles::table
         .filter(
@@ -271,7 +271,7 @@ pub fn update_article(
     slug: &str,
     uid: &i32,
     mut data: UpdateArticleData,
-) -> Result<ArticleJson, ZenError> {
+) -> Result<ArticleJson, ZnError> {
     let conn = &mut pool.get()?;
     if let Some(ref title) = data.title {
         data.slug = Some(slugify(&title));
@@ -289,11 +289,11 @@ pub fn delete_article(
     pool: &DatabaseConnectionPool,
     slug: &str,
     uid: &i32,
-) -> Result<usize, ZenError> {
+) -> Result<usize, ZnError> {
     let conn = &mut pool.get()?;
     diesel::delete(articles::table.filter(articles::slug.eq(slug).and(articles::author_id.eq(uid))))
         .execute(conn)
-        .map_err(|err| ZenError::DataBaseError(err.to_string()))
+        .map_err(|err| ZnError::DataBaseError(err.to_string()))
     //
 }
 

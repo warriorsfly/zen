@@ -1,6 +1,6 @@
 use crate::{
     database::{self, DatabaseConnectionPool},
-    errors::ZenError,
+    errors::ZnError,
     helpers::{respond_json, respond_ok},
     models::ArticleJson,
     models::CommentJson,
@@ -28,7 +28,7 @@ pub struct ArticleRequest {}
 pub async fn create_article(
     pool: Data<DatabaseConnectionPool>,
     params: Json<NewArticle>,
-) -> Result<Json<ArticleJson>, ZenError> {
+) -> Result<Json<ArticleJson>, ZnError> {
     validate(&params)?;
     let new_article = block(move || {
         database::create_article(
@@ -48,7 +48,7 @@ pub async fn create_article(
 pub async fn search_articles(
     pool: Data<DatabaseConnectionPool>,
     params: Form<ArticleFindData>,
-) -> Result<Json<(Vec<ArticleJson>, i64)>, ZenError> {
+) -> Result<Json<(Vec<ArticleJson>, i64)>, ZnError> {
     // validate(&params)?;
     let articles =
         block(move || database::search_articles(&pool.into_inner(), Some(1), &params)).await??;
@@ -58,7 +58,7 @@ pub async fn search_articles(
 pub async fn get_one_article(
     pool: Data<DatabaseConnectionPool>,
     slug: Path<String>,
-) -> Result<Json<ArticleJson>, ZenError> {
+) -> Result<Json<ArticleJson>, ZnError> {
     let article = block(move || database::find_one_article(&pool, &slug, &1)).await??;
 
     respond_json(article)
@@ -87,7 +87,7 @@ pub async fn feed_articles(
     // redis: Cache,
     // claim: Claims,
     slug: Form<FeedArticleData>,
-) -> Result<Json<Vec<ArticleJson>>, ZenError> {
+) -> Result<Json<Vec<ArticleJson>>, ZnError> {
     let articles = block(move || database::feed_article(&pool, slug.into_inner(), &1)).await??;
 
     respond_json(articles)
@@ -99,7 +99,7 @@ pub async fn update_article(
     // claim: Claims,
     slug: Path<String>,
     params: Json<UpdateArticleData>,
-) -> Result<Json<ArticleJson>, ZenError> {
+) -> Result<Json<ArticleJson>, ZnError> {
     // validate(&params)?;
     let article =
         block(move || database::update_article(&pool, slug.as_ref(), &1, params.into_inner()))
@@ -113,7 +113,7 @@ pub async fn delete_article(
     // redis: Cache,
     // claim: Claims,
     slug: Path<String>,
-) -> Result<HttpResponse<Body>, ZenError> {
+) -> Result<HttpResponse<Body>, ZnError> {
     // validate(&params)?;
     block(move || database::delete_article(&pool, slug.as_ref(), &1)).await??;
     respond_ok()
@@ -124,7 +124,7 @@ pub async fn create_comment(
     // claim: Claims,
     slug: String,
     body: String,
-) -> Result<Json<CommentJson>, ZenError> {
+) -> Result<Json<CommentJson>, ZnError> {
     let comment =
         block(move || database::create_comment(&pool, &1, slug.as_ref(), body.as_ref())).await??;
     respond_json(comment)
@@ -134,7 +134,7 @@ pub async fn find_comments_by_slug(
     pool: Data<DatabaseConnectionPool>,
     // claim: Claims,
     slug: String,
-) -> Result<Json<Vec<CommentJson>>, ZenError> {
+) -> Result<Json<Vec<CommentJson>>, ZnError> {
     let comments = block(move || database::find_comments_by_slug(&pool, slug.as_ref())).await??;
     respond_json(comments)
 }
@@ -144,7 +144,7 @@ pub async fn delete_comment(
     // claim: Claims,
     slug: String,
     comment_id: String,
-) -> Result<String, ZenError> {
+) -> Result<String, ZnError> {
     block(move || {
         database::delete_comment(
             &pool,

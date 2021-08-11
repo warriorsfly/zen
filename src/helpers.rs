@@ -4,16 +4,16 @@ use actix_web::{
 };
 use serde::Serialize;
 
-use crate::errors::ZenError;
+use crate::errors::ZnError;
 /// 快速组装Ok/Json response
-pub fn respond_json<T>(data: T) -> Result<Json<T>, ZenError>
+pub fn respond_json<T>(data: T) -> Result<Json<T>, ZnError>
 where
     T: Serialize,
 {
     Ok(Json(data))
 }
 ///
-pub fn respond_ok() -> Result<HttpResponse<Body>, ZenError> {
+pub fn respond_ok() -> Result<HttpResponse<Body>, ZnError> {
     Ok(HttpResponse::ok())
 }
 

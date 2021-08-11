@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 
 #[derive(Debug, Display, PartialEq, Serialize)]
-pub enum ZenError {
+pub enum ZnError {
     BadRequest(String),
     BlockingError(String),
     CacheError(String),
@@ -41,13 +41,13 @@ impl<String> Deref for ErrorResponse<String> {
 }
 
 /// 自定义错误
-impl ResponseError for ZenError {
+impl ResponseError for ZnError {
     fn status_code(&self) -> StatusCode {
         match self {
-            ZenError::BadRequest(_) => StatusCode::BAD_REQUEST,
-            ZenError::NotFound(_) => StatusCode::NOT_FOUND,
-            ZenError::ValidationError(_) => StatusCode::UNPROCESSABLE_ENTITY,
-            ZenError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+            ZnError::BadRequest(_) => StatusCode::BAD_REQUEST,
+            ZnError::NotFound(_) => StatusCode::NOT_FOUND,
+            ZnError::ValidationError(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            ZnError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -75,33 +75,33 @@ impl From<Vec<String>> for ErrorResponse<String> {
 }
 
 /// Convert DBErrors to ServiceErrors
-impl From<DBError> for ZenError {
-    fn from(error: DBError) -> ZenError {
+impl From<DBError> for ZnError {
+    fn from(error: DBError) -> ZnError {
         // Right now we just care about UniqueViolation from diesel
         // But this would be helpful to easily map errors as our app grows
         match error {
             DBError::DatabaseError(kind, info) => {
                 if let DatabaseErrorKind::UniqueViolation = kind {
                     let message = info.details().unwrap_or_else(|| info.message()).to_string();
-                    return ZenError::BadRequest(message);
+                    return ZnError::BadRequest(message);
                 }
-                ZenError::InternalServerError("Unknown database error".into())
+                ZnError::InternalServerError("Unknown database error".into())
             }
-            _ => ZenError::InternalServerError("Unknown database error".into()),
+            _ => ZnError::InternalServerError("Unknown database error".into()),
         }
     }
 }
 
 /// Convert PoolErrors to ServiceErrors
-impl From<PoolError> for ZenError {
-    fn from(error: PoolError) -> ZenError {
-        ZenError::DataBaseError(error.to_string())
+impl From<PoolError> for ZnError {
+    fn from(error: PoolError) -> ZnError {
+        ZnError::DataBaseError(error.to_string())
     }
 }
 
 /// Convert BlockingError to ServiceErrors
-impl From<BlockingError> for ZenError {
-    fn from(error: BlockingError) -> ZenError {
-        ZenError::BlockingError(error.to_string())
+impl From<BlockingError> for ZnError {
+    fn from(error: BlockingError) -> ZnError {
+        ZnError::BlockingError(error.to_string())
     }
 }
